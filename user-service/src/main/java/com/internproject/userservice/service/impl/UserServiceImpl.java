@@ -1,5 +1,6 @@
 package com.internproject.userservice.service.impl;
 
+import com.internproject.userservice.config.UserDetailsImpl;
 import com.internproject.userservice.dto.RegisterRequest;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +39,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return null;
+        User user =userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+
+        return userDetails;
+
     }
 
     @Override
