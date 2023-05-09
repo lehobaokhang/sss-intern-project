@@ -10,7 +10,9 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private String id;
@@ -30,11 +32,15 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(User user) {
+        List<GrantedAuthority> authorityList = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .collect(Collectors.toList());
+
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
                 user.getPassword(),
-                Arrays.asList(new SimpleGrantedAuthority(user.getRole()))
+                authorityList
         );
     }
 

@@ -1,6 +1,6 @@
 package com.internproject.userservice.enumeration;
 
-public enum Role {
+public enum ERole {
     ROLE_ADMIN,
     ROLE_USER,
     ROLE_SELLER,

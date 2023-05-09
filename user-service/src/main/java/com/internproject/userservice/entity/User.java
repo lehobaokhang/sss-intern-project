@@ -8,9 +8,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,17 +23,14 @@ public class User {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "username", nullable = false, unique = true, length = 45)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", nullable = false, unique = true, length = 50)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "role", nullable = false)
-    private String role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
@@ -40,4 +39,10 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_detail_id", referencedColumnName = "id")
     private UserDetail userDetail;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable( name = "user_roles",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 }

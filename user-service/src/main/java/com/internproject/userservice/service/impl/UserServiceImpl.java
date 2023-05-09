@@ -13,8 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.internproject.userservice.enumeration.Role.ROLE_USER;
-
 @Service
 @Qualifier("userDetailsService")
 public class UserServiceImpl implements IUserService {
@@ -45,7 +43,6 @@ public class UserServiceImpl implements IUserService {
         newUser.setUsername(registerRequest.getUsername());
         newUser.setPassword(bCryptPasswordEncoder.encode(registerRequest.getPassword()));
         newUser.setEmail(registerRequest.getEmail());
-        newUser.setRole(ROLE_USER.name());
         newUser.setUserDetail(newUserDetail);
 
         userRepository.save(newUser);
