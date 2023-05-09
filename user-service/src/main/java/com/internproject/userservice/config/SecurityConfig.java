@@ -25,10 +25,15 @@ public class SecurityConfig {
     private UserDetailsService userService;
     private AuthEntryPointJwt authEntryPointJwt;
 
+    public BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public SecurityConfig(@Qualifier("userDetailsService")UserDetailsService userDetailsService, AuthEntryPointJwt authEntryPointJwt) {
+    public SecurityConfig(@Qualifier("userDetailsService")UserDetailsService userDetailsService,
+                          AuthEntryPointJwt authEntryPointJwt,
+                          BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userDetailsService;
         this.authEntryPointJwt = authEntryPointJwt;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Bean
@@ -36,16 +41,13 @@ public class SecurityConfig {
         return new AuthTokenFilter();
     }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider =new DaoAuthenticationProvider();
 
-        provider.setPasswordEncoder(bCryptPasswordEncoder());
+        provider.setPasswordEncoder(bCryptPasswordEncoder);
         provider.setUserDetailsService(userService);
 
         return provider;

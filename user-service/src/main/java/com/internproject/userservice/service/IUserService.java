@@ -4,6 +4,8 @@ import com.internproject.userservice.dto.RegisterRequest;
 import com.internproject.userservice.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Optional;
+
 public interface IUserService extends UserDetailsService {
-    public User register(RegisterRequest registerRequest);
+    public Optional<User> register(RegisterRequest registerRequest);
 }

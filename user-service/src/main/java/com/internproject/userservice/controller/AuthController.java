@@ -4,15 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.internproject.userservice.dto.RegisterRequest;
+import com.internproject.userservice.entity.User;
+import com.internproject.userservice.jwt.AuthEntryPointJwt;
 import com.internproject.userservice.service.IRoleService;
 import com.internproject.userservice.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,6 +29,8 @@ public class AuthController {
     @Autowired
     private IRoleService roleService;
 
+    private static final Logger logger = LogManager.getLogger(AuthEntryPointJwt.class);
+
     // Manage role method
     @PostMapping("/role")
     @ApiOperation(value = "Create new role")
@@ -33,18 +40,24 @@ public class AuthController {
         try {
             bodyMap = objectMapper.readValue(requestBody, new TypeReference<Map<String, String>>(){});
         } catch (JsonProcessingException e) {
+            logger.error(e.getMessage());
             return ResponseEntity.badRequest().body("Bad Request");
         }
 
         roleService.addNewRole(bodyMap.get("role"));
+        logger.info("Add role to database");
         return ResponseEntity.ok("Role is created successfully");
     }
 
+    //User Endpoints APIs
     @PostMapping("/register")
     @ApiOperation(value = "Create new account")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        userService.register(registerRequest);
-        return ResponseEntity.ok("User is registered successfully");
+        Optional<User> user = userService.register(registerRequest);
+
+        return (user.isPresent()) ?
+                ResponseEntity.ok("User is registered successfully") :
+                ResponseEntity.badRequest().body("User can not registered");
     }
 
 
