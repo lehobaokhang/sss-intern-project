@@ -18,3 +18,5 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/user/**, /auth/**
+          filters:
+            - JWTFilter
