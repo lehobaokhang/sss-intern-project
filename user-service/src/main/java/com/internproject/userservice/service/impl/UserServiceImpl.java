@@ -1,7 +1,10 @@
 package com.internproject.userservice.service.impl;
 
+import com.google.common.collect.Iterables;
 import com.internproject.userservice.config.UserDetailsImpl;
+import com.internproject.userservice.dto.MeDTO;
 import com.internproject.userservice.dto.RegisterRequest;
+import com.internproject.userservice.dto.UserCredential;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.entity.UserDetail;
@@ -78,5 +81,33 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(newUser);
 
         return Optional.of(newUser);
+    }
+
+    @Override
+    public MeDTO getMe(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return new MeDTO(user.getId(), user.getEmail(), user.getUserDetail().getFullName(), user.getRoles().iterator().next().getRoleName());
+        }
+
+        return null;
+    }
+
+    @Override
+    public UserCredential getUserById(String id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return new UserCredential(user.getId(),
+                    user.getUserDetail().getFullName(),
+                    user.getUserDetail().isGender(),
+                    user.getUserDetail().getDob(),
+                    user.getCreated_at());
+        }
+
+        return null;
     }
 }

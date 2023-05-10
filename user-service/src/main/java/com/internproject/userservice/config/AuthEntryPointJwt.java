@@ -1,4 +1,4 @@
-package com.internproject.userservice.jwt;
+package com.internproject.userservice.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

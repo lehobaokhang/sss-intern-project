@@ -7,9 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtils {
@@ -42,6 +46,11 @@ public class JwtUtils {
 
     public String getIdFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public List<GrantedAuthority> getAuthorityFromJwtToken(String token) {
+        String role = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("role", String.class);
+        return Arrays.asList(new SimpleGrantedAuthority(role));
     }
 
     public boolean validateJwtToken(String authToken) {
