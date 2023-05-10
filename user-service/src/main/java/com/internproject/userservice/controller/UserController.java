@@ -40,4 +40,14 @@ public class UserController {
                 ? ResponseEntity.ok(userCredential)
                 : ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
+        String id = jwtUtils.getIdFromJwtToken(jwt);
+
+        return userService.deleteUser(id)
+                ? ResponseEntity.ok("Delete account success")
+                : ResponseEntity.internalServerError().build();
+    }
 }

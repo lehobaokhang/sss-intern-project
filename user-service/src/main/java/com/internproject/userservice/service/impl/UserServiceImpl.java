@@ -110,4 +110,10 @@ public class UserServiceImpl implements IUserService {
 
         return null;
     }
+
+    @Override
+    public boolean deleteUser(String id) {
+        userRepository.deleteById(id);
+        return true;
+    }
 }

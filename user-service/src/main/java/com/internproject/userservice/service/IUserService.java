@@ -14,4 +14,6 @@ public interface IUserService extends UserDetailsService {
     public MeDTO getMe(String username);
 
     public UserCredential getUserById(String id);
+
+    public boolean deleteUser(String id);
 }
