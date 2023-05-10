@@ -5,11 +5,13 @@ import com.internproject.userservice.config.UserDetailsImpl;
 import com.internproject.userservice.dto.MeDTO;
 import com.internproject.userservice.dto.RegisterRequest;
 import com.internproject.userservice.dto.UserCredential;
+import com.internproject.userservice.dto.UserUpdateRequest;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.entity.UserDetail;
 import com.internproject.userservice.exception.EmailExistException;
 import com.internproject.userservice.exception.UsernameExistException;
+import com.internproject.userservice.mapper.UserMapper;
 import com.internproject.userservice.repository.IRoleRepository;
 import com.internproject.userservice.repository.IUserRepository;
 import com.internproject.userservice.service.IUserService;
@@ -115,5 +117,24 @@ public class UserServiceImpl implements IUserService {
     public boolean deleteUser(String id) {
         userRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public User updateUser(String id, UserUpdateRequest userUpdateRequest) {
+        UserDetail userDetail = UserMapper.getInstance().toUserDetail(userUpdateRequest);
+
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            userDetail.setId(user.getUserDetail().getId());
+            user.setUserDetail(userDetail);
+            userRepository.save(user);
+
+            return user;
+        }
+
+        return null;
     }
 }

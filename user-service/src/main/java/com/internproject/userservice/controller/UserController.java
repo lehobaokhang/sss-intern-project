@@ -2,14 +2,14 @@ package com.internproject.userservice.controller;
 
 import com.internproject.userservice.dto.MeDTO;
 import com.internproject.userservice.dto.UserCredential;
+import com.internproject.userservice.dto.UserUpdateRequest;
+import com.internproject.userservice.entity.UserDetail;
 import com.internproject.userservice.jwt.JwtUtils;
+import com.internproject.userservice.mapper.UserMapper;
 import com.internproject.userservice.service.IUserService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -49,5 +49,16 @@ public class UserController {
         return userService.deleteUser(id)
                 ? ResponseEntity.ok("Delete account success")
                 : ResponseEntity.internalServerError().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
+                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
+        String id = jwtUtils.getIdFromJwtToken(jwt);
+
+        userService.updateUser(id, userUpdateRequest);
+
+        return ResponseEntity.ok("Update user's information successful");
     }
 }

@@ -3,6 +3,7 @@ package com.internproject.userservice.service;
 import com.internproject.userservice.dto.MeDTO;
 import com.internproject.userservice.dto.RegisterRequest;
 import com.internproject.userservice.dto.UserCredential;
+import com.internproject.userservice.dto.UserUpdateRequest;
 import com.internproject.userservice.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -16,4 +17,6 @@ public interface IUserService extends UserDetailsService {
     public UserCredential getUserById(String id);
 
     public boolean deleteUser(String id);
+
+    public User updateUser(String id, UserUpdateRequest userUpdateRequest);
 }
