@@ -1,6 +1,5 @@
-package com.internproject.userservice.config;
+package com.internproject.productservice.config;
 
-import com.internproject.userservice.jwt.JwtUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
+    @Autowired
+    private JwtUtils jwtUtils;
     private static final Logger logger = LogManager.getLogger(AuthTokenFilter.class);
 
     private final List<String> PUBLIC_URLS = List.of("/auth/login", "/auth/register", "/swagger-ui.html");
-
-    @Autowired
-    private JwtUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -36,7 +34,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
         try {
             String jwt = parseJwt(request);
 

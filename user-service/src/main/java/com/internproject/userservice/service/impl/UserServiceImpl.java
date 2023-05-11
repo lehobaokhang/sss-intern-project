@@ -1,16 +1,13 @@
 package com.internproject.userservice.service.impl;
 
-import com.google.common.collect.Iterables;
 import com.internproject.userservice.config.UserDetailsImpl;
-import com.internproject.userservice.dto.MeDTO;
-import com.internproject.userservice.dto.RegisterRequest;
-import com.internproject.userservice.dto.UserCredential;
-import com.internproject.userservice.dto.UserUpdateRequest;
+import com.internproject.userservice.dto.*;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.entity.UserDetail;
 import com.internproject.userservice.exception.EmailExistException;
 import com.internproject.userservice.exception.UsernameExistException;
+import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.mapper.UserMapper;
 import com.internproject.userservice.repository.IRoleRepository;
 import com.internproject.userservice.repository.IUserRepository;
@@ -39,6 +36,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 

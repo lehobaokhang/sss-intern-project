@@ -8,6 +8,7 @@ import com.internproject.userservice.config.UserDetailsImpl;
 import com.internproject.userservice.dto.LoginRequest;
 import com.internproject.userservice.dto.LoginResponse;
 import com.internproject.userservice.dto.RegisterRequest;
+import com.internproject.userservice.dto.TokenVerifyResponse;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.config.AuthEntryPointJwt;
 import com.internproject.userservice.jwt.JwtUtils;
@@ -19,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,6 +51,7 @@ public class AuthController {
     // Manage role method
     @PostMapping("/role")
     @ApiOperation(value = "Create new role")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addNewRole(@RequestBody String requestBody) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> bodyMap = null;

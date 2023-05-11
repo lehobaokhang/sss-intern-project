@@ -43,6 +43,6 @@ public class Product {
     private boolean deleted;
 
     @OneToMany
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private List<ProductOption> options;
 }

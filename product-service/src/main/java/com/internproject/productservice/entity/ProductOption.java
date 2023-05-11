@@ -24,6 +24,6 @@ public class ProductOption {
     private String optionName;
 
     @OneToMany
-    @JoinColumn(name = "option_id")
+    @JoinColumn(name = "option_id", nullable = false)
     private List<OptionDetail> optionDetails;
 }
