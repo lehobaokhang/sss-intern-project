@@ -7,6 +7,8 @@ import com.internproject.userservice.entity.UserDetail;
 import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.mapper.UserMapper;
 import com.internproject.userservice.service.IUserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@Api(value = "Auth", description = "User Controller")
 public class UserController {
     @Autowired
     private JwtUtils jwtUtils;
@@ -22,6 +25,7 @@ public class UserController {
     private IUserService userService;
 
     @GetMapping
+    @ApiOperation(value = "Get Information Of Current User By Bearer Token In Authorization Header")
     public ResponseEntity<MeDTO> getMe(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String username = jwtUtils.getUsernameFromJwtToken(jwt);
@@ -34,6 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "Get Information Of User By Id")
     public ResponseEntity<UserCredential> getUserById(@PathVariable String id) {
         UserCredential userCredential = userService.getUserById(id);
         return userCredential != null
@@ -42,6 +47,7 @@ public class UserController {
     }
 
     @DeleteMapping
+    @ApiOperation(value ="Delete User By Bearer Token In Authorization Header")
     public ResponseEntity<String> deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String id = jwtUtils.getIdFromJwtToken(jwt);
@@ -52,6 +58,7 @@ public class UserController {
     }
 
     @PutMapping
+    @ApiOperation(value = "Update User Information By Bearer Token Authorization Header")
     public ResponseEntity<String> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());

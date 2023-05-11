@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -16,6 +14,6 @@ public class UserUpdateRequest {
     private int wardId;
     private String phone;
     private boolean gender;
-    private Date dob;
+    private String dob;
     private String avatar;
 }

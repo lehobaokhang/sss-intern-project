@@ -3,6 +3,9 @@ package com.internproject.userservice.mapper;
 import com.internproject.userservice.dto.UserUpdateRequest;
 import com.internproject.userservice.entity.UserDetail;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
 public class UserMapper {
     private static UserMapper INSTANCE;
 
@@ -21,7 +24,8 @@ public class UserMapper {
         userDetail.setWardId(userUpdateRequest.getWardId());
         userDetail.setPhone(userUpdateRequest.getPhone());
         userDetail.setGender(userUpdateRequest.isGender());
-        userDetail.setDob(userUpdateRequest.getDob());
+        Date dob = Date.valueOf(userUpdateRequest.getDob());
+        userDetail.setDob(dob);
 
         return userDetail;
     }
