@@ -20,3 +20,9 @@ spring:
             - Path=/user/**, /auth/**
           filters:
             - JWTFilter
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/product/**
+          filters:
+            - JWTFilter
