@@ -23,14 +23,14 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "product_image", columnDefinition = "text", nullable = false)
+    @Column(name = "product_image", columnDefinition = "text")
     private String productImage;
 
     @Column(name = "product_size", nullable = false)
-    private String size;
+    private String productSize;
 
     @Column(name = "product_weight", nullable = false)
-    private String productWeight;
+    private int productWeight;
 
     @Column(name = "seller_id", nullable = false)
     private String sellerId;
@@ -42,7 +42,7 @@ public class Product {
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean deleted;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", nullable = false)
     private List<ProductOption> options;
 }

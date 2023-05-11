@@ -22,15 +22,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
     private static final Logger logger = LogManager.getLogger(AuthTokenFilter.class);
 
-    private final List<String> PUBLIC_URLS = List.of("/auth/login", "/auth/register", "/swagger-ui.html");
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        List<String> publicUrls = PUBLIC_URLS.stream()
-                .filter((path) -> request.getServletPath().equals(path))
-                .collect(Collectors.toList());
-
-        if (!publicUrls.isEmpty()) {
+        if (request.getServletPath().contains("swagger-ui.html")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,7 +35,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = jwtUtils.getUsernameFromJwtToken(jwt);
                 String userId = jwtUtils.getIdFromJwtToken(jwt);
                 List<GrantedAuthority> authorities = jwtUtils.getAuthorityFromJwtToken(jwt);
-
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userId, username, authorities);

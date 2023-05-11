@@ -23,8 +23,14 @@ public class OptionDetail {
     private String optionDetailName;
 
     @Column(name = "option_detail_price", nullable = false)
-    private String optionDetailPrice;
+    private int optionDetailPrice;
 
     @Column(name = "option_detail_quantity", nullable = false)
-    private String optionDetailQuantity;
+    private int optionDetailQuantity;
+
+    public OptionDetail(String optionDetailName, int optionDetailPrice, int optionDetailQuantity) {
+        this.optionDetailName = optionDetailName;
+        this.optionDetailPrice = optionDetailPrice;
+        this.optionDetailQuantity = optionDetailQuantity;
+    }
 }

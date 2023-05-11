@@ -3,9 +3,11 @@ package com.internproject.productservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.swing.text.html.Option;
 import java.util.List;
 
 @Entity
@@ -13,6 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ProductOption {
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -23,7 +26,12 @@ public class ProductOption {
     @Column(name = "option_name", nullable = false)
     private String optionName;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "option_id", nullable = false)
     private List<OptionDetail> optionDetails;
+
+    public ProductOption(String optionName, List<OptionDetail> optionDetails) {
+        this.optionName = optionName;
+        this.optionDetails = optionDetails;
+    }
 }
