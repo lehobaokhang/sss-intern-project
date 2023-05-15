@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedQuery(name = "Product.updateIsDeleted", query = "UPDATE Product p SET p.deleted = :deleted WHERE p.id = :productId")
+@NamedQuery(name = "Product.deleteProduct", query = "UPDATE Product p SET p.deleted = True WHERE p.id = :productId")
 public class Product {
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -24,8 +25,10 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "product_image", columnDefinition = "text")
-    private String productImage;
+    @Lob
+    @Column(name = "product_image")
+    @Type(type="org.hibernate.type.BinaryType")
+    private byte[] productImage;
 
     @Column(name = "product_size", nullable = false)
     private String productSize;
@@ -37,7 +40,7 @@ public class Product {
     private String sellerId;
 
     @ManyToOne()
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")

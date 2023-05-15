@@ -2,12 +2,15 @@ package com.internproject.productservice.mapper;
 
 
 import com.internproject.productservice.dto.CreateProductRequest;
+import com.internproject.productservice.dto.ProductDTO;
+import com.internproject.productservice.dto.OptionDetailDTO;
 import com.internproject.productservice.entity.OptionDetail;
 import com.internproject.productservice.entity.Product;
 import com.internproject.productservice.entity.ProductOption;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ProductMapper {
@@ -37,5 +40,24 @@ public class ProductMapper {
         product.setOptions(productOptions);
 
         return product;
+    }
+
+    public ProductDTO toDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setProductImage(product.getProductImage());
+        productDTO.setProductWeight(product.getProductWeight());
+        productDTO.setProductName(product.getProductName());
+        productDTO.setProductSize(product.getProductSize());
+
+        Map<String, Set<OptionDetailDTO>> options = product.getOptions().stream()
+                .collect(Collectors.toMap(
+                    option -> option.getOptionName(),
+                    optionDetails -> optionDetails.getOptionDetails().stream()
+                            .map(optionDetail -> new OptionDetailDTO(optionDetail.getId(), optionDetail.getOptionDetailName(), optionDetail.getOptionDetailPrice(), optionDetail.getOptionDetailQuantity()))
+                            .collect(Collectors.toSet())
+                ));
+        productDTO.setOptions(options);
+        return productDTO;
     }
 }

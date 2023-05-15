@@ -1,21 +1,20 @@
 package com.internproject.productservice.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.Map;
 import java.util.Set;
 
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString
-public class CreateProductRequest {
+@NoArgsConstructor
+public class ProductDTO {
+    private String id;
     private String productName;
+    private byte[] productImage;
     private String productSize;
     private int productWeight;
-    private String category;
     private Map<String, Set<OptionDetailDTO>> options;
 }
