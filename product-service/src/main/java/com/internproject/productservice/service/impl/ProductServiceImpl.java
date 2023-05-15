@@ -1,6 +1,6 @@
 package com.internproject.productservice.service.impl;
 
-import com.internproject.productservice.dto.CreateProductRequest;
+import com.internproject.productservice.dto.CreateUpdateProductRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.entity.Category;
 import com.internproject.productservice.entity.Product;
@@ -23,7 +23,7 @@ public class ProductServiceImpl implements IProductService {
     private ICategoryRepository categoryRepository;
 
     @Override
-    public Product saveProduct(CreateProductRequest request, String id) {
+    public Product saveProduct(CreateUpdateProductRequest request, String id) {
         Product product = ProductMapper.getInstance().toProduct(request);
         product.setSellerId(id);
 
@@ -75,5 +75,29 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public void deleteProduct(String id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public Product updateProduct(String id, CreateUpdateProductRequest createUpdateProductRequest) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (!productOptional.isPresent()) {
+            return null;
+        }
+
+        Product product = ProductMapper.getInstance().toProduct(createUpdateProductRequest);
+        product.setId(id);
+
+        Optional<Category> categoryOptional = categoryRepository.findById(createUpdateProductRequest.getCategory());
+        if (!categoryOptional.isPresent()) {
+            return null;
+        }
+
+        product.setCategory(categoryOptional.get());
+        product.setSellerId(productOptional.get().getSellerId());
+        product.setProductImage(productOptional.get().getProductImage());
+        product.setDeleted(productOptional.get().isDeleted());
+        productRepository.save(product);
+
+        return product;
     }
 }

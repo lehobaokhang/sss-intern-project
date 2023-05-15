@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CreateProductRequest {
+public class CreateUpdateProductRequest {
     private String productName;
     private String productSize;
     private int productWeight;

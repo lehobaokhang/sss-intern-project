@@ -16,5 +16,6 @@ public class ProductDTO {
     private byte[] productImage;
     private String productSize;
     private int productWeight;
+    private String category;
     private Map<String, Set<OptionDetailDTO>> options;
 }

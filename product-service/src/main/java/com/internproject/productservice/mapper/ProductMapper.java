@@ -1,7 +1,7 @@
 package com.internproject.productservice.mapper;
 
 
-import com.internproject.productservice.dto.CreateProductRequest;
+import com.internproject.productservice.dto.CreateUpdateProductRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.dto.OptionDetailDTO;
 import com.internproject.productservice.entity.OptionDetail;
@@ -23,7 +23,7 @@ public class ProductMapper {
         return INSTANCE;
     }
 
-    public Product toProduct(CreateProductRequest request) {
+    public Product toProduct(CreateUpdateProductRequest request) {
         Product product = new Product();
 
         product.setProductName(request.getProductName());
@@ -49,6 +49,7 @@ public class ProductMapper {
         productDTO.setProductWeight(product.getProductWeight());
         productDTO.setProductName(product.getProductName());
         productDTO.setProductSize(product.getProductSize());
+        productDTO.setCategory(product.getCategory().getCategoryName());
 
         Map<String, Set<OptionDetailDTO>> options = product.getOptions().stream()
                 .collect(Collectors.toMap(

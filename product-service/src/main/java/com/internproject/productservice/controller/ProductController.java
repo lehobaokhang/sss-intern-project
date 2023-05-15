@@ -1,7 +1,7 @@
 package com.internproject.productservice.controller;
 
 import com.internproject.productservice.config.JwtUtils;
-import com.internproject.productservice.dto.CreateProductRequest;
+import com.internproject.productservice.dto.CreateUpdateProductRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.entity.Product;
 import com.internproject.productservice.service.IProductService;
@@ -28,7 +28,7 @@ public class ProductController {
     @PostMapping
     @ApiOperation(value = "Create new product")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<?> saveProduct(@RequestBody CreateProductRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> saveProduct(@RequestBody CreateUpdateProductRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String id = jwtUtils.getIdFromJwtToken(jwt);
 
@@ -52,19 +52,19 @@ public class ProductController {
     @ApiOperation(value = "Get product by id")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable String id) {
         ProductDTO productResponse = productService.getProductById(id);
-
-
-
         return (productResponse != null)
                 ? ResponseEntity.ok(productResponse)
                 : ResponseEntity.notFound().build();
     }
 
-//    @PutMapping("/{id}")
-//    @ApiOperation(value = "Update product detail")
-//    public ResponseEntity<?> updateProduct() {
-//        return null;
-//    }
+    @PutMapping("/{id}")
+    @ApiOperation(value = "Update product detail")
+    public ResponseEntity<?> updateProduct(@RequestBody CreateUpdateProductRequest request, @PathVariable String id) {
+        Product product = productService.updateProduct(id, request);
+        return product != null
+                ? ResponseEntity.ok("Product has been updated")
+                : ResponseEntity.notFound().build();
+    }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete product")
