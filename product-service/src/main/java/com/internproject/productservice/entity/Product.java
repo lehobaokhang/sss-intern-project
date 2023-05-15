@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedQuery(name = "Product.updateIsDeleted", query = "UPDATE Product p SET p.deleted = :deleted WHERE p.id = :productId")
 public class Product {
     @Id
     @GeneratedValue(generator = "uuid2")
