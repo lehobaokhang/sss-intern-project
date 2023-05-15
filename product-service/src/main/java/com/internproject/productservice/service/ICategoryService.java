@@ -2,7 +2,6 @@ package com.internproject.productservice.service;
 
 import com.internproject.productservice.dto.CategoryGetAllResponse;
 import com.internproject.productservice.dto.UpdateCategoryRequest;
-import com.internproject.productservice.entity.Category;
 
 import java.util.List;
 

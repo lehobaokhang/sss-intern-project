@@ -1,7 +1,6 @@
 package com.internproject.productservice.mapper;
 
 import com.internproject.productservice.dto.CategoryGetAllResponse;
-import com.internproject.productservice.dto.UpdateCategoryRequest;
 import com.internproject.productservice.entity.Category;
 
 public class CategoryMapper {

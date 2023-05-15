@@ -7,7 +7,6 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.swing.text.html.Option;
 import java.util.List;
 
 @Entity

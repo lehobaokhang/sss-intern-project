@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.internproject.productservice.dto.CategoryGetAllResponse;
 import com.internproject.productservice.dto.UpdateCategoryRequest;
-import com.internproject.productservice.entity.Category;
 import com.internproject.productservice.service.ICategoryService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -4,7 +4,6 @@ import com.internproject.userservice.dto.UserUpdateRequest;
 import com.internproject.userservice.entity.UserDetail;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 public class UserMapper {
     private static UserMapper INSTANCE;

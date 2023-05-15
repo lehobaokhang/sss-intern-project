@@ -8,7 +8,6 @@ import com.internproject.userservice.config.UserDetailsImpl;
 import com.internproject.userservice.dto.LoginRequest;
 import com.internproject.userservice.dto.LoginResponse;
 import com.internproject.userservice.dto.RegisterRequest;
-import com.internproject.userservice.dto.TokenVerifyResponse;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.config.AuthEntryPointJwt;
 import com.internproject.userservice.jwt.JwtUtils;
