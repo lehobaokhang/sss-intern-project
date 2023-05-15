@@ -10,6 +10,7 @@ import com.internproject.productservice.repository.IProductRepository;
 import com.internproject.productservice.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
@@ -38,10 +39,15 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public boolean saveProductImage(String id, MultipartFile productImage) {
+    public boolean saveProductImage(String id, MultipartFile productImage, String userId) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
+
+            if (userId != product.getSellerId()) {
+                return false;
+            }
+
             try {
                 byte[] productImageData = productImage.getBytes();
                 product.setProductImage(productImageData);
@@ -73,14 +79,19 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public void deleteProduct(String id) {
-        productRepository.deleteById(id);
+    @Transactional
+    public void deleteProduct(String id, String userId) {
+        productRepository.deleteById(id, userId);
     }
 
     @Override
-    public Product updateProduct(String id, CreateUpdateProductRequest createUpdateProductRequest) {
+    public Product updateProduct(String id, CreateUpdateProductRequest createUpdateProductRequest, String userId) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (!productOptional.isPresent()) {
+            return null;
+        }
+
+        if (!productOptional.get().getSellerId().equals(userId)) {
             return null;
         }
 

@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 public interface IProductRepository extends JpaRepository<Product, String> {
     @Modifying
     @Query(name = "Product.deleteProduct")
-    void deleteById(@Param("productId") String productId);
+    void deleteById(@Param("productId") String productId, @Param("sellerId") String userId);
 }

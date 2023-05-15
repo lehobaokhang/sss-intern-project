@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedQuery(name = "Product.deleteProduct", query = "UPDATE Product p SET p.deleted = True WHERE p.id = :productId")
+@NamedQuery(name = "Product.deleteProduct", query = "UPDATE Product p SET p.deleted = True WHERE p.id = :productId AND p.sellerId = :sellerId")
 public class Product {
     @Id
     @GeneratedValue(generator = "uuid2")

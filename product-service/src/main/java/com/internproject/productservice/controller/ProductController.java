@@ -41,8 +41,12 @@ public class ProductController {
     @PostMapping("/add-product-image")
     @ApiOperation(value = "Add or update image for product")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<String> addProductImage(@RequestParam("productImage") MultipartFile productImage, @RequestParam("id") String id) {
-        boolean isSuccess = productService.saveProductImage(id, productImage);
+    public ResponseEntity<String> addProductImage(@RequestParam("productImage") MultipartFile productImage, @RequestParam("id") String id,
+                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
+        String userId = jwtUtils.getIdFromJwtToken(jwt);
+
+        boolean isSuccess = productService.saveProductImage(id, productImage, userId);
         return isSuccess
                 ? ResponseEntity.ok("Update image for product is successfully")
                 : ResponseEntity.notFound().build();
@@ -59,8 +63,13 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @ApiOperation(value = "Update product detail")
-    public ResponseEntity<?> updateProduct(@RequestBody CreateUpdateProductRequest request, @PathVariable String id) {
-        Product product = productService.updateProduct(id, request);
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<?> updateProduct(@RequestBody CreateUpdateProductRequest request, @PathVariable String id,
+                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
+        String userId = jwtUtils.getIdFromJwtToken(jwt);
+
+        Product product = productService.updateProduct(id, request, userId);
         return product != null
                 ? ResponseEntity.ok("Product has been updated")
                 : ResponseEntity.notFound().build();
@@ -69,8 +78,12 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete product")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<?> deleteProduct(@PathVariable String id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<?> deleteProduct(@PathVariable String id,
+                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
+        String userId = jwtUtils.getIdFromJwtToken(jwt);
+
+        productService.deleteProduct(id, userId);
         return ResponseEntity.ok("Delete successfully");
     }
 
