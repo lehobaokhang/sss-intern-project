@@ -56,4 +56,11 @@ public class CartController {
                 ? ResponseEntity.ok("Update cart successfully")
                 : ResponseEntity.badRequest().body("Can not update product to cart");
     }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Delete cart")
+    public ResponseEntity<String> deleteCart(@PathVariable String id) {
+        cartService.deleteCart(id);
+        return ResponseEntity.ok("Delete cart successfully");
+    }
 }

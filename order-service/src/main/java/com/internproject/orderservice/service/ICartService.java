@@ -12,4 +12,6 @@ public interface ICartService {
     public Cart updateCart(AddAndUpdateCartDTO updateCartDTO, String userId);
 
     public List<CartDTO> getAll(String userId);
+
+    public void deleteCart(String id);
 }
