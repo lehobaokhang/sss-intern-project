@@ -29,3 +29,14 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+---
+logging:
+  level:
+    com.internproject.orderservice.service: DEBUG
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: BASIC
+      IProductService:
+        loggerLevel: FULL
