@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AddToCartDTO {
+public class AddAndUpdateCartDTO {
     @NotNull
     private String productId;
 

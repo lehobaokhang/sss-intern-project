@@ -38,5 +38,8 @@ feign:
     config:
       default:
         loggerLevel: BASIC
+        fallback: com.internproject.orderservice.fallback.ProductServiceFallback
       IProductService:
         loggerLevel: FULL
+  circuitbreaker:
+    enabled: true

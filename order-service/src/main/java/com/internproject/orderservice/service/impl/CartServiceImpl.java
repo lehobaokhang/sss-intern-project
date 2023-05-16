@@ -1,6 +1,7 @@
 package com.internproject.orderservice.service.impl;
 
-import com.internproject.orderservice.dto.AddToCartDTO;
+import com.internproject.orderservice.dto.AddAndUpdateCartDTO;
+import com.internproject.orderservice.dto.CartDTO;
 import com.internproject.orderservice.dto.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.mapper.CartMapper;
@@ -10,7 +11,9 @@ import com.internproject.orderservice.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements ICartService {
@@ -21,7 +24,7 @@ public class CartServiceImpl implements ICartService {
     private ICartRepository cartRepository;
 
     @Override
-    public Cart addCart(AddToCartDTO addToCartDTO, String userId) {
+    public Cart addCart(AddAndUpdateCartDTO addToCartDTO, String userId) {
         ProductDTO productDTO = productService.getProduct(addToCartDTO.getProductId());
 
         if (productDTO == null) {
@@ -41,5 +44,24 @@ public class CartServiceImpl implements ICartService {
         }
 
         return cart;
+    }
+
+    @Override
+    public Cart updateCart(AddAndUpdateCartDTO addToCartDTO, String userId) {
+        return null;
+    }
+
+    @Override
+    public List<CartDTO> getAll(String userId) {
+        List<Cart> carts = cartRepository.findAll();
+
+        List<CartDTO> cartDTOs = carts.stream().
+                map(cart -> {
+                    ProductDTO productDTO = productService.getProduct(cart.getProductId());
+                    return CartMapper.getInstance().toDTO(cart, productDTO);
+                }).
+                collect(Collectors.toList());
+
+        return cartDTOs;
     }
 }
