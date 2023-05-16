@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.internproject.userservice.config.UserDetailsImpl;
+import com.internproject.userservice.dto.ChangePasswordRequest;
 import com.internproject.userservice.dto.LoginRequest;
 import com.internproject.userservice.dto.LoginResponse;
 import com.internproject.userservice.dto.RegisterRequest;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -92,6 +94,19 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponse(jwt,
                 userDetails.getId(),
                 Iterables.get(userDetails.getAuthorities(), 0).toString()));
+    }
+
+    @PostMapping("/change-password")
+    @ApiOperation(value = "Change password base on old password and userId")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
+        String id = jwtUtils.getIdFromJwtToken(jwt);
+
+        boolean isSuccess = userService.changePassword(changePasswordRequest, id);
+
+        return isSuccess
+                ? ResponseEntity.ok("Password has ben changed")
+                : ResponseEntity.badRequest().body("Can not change password");
     }
 
 }

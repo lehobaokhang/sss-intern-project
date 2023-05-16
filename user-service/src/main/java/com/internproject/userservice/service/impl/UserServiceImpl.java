@@ -137,4 +137,32 @@ public class UserServiceImpl implements IUserService {
 
         return null;
     }
+
+    @Override
+    public boolean changePassword(ChangePasswordRequest changePasswordRequest, String id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            return false;
+        }
+
+        User user = userOptional.get();
+        if (!user.getId().equals(id)) {
+            return false;
+        }
+
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
+            return false;
+        }
+
+        if (!bCryptPasswordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            return false;
+        }
+        
+        String newPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword());
+        user.setPassword(newPassword);
+        userRepository.save(user);
+
+        return true;
+    }
 }

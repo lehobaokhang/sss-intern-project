@@ -16,4 +16,6 @@ public interface IUserService extends UserDetailsService {
     public boolean deleteUser(String id);
 
     public User updateUser(String id, UserUpdateRequest userUpdateRequest);
+
+    boolean changePassword(ChangePasswordRequest changePasswordRequest, String id);
 }
