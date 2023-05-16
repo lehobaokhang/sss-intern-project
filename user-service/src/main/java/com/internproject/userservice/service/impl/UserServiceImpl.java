@@ -158,7 +158,7 @@ public class UserServiceImpl implements IUserService {
         if (!bCryptPasswordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
             return false;
         }
-        
+
         String newPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword());
         user.setPassword(newPassword);
         userRepository.save(user);
