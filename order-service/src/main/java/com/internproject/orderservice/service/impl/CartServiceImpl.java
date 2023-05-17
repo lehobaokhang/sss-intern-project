@@ -47,8 +47,18 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public Cart updateCart(AddAndUpdateCartDTO addToCartDTO, String userId) {
-        return null;
+    public Cart updateCart(AddAndUpdateCartDTO updateCartDTO, String userId) {
+        Optional<Cart> cartOptional = cartRepository.findByUserIdAndProductId(userId, updateCartDTO.getProductId());
+
+        if (!cartOptional.isPresent()) {
+            return null;
+        }
+
+        Cart cart = cartOptional.get();
+        cart.setQuantity(updateCartDTO.getQuantity());
+        cartRepository.save(cart);
+
+        return cart;
     }
 
     @Override
