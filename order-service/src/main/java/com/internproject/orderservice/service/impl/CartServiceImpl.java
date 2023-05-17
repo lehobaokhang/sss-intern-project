@@ -1,8 +1,9 @@
 package com.internproject.orderservice.service.impl;
 
-import com.internproject.orderservice.dto.AddAndUpdateCartDTO;
-import com.internproject.orderservice.dto.CartDTO;
-import com.internproject.orderservice.dto.ProductDTO;
+import com.internproject.orderservice.dto.cart.AddCartDTO;
+import com.internproject.orderservice.dto.cart.CartDTO;
+import com.internproject.orderservice.dto.product.OptionDetailDTO;
+import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.mapper.CartMapper;
 import com.internproject.orderservice.repository.ICartRepository;
@@ -11,8 +12,10 @@ import com.internproject.orderservice.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,40 +27,55 @@ public class CartServiceImpl implements ICartService {
     private ICartRepository cartRepository;
 
     @Override
-    public Cart addCart(AddAndUpdateCartDTO addToCartDTO, String userId) {
+    public Cart addCart(AddCartDTO addToCartDTO, String userId) {
         ProductDTO productDTO = productService.getProduct(addToCartDTO.getProductId());
 
         if (productDTO == null) {
             return null;
         }
 
-        Cart cart;
-        Optional<Cart> cartOptional = cartRepository.findByUserIdAndProductId(userId, productDTO.getId());
-        if (cartOptional.isPresent()) {
-            cart = cartOptional.get();
-            cart.setQuantity(cart.getQuantity() + addToCartDTO.getQuantity());
-            cartRepository.save(cart);
-        } else {
-            cart = CartMapper.getInstance().toEntity(addToCartDTO);
-            cart.setUserId(userId);
-            cartRepository.save(cart);
-        }
+        boolean checkDetailId = Arrays.stream(addToCartDTO.getDetails())
+                .allMatch(id -> productDTO.getOptions().values().stream()
+                        .flatMap(Set::stream)
+                        .anyMatch(optionDetail -> optionDetail.getId().equals(id))
+                );
 
-        return cart;
-    }
+        long isSameOption = productDTO.getOptions().values().stream()
+                .filter(optionDetailDTOS -> Arrays.stream(addToCartDTO.getDetails())
+                        .filter(id -> optionDetailDTOS.stream()
+                                .anyMatch(optionDetail -> optionDetail.getId().equals(id)))
+                        .count() >= 2).count();
 
-    @Override
-    public Cart updateCart(AddAndUpdateCartDTO updateCartDTO, String userId) {
-        Optional<Cart> cartOptional = cartRepository.findByUserIdAndProductId(userId, updateCartDTO.getProductId());
+        String[] details = productDTO.getOptions().values().stream()
+                .flatMap(Set::stream)
+                .filter(optionDetail -> Arrays.stream(addToCartDTO.getDetails()).anyMatch(id -> id.equals(optionDetail.getId())))
+                .map(OptionDetailDTO::getOption_detail_name)
+                .toArray(String[]::new);
 
-        if (!cartOptional.isPresent()) {
+        int price = productDTO.getOptions().values().stream()
+                .flatMap(Set::stream)
+                .filter(optionDetail -> Arrays.stream(addToCartDTO.getDetails()).anyMatch(id -> id.equals(optionDetail.getId())))
+                .mapToInt(OptionDetailDTO::getOption_detail_price)
+                .sum();
+
+        if (isSameOption > 0) {
             return null;
         }
 
-        Cart cart = cartOptional.get();
-        cart.setQuantity(updateCartDTO.getQuantity());
-        cartRepository.save(cart);
+        if (!checkDetailId) {
+            return null;
+        }
 
+        if (productDTO.getOptions().size() != addToCartDTO.getDetails().length) {
+            return null;
+        }
+
+        Cart cart = CartMapper.getInstance().toEntity(addToCartDTO);
+        cart.setUserId(userId);
+        cart.setDetails(details);
+        cart.setPrice(price);
+
+        cartRepository.save(cart);
         return cart;
     }
 
@@ -65,12 +83,10 @@ public class CartServiceImpl implements ICartService {
     public List<CartDTO> getAll(String userId) {
         List<Cart> carts = cartRepository.findAll();
 
-        List<CartDTO> cartDTOs = carts.stream().
-                map(cart -> {
-                    ProductDTO productDTO = productService.getProduct(cart.getProductId());
-                    return CartMapper.getInstance().toDTO(cart, productDTO);
-                }).
-                collect(Collectors.toList());
+        List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+            ProductDTO productDTO = productService.getProduct(cart.getProductId());
+            return CartMapper.getInstance().toDTO(cart, productDTO);
+        }).collect(Collectors.toList());
 
         return cartDTOs;
     }
@@ -78,5 +94,11 @@ public class CartServiceImpl implements ICartService {
     @Override
     public void deleteCart(String id) {
         cartRepository.deleteById(id);
+    }
+
+    @Override
+    public Cart getCartById(String cartId) {
+        Optional<Cart> cartOptional = cartRepository.findById(cartId);
+        return cartOptional.isPresent() ? cartOptional.get() : new Cart();
     }
 }

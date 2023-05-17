@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "cart")
@@ -25,6 +26,12 @@ public class Cart {
     @Column(name = "product_id", nullable = false)
     private String productId;
 
+    @Column(name = "details", nullable = false)
+    private String[] details;
+
     @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Column(name = "price", nullable = false)
+    private int price;
 }

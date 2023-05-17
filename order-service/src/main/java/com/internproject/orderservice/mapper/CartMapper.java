@@ -1,9 +1,13 @@
 package com.internproject.orderservice.mapper;
 
-import com.internproject.orderservice.dto.AddAndUpdateCartDTO;
-import com.internproject.orderservice.dto.CartDTO;
-import com.internproject.orderservice.dto.ProductDTO;
+import com.internproject.orderservice.dto.cart.AddCartDTO;
+import com.internproject.orderservice.dto.cart.CartDTO;
+import com.internproject.orderservice.dto.product.OptionDetailDTO;
+import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
+
+import java.util.Arrays;
+import java.util.Set;
 
 public class CartMapper {
     private static CartMapper INSTANCE;
@@ -15,7 +19,7 @@ public class CartMapper {
         return INSTANCE;
     }
 
-    public Cart toEntity(AddAndUpdateCartDTO addToCartDTO) {
+    public Cart toEntity(AddCartDTO addToCartDTO) {
         Cart cart = new Cart();
         cart.setQuantity(addToCartDTO.getQuantity());
         cart.setProductId(addToCartDTO.getProductId());
@@ -28,6 +32,8 @@ public class CartMapper {
         cartDTO.setQuantity(cart.getQuantity());
         cartDTO.setProductImage(productDTO.getProductImage());
         cartDTO.setProductName(productDTO.getProductName());
+        cartDTO.setPrice(cart.getPrice());
+        cartDTO.setDetails(cart.getDetails());
 
         return cartDTO;
     }

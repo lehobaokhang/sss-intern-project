@@ -1,6 +1,6 @@
 package com.internproject.orderservice.fallback;
 
-import com.internproject.orderservice.dto.ProductDTO;
+import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.service.IProductService;
 import org.springframework.stereotype.Component;
 

@@ -32,3 +32,6 @@ spring:
             - Path=/cart/**, /order/**
           filters:
             - JWTFilter
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 5000

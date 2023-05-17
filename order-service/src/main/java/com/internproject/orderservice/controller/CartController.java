@@ -1,8 +1,8 @@
 package com.internproject.orderservice.controller;
 
 import com.internproject.orderservice.config.JwtUtils;
-import com.internproject.orderservice.dto.AddAndUpdateCartDTO;
-import com.internproject.orderservice.dto.CartDTO;
+import com.internproject.orderservice.dto.cart.AddCartDTO;
+import com.internproject.orderservice.dto.cart.CartDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.service.ICartService;
 import io.swagger.annotations.Api;
@@ -32,7 +32,7 @@ public class CartController {
 
     @PostMapping
     @ApiOperation(value = "Add product to cart")
-    public ResponseEntity<String> addCart(@RequestBody AddAndUpdateCartDTO addToCartDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<String> addCart(@RequestBody AddCartDTO addToCartDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         Cart cart = cartService.addCart(addToCartDTO, getIdFromBearerToken(authorizationHeader));
         return cart != null
                 ? ResponseEntity.ok("Add product to cart successfully")
@@ -45,16 +45,6 @@ public class CartController {
         List<CartDTO> carts = cartService.getAll(getIdFromBearerToken(authorizationHeader));
 
         return ResponseEntity.ok(carts);
-    }
-
-    @PutMapping
-    @ApiOperation(value = "Update cart")
-    public ResponseEntity<String> updateCart(@RequestBody AddAndUpdateCartDTO updateCartDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        Cart cart = cartService.updateCart(updateCartDTO, getIdFromBearerToken(authorizationHeader));
-
-        return cart != null
-                ? ResponseEntity.ok("Update cart successfully")
-                : ResponseEntity.badRequest().body("Can not update product to cart");
     }
 
     @DeleteMapping("/{id}")

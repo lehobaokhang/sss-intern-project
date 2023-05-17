@@ -1,6 +1,6 @@
 package com.internproject.orderservice.service;
 
-import com.internproject.orderservice.dto.ProductDTO;
+import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.fallback.ProductServiceFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

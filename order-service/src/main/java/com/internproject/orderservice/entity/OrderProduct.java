@@ -21,4 +21,11 @@ public class OrderProduct {
 
     @Column(name = "product_id", nullable = false)
     private String productId;
+
+    @Column(name = "details", nullable = false)
+    private String[] details;
+
+    public OrderProduct(String productId) {
+        this.productId = productId;
+    }
 }

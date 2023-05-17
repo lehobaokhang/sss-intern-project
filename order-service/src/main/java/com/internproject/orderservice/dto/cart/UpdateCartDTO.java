@@ -1,4 +1,4 @@
-package com.internproject.orderservice.dto;
+package com.internproject.orderservice.dto.cart;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -6,9 +6,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AddAndUpdateCartDTO {
+public class UpdateCartDTO {
     @NotNull
-    private String productId;
+    private String[] details;
 
     @NotNull
     private int quantity;
