@@ -1,13 +1,8 @@
 package com.internproject.orderservice.mapper;
 
-import com.internproject.orderservice.dto.cart.AddCartDTO;
-import com.internproject.orderservice.dto.cart.CartDTO;
-import com.internproject.orderservice.dto.product.OptionDetailDTO;
+import com.internproject.orderservice.dto.cart.CartResponseDTO;
 import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
-
-import java.util.Arrays;
-import java.util.Set;
 
 public class CartMapper {
     private static CartMapper INSTANCE;
@@ -19,21 +14,25 @@ public class CartMapper {
         return INSTANCE;
     }
 
-    public Cart toEntity(AddCartDTO addToCartDTO) {
+    public Cart toEntity(ProductDTO productDTO, String userId, int quantity) {
         Cart cart = new Cart();
-        cart.setQuantity(addToCartDTO.getQuantity());
-        cart.setProductId(addToCartDTO.getProductId());
+        cart.setProductId(productDTO.getId());
+        cart.setPrice(productDTO.getPrice());
+        cart.setQuantity(quantity);
+        cart.setUserId(userId);
         return cart;
     }
 
-    public CartDTO toDTO(Cart cart, ProductDTO productDTO) {
-        CartDTO cartDTO = new CartDTO();
-        cartDTO.setCartId(cart.getId());
+    public CartResponseDTO toDTO(Cart cart, ProductDTO productDTO) {
+        CartResponseDTO cartDTO = new CartResponseDTO();
+        cartDTO.setCartId(cartDTO.getCartId());
         cartDTO.setQuantity(cart.getQuantity());
-        cartDTO.setProductImage(productDTO.getProductImage());
         cartDTO.setProductName(productDTO.getProductName());
-        cartDTO.setPrice(cart.getPrice());
-        cartDTO.setDetails(cart.getDetails());
+        cartDTO.setPrice(productDTO.getPrice());
+        cartDTO.setProductImage(productDTO.getProductImage());
+        cartDTO.setCategory(productDTO.getCategory());
+        cartDTO.setSellerId(productDTO.getSellerId());
+        cartDTO.setSellerFullName(productDTO.getSellerFullName());
 
         return cartDTO;
     }

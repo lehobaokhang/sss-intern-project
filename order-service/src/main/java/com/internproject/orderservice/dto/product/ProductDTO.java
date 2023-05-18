@@ -17,5 +17,8 @@ public class ProductDTO {
     private String productSize;
     private int productWeight;
     private String category;
-    private Map<String, Set<OptionDetailDTO>> options;
+    private int price;
+    private int quantity;
+    private String sellerId;
+    private String sellerFullName;
 }

@@ -46,7 +46,13 @@ public class Product {
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean deleted;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", nullable = false)
-    private List<ProductOption> options;
+    @Column(name = "price", nullable = false)
+    private int price;
+
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "product_id", nullable = false)
+//    private List<ProductOption> options;
 }

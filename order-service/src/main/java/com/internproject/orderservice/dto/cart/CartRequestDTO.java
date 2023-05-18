@@ -6,10 +6,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UpdateCartDTO {
-    @NotNull
-    private String[] details;
-
+public class CartRequestDTO {
+    private String productId;
     @NotNull
     private int quantity;
 }

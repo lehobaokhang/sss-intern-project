@@ -7,6 +7,7 @@ import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -65,5 +66,12 @@ public class UserController {
         userService.updateUser(id, userUpdateRequest);
 
         return ResponseEntity.ok("Update user's information successful");
+    }
+
+    @GetMapping("/get-fullname/{id}")
+    @ApiOperation(value = "Get fullname of user by user id")
+    public ResponseEntity<String> getUserFullName(@PathVariable("id") String id) {
+        String fullName = userService.getUserFullName(id);
+        return fullName != null ? ResponseEntity.ok(fullName) : ResponseEntity.notFound().build();
     }
 }

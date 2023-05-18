@@ -22,10 +22,15 @@ public class OrderProduct {
     @Column(name = "product_id", nullable = false)
     private String productId;
 
-    @Column(name = "details", nullable = false)
-    private String[] details;
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
 
-    public OrderProduct(String productId) {
+    @Column(name = "price", nullable = false)
+    private int price;
+
+    public OrderProduct(String productId, String[] details, int quantity, int price) {
         this.productId = productId;
+        this.quantity = quantity;
+        this.price = price;
     }
 }

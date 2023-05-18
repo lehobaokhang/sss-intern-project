@@ -1,7 +1,8 @@
 package com.internproject.productservice.controller;
 
 import com.internproject.productservice.config.JwtUtils;
-import com.internproject.productservice.dto.CreateUpdateProductRequest;
+import com.internproject.productservice.dto.CreateAndUpdateProductRequest;
+import com.internproject.productservice.dto.FindAllProductByIdRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.entity.Product;
 import com.internproject.productservice.service.IProductService;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @RestController
@@ -28,7 +31,7 @@ public class ProductController {
     @PostMapping
     @ApiOperation(value = "Create new product")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<?> saveProduct(@RequestBody CreateUpdateProductRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> saveProduct(@RequestBody CreateAndUpdateProductRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String id = jwtUtils.getIdFromJwtToken(jwt);
 
@@ -64,7 +67,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @ApiOperation(value = "Update product detail")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<?> updateProduct(@RequestBody CreateUpdateProductRequest request, @PathVariable String id,
+    public ResponseEntity<?> updateProduct(@RequestBody CreateAndUpdateProductRequest request, @PathVariable String id,
                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String userId = jwtUtils.getIdFromJwtToken(jwt);
@@ -85,6 +88,18 @@ public class ProductController {
 
         productService.deleteProduct(id, userId);
         return ResponseEntity.ok("Delete successfully");
+    }
+
+    @GetMapping
+    @ApiOperation(value = "Get all product")
+    public ResponseEntity<ProductDTO> getAllProduct() {
+        return null;
+    }
+
+    @GetMapping("/get-all-by-id")
+    @ApiOperation(value = "Get all product which have id in a List<String> in @RequestBody")
+    public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody FindAllProductByIdRequest request) {
+        return ResponseEntity.ok(productService.getAllById(request));
     }
 
 }

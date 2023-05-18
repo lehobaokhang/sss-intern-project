@@ -26,9 +26,6 @@ public class Cart {
     @Column(name = "product_id", nullable = false)
     private String productId;
 
-    @Column(name = "details", nullable = false)
-    private String[] details;
-
     @Column(name = "quantity", nullable = false)
     private int quantity;
 

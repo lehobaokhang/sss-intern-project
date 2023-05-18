@@ -1,8 +1,8 @@
 package com.internproject.orderservice.controller;
 
 import com.internproject.orderservice.config.JwtUtils;
-import com.internproject.orderservice.dto.cart.AddCartDTO;
-import com.internproject.orderservice.dto.cart.CartDTO;
+import com.internproject.orderservice.dto.cart.CartRequestDTO;
+import com.internproject.orderservice.dto.cart.CartResponseDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.service.ICartService;
 import io.swagger.annotations.Api;
@@ -31,8 +31,8 @@ public class CartController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Add product to cart")
-    public ResponseEntity<String> addCart(@RequestBody AddCartDTO addToCartDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @ApiOperation(value = "Add and update product to cart")
+    public ResponseEntity<String> addCart(@RequestBody CartRequestDTO addToCartDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         Cart cart = cartService.addCart(addToCartDTO, getIdFromBearerToken(authorizationHeader));
         return cart != null
                 ? ResponseEntity.ok("Add product to cart successfully")
@@ -41,9 +41,8 @@ public class CartController {
 
     @GetMapping
     @ApiOperation(value = "Get all product in cart")
-    public ResponseEntity<List<CartDTO>> getAllCart(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        List<CartDTO> carts = cartService.getAll(getIdFromBearerToken(authorizationHeader));
-
+    public ResponseEntity<List<CartResponseDTO>> getAllCart(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        List<CartResponseDTO> carts = cartService.getAll(getIdFromBearerToken(authorizationHeader));
         return ResponseEntity.ok(carts);
     }
 
@@ -52,5 +51,12 @@ public class CartController {
     public ResponseEntity<String> deleteCart(@PathVariable String id) {
         cartService.deleteCart(id);
         return ResponseEntity.ok("Delete cart successfully");
+    }
+
+    @PutMapping("/{id}")
+    @ApiOperation(value = "Update cart")
+    public ResponseEntity<String> updateCart(@RequestBody CartRequestDTO cartRequestDTO, @PathVariable String id) {
+        cartService.updateCart(id, cartRequestDTO);
+        return ResponseEntity.ok("Update Cart Successfully");
     }
 }

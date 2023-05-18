@@ -1,7 +1,7 @@
 package com.internproject.productservice.mapper;
 
 
-import com.internproject.productservice.dto.CreateUpdateProductRequest;
+import com.internproject.productservice.dto.CreateAndUpdateProductRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.dto.OptionDetailDTO;
 import com.internproject.productservice.entity.OptionDetail;
@@ -23,21 +23,24 @@ public class ProductMapper {
         return INSTANCE;
     }
 
-    public Product toProduct(CreateUpdateProductRequest request) {
+    public Product toProduct(CreateAndUpdateProductRequest request) {
         Product product = new Product();
 
         product.setProductName(request.getProductName());
         product.setProductSize(request.getProductSize());
         product.setProductWeight(request.getProductWeight());
+        product.setPrice(request.getPrice());
+        product.setQuantity(request.getQuantity());
 
-        List<ProductOption> productOptions = request.getOptions().entrySet().stream()
-                .map(option -> new ProductOption(option.getKey(),
-                        option.getValue().stream()
-                                .map(detail -> new OptionDetail(detail.getOption_detail_name(), detail.getOption_detail_price(), detail.getOption_detail_quantity()))
-                                .collect(Collectors.toList())))
-                .collect(Collectors.toList());
 
-        product.setOptions(productOptions);
+//        List<ProductOption> productOptions = request.getOptions().entrySet().stream()
+//                .map(option -> new ProductOption(option.getKey(),
+//                        option.getValue().stream()
+//                                .map(detail -> new OptionDetail(detail.getOption_detail_name(), detail.getOption_detail_price(), detail.getOption_detail_quantity()))
+//                                .collect(Collectors.toList())))
+//                .collect(Collectors.toList());
+//
+//        product.setOptions(productOptions);
 
         return product;
     }
@@ -50,15 +53,17 @@ public class ProductMapper {
         productDTO.setProductName(product.getProductName());
         productDTO.setProductSize(product.getProductSize());
         productDTO.setCategory(product.getCategory().getCategoryName());
-
-        Map<String, Set<OptionDetailDTO>> options = product.getOptions().stream()
-                .collect(Collectors.toMap(
-                    option -> option.getOptionName(),
-                    optionDetails -> optionDetails.getOptionDetails().stream()
-                            .map(optionDetail -> new OptionDetailDTO(optionDetail.getId(), optionDetail.getOptionDetailName(), optionDetail.getOptionDetailPrice(), optionDetail.getOptionDetailQuantity()))
-                            .collect(Collectors.toSet())
-                ));
-        productDTO.setOptions(options);
+        productDTO.setPrice(product.getPrice());
+        productDTO.setQuantity(product.getQuantity());
+        productDTO.setSellerId(product.getSellerId());
+//        Map<String, Set<OptionDetailDTO>> options = product.getOptions().stream()
+//                .collect(Collectors.toMap(
+//                    option -> option.getOptionName(),
+//                    optionDetails -> optionDetails.getOptionDetails().stream()
+//                            .map(optionDetail -> new OptionDetailDTO(optionDetail.getId(), optionDetail.getOptionDetailName(), optionDetail.getOptionDetailPrice(), optionDetail.getOptionDetailQuantity()))
+//                            .collect(Collectors.toSet())
+//                ));
+//        productDTO.setOptions(options);
         return productDTO;
     }
 }

@@ -18,4 +18,6 @@ public interface IUserService extends UserDetailsService {
     public User updateUser(String id, UserUpdateRequest userUpdateRequest);
 
     boolean changePassword(ChangePasswordRequest changePasswordRequest, String id);
+
+    String getUserFullName(String id);
 }

@@ -30,3 +30,17 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+---
+logging:
+  level:
+    com.internproject.productservice.service: DEBUG
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: BASIC
+        fallback: com.internproject.productservice.fallback.UserServiceFallback
+      IUserService:
+        loggerLevel: FULL
+  circuitbreaker:
+    enabled: true

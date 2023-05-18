@@ -44,7 +44,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user =userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
         UserDetailsImpl userDetails = UserDetailsImpl.build(user);
 
         return userDetails;
@@ -164,5 +164,13 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
 
         return true;
+    }
+
+    @Override
+    public String getUserFullName(String id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.isPresent()
+                ? userOptional.get().getUserDetail().getFullName()
+                : null;
     }
 }

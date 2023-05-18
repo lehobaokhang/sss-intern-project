@@ -10,4 +10,9 @@ public class ProductServiceFallback implements IProductService {
     public ProductDTO getProduct(String id) {
         return null;
     }
+
+    @Override
+    public int getQuantity(String id) {
+        return 0;
+    }
 }

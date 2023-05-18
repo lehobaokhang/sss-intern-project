@@ -1,17 +1,18 @@
 package com.internproject.orderservice.controller;
 
 import com.internproject.orderservice.config.JwtUtils;
-import com.internproject.orderservice.dto.order.OrderDTO;
+import com.internproject.orderservice.dto.order.CreateOrderRequest;
+import com.internproject.orderservice.dto.order.OrderResponse;
+import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.service.IOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -31,8 +32,17 @@ public class OrderController {
 
     @PostMapping
     @ApiOperation(value = "Create new order")
-    public ResponseEntity<?> saveOrder(OrderDTO orderDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        orderService.saveOrder(orderDTO, getIdFromBearerToken(authorizationHeader));
-        return null;
+    public ResponseEntity<String> saveOrder(@RequestBody CreateOrderRequest orderDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        Order order = orderService.saveOrder(orderDTO, getIdFromBearerToken(authorizationHeader));
+        return (order != null)
+                ? ResponseEntity.ok("Create order successfully")
+                : ResponseEntity.status(400).body("Something went wrong");
+    }
+
+    @GetMapping
+    @ApiOperation(value = "Get all order")
+    public ResponseEntity<List<OrderResponse>> getAllOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        List<OrderResponse> orders = orderService.getAll(getIdFromBearerToken(authorizationHeader));
+        return ResponseEntity.ok(orders);
     }
 }

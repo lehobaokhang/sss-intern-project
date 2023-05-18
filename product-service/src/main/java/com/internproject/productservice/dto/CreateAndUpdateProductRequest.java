@@ -5,17 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Map;
-import java.util.Set;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CreateUpdateProductRequest {
+public class CreateAndUpdateProductRequest {
     private String productName;
     private String productSize;
     private int productWeight;
     private String category;
-    private Map<String, Set<OptionDetailDTO>> options;
+    private int price;
+    private int quantity;
+
+//    private Map<String, Set<OptionDetailDTO>> options;
 }
