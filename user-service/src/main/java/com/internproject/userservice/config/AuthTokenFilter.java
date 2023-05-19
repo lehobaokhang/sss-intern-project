@@ -1,6 +1,8 @@
 package com.internproject.userservice.config;
 
 import com.internproject.userservice.jwt.JwtUtils;
+import com.internproject.userservice.service.impl.UserService;
+import io.jsonwebtoken.Claims;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +22,12 @@ import java.util.stream.Collectors;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
     private static final Logger logger = LogManager.getLogger(AuthTokenFilter.class);
-
     private final List<String> PUBLIC_URLS = List.of("/auth/login", "/auth/register", "/swagger-ui.html");
 
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,12 +45,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUsernameFromJwtToken(jwt);
-                String userId = jwtUtils.getIdFromJwtToken(jwt);
-                List<GrantedAuthority> authorities = jwtUtils.getAuthorityFromJwtToken(jwt);
+                UserDetailsImpl userDetails = (UserDetailsImpl) userService.loadUserByUsername(username);
 
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userId, username, authorities);
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
@@ -63,11 +65,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
-
         if (headerAuth != null) {
             return headerAuth.substring(7, headerAuth.length());
         }
-
         return null;
     }
 }

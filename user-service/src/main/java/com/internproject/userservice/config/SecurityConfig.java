@@ -25,7 +25,7 @@ public class SecurityConfig {
     private AuthEntryPointJwt authEntryPointJwt;
     public BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    public SecurityConfig(@Qualifier("userDetailsService")UserDetailsService userDetailsService,
+    public SecurityConfig(UserDetailsService userDetailsService,
                           AuthEntryPointJwt authEntryPointJwt,
                           BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userDetailsService;

@@ -13,12 +13,9 @@ import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private String id;
-
     private String username;
-
     @JsonIgnore
     private String password;
-
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(String id, String username, String password, Collection<? extends GrantedAuthority> authorities) {

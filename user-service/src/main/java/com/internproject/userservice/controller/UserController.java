@@ -2,12 +2,12 @@ package com.internproject.userservice.controller;
 
 import com.internproject.userservice.dto.MeDTO;
 import com.internproject.userservice.dto.UserCredential;
-import com.internproject.userservice.dto.UserUpdateRequest;
+import com.internproject.userservice.dto.request.UserUpdateRequest;
 import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.service.IUserService;
+import com.internproject.userservice.service.impl.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +17,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @Api(value = "Auth", description = "User Controller")
 public class UserController {
-    @Autowired
     private JwtUtils jwtUtils;
+    private UserService userService;
 
     @Autowired
-    private IUserService userService;
+    public UserController(JwtUtils jwtUtils,
+                          UserService userService) {
+        this.jwtUtils = jwtUtils;
+        this.userService = userService;
+    }
 
     @GetMapping
     @ApiOperation(value = "Get Information Of Current User By Bearer Token In Authorization Header")

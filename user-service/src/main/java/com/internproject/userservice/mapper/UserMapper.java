@@ -1,6 +1,6 @@
 package com.internproject.userservice.mapper;
 
-import com.internproject.userservice.dto.UserUpdateRequest;
+import com.internproject.userservice.dto.request.UserUpdateRequest;
 import com.internproject.userservice.entity.UserDetail;
 
 import java.sql.Date;

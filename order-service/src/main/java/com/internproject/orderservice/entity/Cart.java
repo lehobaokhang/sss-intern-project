@@ -9,7 +9,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cart")
+@Table(name = "cart",
+        uniqueConstraints = {@UniqueConstraint(name = "unique_cart_user_product", columnNames = {"user_id", "product_id"})})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +29,4 @@ public class Cart {
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
-
-    @Column(name = "price", nullable = false)
-    private int price;
 }

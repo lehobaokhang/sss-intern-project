@@ -25,9 +25,15 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> emailExistsException(EmailExistException e) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
+
     @ExceptionHandler(UsernameExistException.class)
     public ResponseEntity<HttpResponse> usernameExistsException(UsernameExistException e) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<HttpResponse> roleNotFoundException(RoleNotFoundException e) {
+        return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)

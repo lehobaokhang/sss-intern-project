@@ -13,13 +13,13 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
 ---
-app:
-  jwtSecret: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'
-  jwtExpirationMs: '604800000' # Expired in 7 days
+jwt:
+  secretKey: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'
+  expirationMs: '604800000' # Expired in 7 days
 ---
 eureka:
   client:

@@ -1,7 +1,7 @@
 package com.internproject.productservice.service.impl;
 
 import com.internproject.productservice.dto.CreateAndUpdateProductRequest;
-import com.internproject.productservice.dto.FindAllProductByIdRequest;
+import com.internproject.productservice.dto.GetProductsByIdsRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.entity.Category;
 import com.internproject.productservice.entity.Product;
@@ -118,8 +118,8 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllById(FindAllProductByIdRequest request) {
-        List<Product> products = productRepository.findAllById(request.getProductId());
+    public List<ProductDTO> getAllById(GetProductsByIdsRequest request) {
+        List<Product> products = productRepository.findAllById(request.getId());
         List<ProductDTO> productDTOS = products.stream().map(product -> ProductMapper.getInstance().toDTO(product)).collect(Collectors.toList());
         return productDTOS;
     }

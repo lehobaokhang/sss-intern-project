@@ -1,7 +1,7 @@
 package com.internproject.productservice.service;
 
 import com.internproject.productservice.dto.CreateAndUpdateProductRequest;
-import com.internproject.productservice.dto.FindAllProductByIdRequest;
+import com.internproject.productservice.dto.GetProductsByIdsRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.entity.Product;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,5 +19,5 @@ public interface IProductService {
 
     public Product updateProduct(String id, CreateAndUpdateProductRequest createUpdateProductRequest, String userId);
 
-    public List<ProductDTO> getAllById(FindAllProductByIdRequest request);
+    public List<ProductDTO> getAllById(GetProductsByIdsRequest request);
 }

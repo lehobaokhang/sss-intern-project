@@ -2,6 +2,7 @@ package com.internproject.orderservice.service.impl;
 
 import com.internproject.orderservice.dto.cart.CartRequestDTO;
 import com.internproject.orderservice.dto.cart.CartResponseDTO;
+import com.internproject.orderservice.dto.product.GetByIdsRequest;
 import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.mapper.CartMapper;
@@ -11,6 +12,7 @@ import com.internproject.orderservice.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,21 +31,39 @@ public class CartServiceImpl implements ICartService {
         if (productDTO == null) {
             return null;
         }
-        Cart cart = CartMapper.getInstance().toEntity(productDTO, userId, cartRequestDTO.getQuantity());
-        cartRepository.save(cart);
+        if (productDTO.getSellerId().equals(userId)) {
+            return null;
+        }
+        Cart cart = CartMapper.getInstance().toEntity(cartRequestDTO);
+        cart.setUserId(userId);
+        try {
+            cartRepository.save(cart);
+        } catch (Exception e) {
+            return null;
+        }
         return cart;
     }
 
     @Override
     public List<CartResponseDTO> getAll(String userId) {
-        List<Cart> carts = cartRepository.findAll();
+        List<Cart> carts = cartRepository.findByUserId(userId);
 
-        List<CartResponseDTO> cartDTOs = carts.stream().map(cart -> {
-            ProductDTO productDTO = productService.getProduct(cart.getProductId());
-            return CartMapper.getInstance().toDTO(cart, productDTO);
-        }).collect(Collectors.toList());
+        List<String> productIds = carts.stream().map(cart -> cart.getProductId()).collect(Collectors.toList());
+        List<ProductDTO> productDTOList = productService.getProductByIds(new GetByIdsRequest(productIds));
 
-        return cartDTOs;
+        List<CartResponseDTO> response = new ArrayList<>();
+
+        for (int i = 0; i < carts.size(); i++) {
+            CartResponseDTO cart = CartMapper.getInstance().toDTO(carts.get(i));
+            cart.setProductName(productDTOList.get(i).getProductName());
+            cart.setPrice(productDTOList.get(i).getPrice());
+            cart.setProductImage(productDTOList.get(i).getProductImage());
+            cart.setCategory(productDTOList.get(i).getCategory());
+            cart.setSellerId(productDTOList.get(i).getSellerId());
+            response.add(cart);
+        }
+
+        return response;
     }
 
     @Override

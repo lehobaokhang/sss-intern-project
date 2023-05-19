@@ -17,7 +17,6 @@ public class OrderProductMapper {
     public OrderProduct toEntity(Cart cart) {
         OrderProduct orderProduct = new OrderProduct();
         orderProduct.setProductId(cart.getProductId());
-        orderProduct.setPrice(cart.getPrice());
         orderProduct.setQuantity(cart.getQuantity());
         return orderProduct;
     }

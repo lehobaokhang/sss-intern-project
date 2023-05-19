@@ -3,6 +3,7 @@ package com.internproject.orderservice.service.impl;
 import com.internproject.orderservice.dto.order.CreateOrderRequest;
 import com.internproject.orderservice.dto.order.OrderProductResponse;
 import com.internproject.orderservice.dto.order.OrderResponse;
+import com.internproject.orderservice.dto.product.GetByIdsRequest;
 import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
@@ -38,18 +39,24 @@ public class OrderServiceImpl implements IOrderService {
         int total = 0;
         List<OrderProduct> orderProducts = new ArrayList<>();
 
-        List<Cart> carts = cartRepository.findAllById(orderDTO.getCartId());
-        for (Cart cart : carts) {
-            orderProducts.add(OrderProductMapper.getInstance().toEntity(cart));
-            total += cart.getPrice() * cart.getQuantity();
-        }
+        try {
+            List<Cart> carts = cartRepository.findAllById(orderDTO.getCartId());
 
-        order.setUserId(userId);
-        order.setOderProducts(orderProducts);
-        order.setShippingFee(0);
-        order.setPriceTotal(total);
-        orderRepository.save(order);
-        cartRepository.deleteAllById(orderDTO.getCartId());
+            for (Cart cart : carts) {
+                orderProducts.add(OrderProductMapper.getInstance().toEntity(cart));
+                ProductDTO productDTO = productService.getProduct(cart.getProductId());
+//                orderProducts.set
+            }
+
+            order.setUserId(userId);
+            order.setOderProducts(orderProducts);
+            order.setShippingFee(0);
+            order.setPriceTotal(total);
+            orderRepository.save(order);
+            cartRepository.deleteAllById(orderDTO.getCartId());
+        } catch (Exception e) {
+            return null;
+        }
         return order;
     }
 
@@ -60,8 +67,8 @@ public class OrderServiceImpl implements IOrderService {
         List<OrderResponse> orderResponses = new ArrayList<>();
         for (Order order : orders) {
             List<String> ids = order.getOderProducts().stream().map(orderProduct -> orderProduct.getProductId()).collect(Collectors.toList());
-            List<ProductDTO> products = productService.getProductByIds(ids);
-            List<OrderProductResponse> orderProductResponses = products.stream().map(productDTO -> )
+            List<ProductDTO> products = productService.getProductByIds(new GetByIdsRequest(ids));
+//            List<OrderProductResponse> orderProductResponses = products.stream().map(productDTO -> )
         }
 
         return orderResponses;

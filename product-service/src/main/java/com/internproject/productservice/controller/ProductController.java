@@ -2,7 +2,7 @@ package com.internproject.productservice.controller;
 
 import com.internproject.productservice.config.JwtUtils;
 import com.internproject.productservice.dto.CreateAndUpdateProductRequest;
-import com.internproject.productservice.dto.FindAllProductByIdRequest;
+import com.internproject.productservice.dto.GetProductsByIdsRequest;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.entity.Product;
 import com.internproject.productservice.service.IProductService;
@@ -96,9 +96,9 @@ public class ProductController {
         return null;
     }
 
-    @GetMapping("/get-all-by-id")
+    @PostMapping("/get-all-by-id")
     @ApiOperation(value = "Get all product which have id in a List<String> in @RequestBody")
-    public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody FindAllProductByIdRequest request) {
+    public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody GetProductsByIdsRequest request) {
         return ResponseEntity.ok(productService.getAllById(request));
     }
 

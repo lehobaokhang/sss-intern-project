@@ -1,4 +1,4 @@
-package com.internproject.userservice.dto;
+package com.internproject.userservice.dto.request;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;

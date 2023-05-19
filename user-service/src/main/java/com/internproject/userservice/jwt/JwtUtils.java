@@ -11,27 +11,24 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
     private static final Logger logger = LogManager.getLogger(JwtUtils.class);
-
-    @Value("${app.jwtSecret}")
+    @Value("${jwt.secretKey}")
     private String jwtSecret;
-
-    @Value("${app.jwtExpirationMs}")
+    @Value("${jwt.expirationMs}")
     private long jwtExpirationMs;
-
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrinciple = (UserDetailsImpl) authentication.getPrincipal();
 
+        Map<String, Object> claims = setClaims(userPrinciple);
+
         String jwtToken = Jwts.builder()
                 .setSubject(userPrinciple.getId())
-                .claim("username", userPrinciple.getUsername())
-                .claim("role", Iterables.get(userPrinciple.getAuthorities(), 0).toString())
+                .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -40,17 +37,27 @@ public class JwtUtils {
         return jwtToken;
     }
 
+    private Map<String, Object> setClaims(UserDetailsImpl userDetails) {
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userDetails.getId());
+        claims.put("username", userDetails.getUsername());
+        claims.put("roles", roles);
+        return claims;
+    }
+
+    public Claims getAllClaimsFromJwt(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    }
+
     public String getUsernameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("username", String.class);
     }
 
     public String getIdFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public List<GrantedAuthority> getAuthorityFromJwtToken(String token) {
-        String role = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("role", String.class);
-        return Arrays.asList(new SimpleGrantedAuthority(role));
     }
 
     public boolean validateJwtToken(String authToken) {
