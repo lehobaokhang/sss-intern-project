@@ -3,6 +3,7 @@ package com.internproject.userservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.internproject.userservice.dto.RoleDTO;
 import com.internproject.userservice.dto.request.ChangePasswordRequest;
 import com.internproject.userservice.dto.request.LoginRequest;
 import com.internproject.userservice.dto.request.RegisterRequest;
@@ -80,6 +81,16 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
         return ResponseEntity.ok(jwt);
     }
+
+    @PutMapping("/add-user-role/{id}")
+    @ApiOperation(value = "Admin will add new role for user")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> addRoleForUser(@PathVariable("id") String userId,
+                                                 @RequestBody RoleDTO roleDTO) {
+        userService.addRoleForUser(userId, roleDTO);
+        return ResponseEntity.ok("Add role for user successful");
+    }
+
 
     //need to send email for confirm
     @PostMapping("/change-password")

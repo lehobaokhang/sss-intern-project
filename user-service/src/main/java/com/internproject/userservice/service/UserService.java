@@ -134,6 +134,21 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public void addRoleForUser(String id, RoleDTO roleDTO) {
+        Optional<User> userOptional = userRepository.findById(id);
+        Optional<Role> roleOptional = roleRepository.findByRoleName(roleDTO.getRoleName());
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException("Can not find any user with id: " + id);
+        }
+        if (!roleOptional.isPresent()) {
+            throw new RoleNotFoundException("Can not find any role with role's name: " + roleDTO.getRoleName());
+        }
+        User user = userOptional.get();
+        Role role = roleOptional.get();
+        user.addRole(role);
+        userRepository.save(user);
+    }
+
     public boolean changePassword(ChangePasswordRequest changePasswordRequest, String id) {
         Optional<User> userOptional = userRepository.findById(id);
 
