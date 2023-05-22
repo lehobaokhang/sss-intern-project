@@ -3,13 +3,13 @@ package com.internproject.userservice.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@NoArgsConstructor
 @Data
 @AllArgsConstructor
-public class MeDTO {
+@NoArgsConstructor
+@ToString
+public class RoleDTO {
     private String id;
-    private String email;
-    private String fullName;
-    private String role;
+    private String roleName;
 }

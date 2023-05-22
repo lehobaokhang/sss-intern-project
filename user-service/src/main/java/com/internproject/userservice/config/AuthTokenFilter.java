@@ -1,13 +1,11 @@
 package com.internproject.userservice.config;
 
 import com.internproject.userservice.jwt.JwtUtils;
-import com.internproject.userservice.service.impl.UserService;
-import io.jsonwebtoken.Claims;
+import com.internproject.userservice.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;

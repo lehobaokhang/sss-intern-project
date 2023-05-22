@@ -1,6 +1,5 @@
 package com.internproject.userservice.jwt;
 
-import com.google.common.collect.Iterables;
 import com.internproject.userservice.config.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.apache.logging.log4j.LogManager;
@@ -8,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -57,7 +55,7 @@ public class JwtUtils {
     }
 
     public String getIdFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("userId", String.class);
     }
 
     public boolean validateJwtToken(String authToken) {

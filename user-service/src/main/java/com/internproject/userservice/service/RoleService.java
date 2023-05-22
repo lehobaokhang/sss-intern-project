@@ -1,17 +1,15 @@
-package com.internproject.userservice.service.impl;
+package com.internproject.userservice.service;
 
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.repository.IRoleRepository;
-import com.internproject.userservice.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RoleService implements IRoleService {
+public class RoleService {
     @Autowired
     private IRoleRepository roleRepository;
 
-    @Override
     public void addNewRole(String roleName) {
         Role role = new Role();
         role.setRoleName(roleName);

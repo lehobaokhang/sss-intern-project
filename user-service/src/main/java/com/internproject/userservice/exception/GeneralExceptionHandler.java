@@ -45,4 +45,14 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> badCredentialsException(BadCredentialsException e) {
         return createHttpResponse(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException e) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(DoOnOtherUserInformationException.class)
+    public ResponseEntity<HttpResponse> changeOtherUserInformationException(DoOnOtherUserInformationException e) {
+        return createHttpResponse(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
 }

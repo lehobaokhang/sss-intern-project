@@ -1,18 +1,15 @@
-package com.internproject.userservice.service.impl;
+package com.internproject.userservice.service;
 
 import com.internproject.userservice.config.UserDetailsImpl;
 import com.internproject.userservice.dto.*;
 import com.internproject.userservice.dto.request.ChangePasswordRequest;
 import com.internproject.userservice.dto.request.RegisterRequest;
-import com.internproject.userservice.dto.request.UserUpdateRequest;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.entity.UserDetail;
-import com.internproject.userservice.exception.EmailExistException;
-import com.internproject.userservice.exception.RoleNotFoundException;
-import com.internproject.userservice.exception.UsernameExistException;
+import com.internproject.userservice.exception.*;
 import com.internproject.userservice.jwt.JwtUtils;
-import com.internproject.userservice.mapper.UserMapper;
+import com.internproject.userservice.mapper.UserMapstruct;
 import com.internproject.userservice.repository.IRoleRepository;
 import com.internproject.userservice.repository.IUserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -34,17 +31,20 @@ public class UserService implements UserDetailsService {
     private IRoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JwtUtils jwtUtils;
+    private UserMapstruct userMapstruct;
     private static final Logger logger = LogManager.getLogger(UserService.class);
 
     @Autowired
     public UserService(IUserRepository userRepository,
                        IRoleRepository roleRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       JwtUtils jwtUtils) {
+                       JwtUtils jwtUtils,
+                       UserMapstruct userMapstruct) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtUtils = jwtUtils;
+        this.userMapstruct = userMapstruct;
     }
 
     @Override
@@ -88,53 +88,50 @@ public class UserService implements UserDetailsService {
         return Optional.of(newUser);
     }
 
-    public MeDTO getMe(String username) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-
+    public UserDTO getMe(String userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            return new MeDTO(user.getId(), user.getEmail(), user.getUserDetail().getFullName(), user.getRoles().iterator().next().getRoleName());
+            return userMapstruct.toUserDTO(user);
+        } else {
+            throw new UserNotFoundException("User not found");
         }
-
-        return null;
     }
 
-    public UserCredential getUserById(String id) {
+    public UserDTO getUserById(String id) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            return new UserCredential(user.getId(),
-                    user.getUserDetail().getFullName(),
-                    user.getUserDetail().isGender(),
-                    user.getUserDetail().getDob(),
-                    user.getCreated_at());
+            return userMapstruct.toUserDTO(user);
+        } else {
+            throw new UserNotFoundException("Can not find any user with id: " + id);
         }
-
-        return null;
     }
 
-    public boolean deleteUser(String id) {
-        userRepository.deleteById(id);
+    public boolean deleteUser(String userId, String idFromToken) {
+        if (!checkUserId(userId, idFromToken)) {
+            throw new DoOnOtherUserInformationException("Can not delete another user's account");
+        }
+        userRepository.deleteById(userId);
         return true;
     }
 
-    public User updateUser(String id, UserUpdateRequest userUpdateRequest) {
-        UserDetail userDetail = UserMapper.getInstance().toUserDetail(userUpdateRequest);
-
-        Optional<User> userOptional = userRepository.findById(id);
-
+    public User updateUser(String userId, String idFromToken, UserDetailDTO userDetailDTO) {
+        if (!checkUserId(userId, idFromToken)) {
+            throw new DoOnOtherUserInformationException("Cannot change other users' information");
+        }
+        UserDetail newUserDetail = userMapstruct.toUserDetail(userDetailDTO);
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-
-            userDetail.setId(user.getUserDetail().getId());
-            user.setUserDetail(userDetail);
+            newUserDetail.setId(user.getUserDetail().getId());
+            user.setUserDetail(newUserDetail);
             userRepository.save(user);
-
             return user;
+        } else {
+            throw new UserNotFoundException("Can not find user with id: " + userId + " for update");
         }
-
-        return null;
     }
 
     public boolean changePassword(ChangePasswordRequest changePasswordRequest, String id) {
@@ -169,5 +166,12 @@ public class UserService implements UserDetailsService {
         return userOptional.isPresent()
                 ? userOptional.get().getUserDetail().getFullName()
                 : null;
+    }
+
+    public boolean checkUserId(String id, String idFromToken) {
+        if (id.equals(idFromToken)) {
+            return true;
+        }
+        return false;
     }
 }

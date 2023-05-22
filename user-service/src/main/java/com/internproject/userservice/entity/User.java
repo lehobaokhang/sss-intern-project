@@ -34,7 +34,7 @@ public class User {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_detail_id", referencedColumnName = "id")
