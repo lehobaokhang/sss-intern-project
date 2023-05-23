@@ -4,6 +4,7 @@ import com.internproject.userservice.config.UserDetailsImpl;
 import com.internproject.userservice.dto.*;
 import com.internproject.userservice.dto.request.ChangePasswordRequest;
 import com.internproject.userservice.dto.request.RegisterRequest;
+import com.internproject.userservice.dto.request.ResetPasswordRequest;
 import com.internproject.userservice.dto.request.SendMailRequest;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
@@ -13,6 +14,7 @@ import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.mapper.UserMapstruct;
 import com.internproject.userservice.repository.IRoleRepository;
 import com.internproject.userservice.repository.IUserRepository;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,6 +179,23 @@ public class UserService implements UserDetailsService {
                 String.format("Your password has been change at: %s", LocalDateTime.now().format(formatter)));
     }
 
+    public SendMailRequest resetPassword(ResetPasswordRequest request) {
+        Optional<User> userOptional = userRepository.findByUsernameOrEmail(request.getUsername(), request.getEmail());
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException(String.format("Can not find any user with username '%s' or email '%s'", request.getUsername(), request.getEmail()));
+        }
+        User user = userOptional.get();
+        String newPassword = generatePassword();
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return new SendMailRequest(
+                user.getEmail(),
+                "NEW PASSWORD",
+                user.getUserDetail().getFullName(),
+                String.format("New password of your account is: %s\nPlease change your password as soon as you receive this email", newPassword)
+        );
+    }
+
     public String getUserFullName(String id) {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.isPresent()
@@ -189,5 +208,9 @@ public class UserService implements UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    private String generatePassword() {
+        return RandomStringUtils.randomAlphanumeric(10);
     }
 }

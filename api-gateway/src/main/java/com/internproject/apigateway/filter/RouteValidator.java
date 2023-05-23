@@ -11,6 +11,7 @@ public class RouteValidator {
     public static final List<String> whiteList = List.of(
             "/auth/register",
             "/auth/login",
+            "/auth/reset-password",
             "/eureka"
     );
 

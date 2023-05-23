@@ -1,13 +1,7 @@
 package com.internproject.userservice.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.internproject.userservice.dto.RoleDTO;
-import com.internproject.userservice.dto.request.ChangePasswordRequest;
-import com.internproject.userservice.dto.request.LoginRequest;
-import com.internproject.userservice.dto.request.RegisterRequest;
-import com.internproject.userservice.dto.request.SendMailRequest;
+import com.internproject.userservice.dto.request.*;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.service.MessageProducer;
@@ -25,7 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import javax.ws.rs.Path;
 import java.util.Optional;
 
 @RestController
@@ -51,24 +45,22 @@ public class AuthController {
         this.messageProducer = messageProducer;
     }
 
-    // Manage role method
     @PostMapping("/role")
     @ApiOperation(value = "Create new role")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addNewRole(@RequestBody String requestBody) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> bodyMap = null;
-        try {
-            bodyMap = objectMapper.readValue(requestBody, new TypeReference<Map<String, String>>(){});
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().body("Bad Request");
-        }
-
-        roleService.addNewRole(bodyMap.get("role"));
+        roleService.addNewRole(requestBody);
         return ResponseEntity.ok("Role is created successfully");
     }
 
-    //User Endpoints APIs
+    @DeleteMapping("/role/{id}")
+    @ApiOperation(value = "Delete role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteRole(@PathVariable("id") String id) {
+        roleService.deleteRole(id);
+        return ResponseEntity.ok("Delete role successful");
+    }
+
     @PostMapping("/register")
     @ApiOperation(value = "Create new account")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
@@ -97,8 +89,6 @@ public class AuthController {
         return ResponseEntity.ok("Add role for user successful");
     }
 
-
-    //need to send email for confirm
     @PostMapping("/change-password")
     @ApiOperation(value = "Change password base on old password and userId")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest,
@@ -107,6 +97,14 @@ public class AuthController {
         SendMailRequest request = userService.changePassword(changePasswordRequest, id);
         messageProducer.send(request);
         return ResponseEntity.ok("Password has ben changed");
+    }
+
+    @PostMapping("/reset-password")
+    @ApiOperation(value = "Password will randomize by 10 character from ascii and send this password to user's email")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        SendMailRequest sendMailRequest = userService.resetPassword(request);
+        messageProducer.send(sendMailRequest);
+        return ResponseEntity.ok("New password has been send to your email");
     }
 
     private String getIdFromToken(String authorizationHeader) {
