@@ -16,12 +16,9 @@ spring:
       ddl-auto: none
   rabbitmq:
     host: localhost
-    port: 15672
+    port: 5672
     username: guest
     password: guest
-    queue: user-service
-    exchange: rabbitmq.exchange
-    routingkey: user-service
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -29,6 +26,10 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+rabbitmq:
+  queue: user-service
+  exchange: rabbitmq.exchange
+  routingkey: user-service
 ---
 jwt:
   secretKey: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'

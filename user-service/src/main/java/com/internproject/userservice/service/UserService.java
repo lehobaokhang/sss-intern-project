@@ -4,6 +4,7 @@ import com.internproject.userservice.config.UserDetailsImpl;
 import com.internproject.userservice.dto.*;
 import com.internproject.userservice.dto.request.ChangePasswordRequest;
 import com.internproject.userservice.dto.request.RegisterRequest;
+import com.internproject.userservice.dto.request.SendMailRequest;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.entity.UserDetail;
@@ -21,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -149,31 +152,29 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public boolean changePassword(ChangePasswordRequest changePasswordRequest, String id) {
+    public SendMailRequest changePassword(ChangePasswordRequest changePasswordRequest, String id) {
         Optional<User> userOptional = userRepository.findById(id);
-
         if (!userOptional.isPresent()) {
-            return false;
+            throw new UserNotFoundException("Can not find any user with id :" + id);
         }
-
         User user = userOptional.get();
         if (!user.getId().equals(id)) {
-            return false;
+            throw new DoOnOtherUserInformationException("Can not chang information of another user");
         }
-
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
-            return false;
+            throw new ChangePasswordException("New password and confirm password does not match");
         }
-
         if (!bCryptPasswordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
-            return false;
+            throw new ChangePasswordException("Old password does not valid");
         }
-
         String newPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword());
         user.setPassword(newPassword);
         userRepository.save(user);
-
-        return true;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return new SendMailRequest(user.getEmail(),
+                "CHANGE PASSWORD NOTIFICATION",
+                user.getUserDetail().getFullName(),
+                String.format("Your password has been change at: %s", LocalDateTime.now().format(formatter)));
     }
 
     public String getUserFullName(String id) {

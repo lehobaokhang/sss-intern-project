@@ -7,8 +7,10 @@ import com.internproject.userservice.dto.RoleDTO;
 import com.internproject.userservice.dto.request.ChangePasswordRequest;
 import com.internproject.userservice.dto.request.LoginRequest;
 import com.internproject.userservice.dto.request.RegisterRequest;
+import com.internproject.userservice.dto.request.SendMailRequest;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.jwt.JwtUtils;
+import com.internproject.userservice.service.MessageProducer;
 import com.internproject.userservice.service.RoleService;
 import com.internproject.userservice.service.UserService;
 import io.swagger.annotations.Api;
@@ -34,15 +36,19 @@ public class AuthController {
     private RoleService roleService;
     private AuthenticationManager authenticationManager;
     private JwtUtils jwtUtils;
+    private MessageProducer messageProducer;
 
     @Autowired
     public AuthController(UserService userService,
                           RoleService roleService,
-                          AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+                          AuthenticationManager authenticationManager,
+                          JwtUtils jwtUtils,
+                          MessageProducer messageProducer) {
         this.userService = userService;
         this.roleService = roleService;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
+        this.messageProducer = messageProducer;
     }
 
     // Manage role method
@@ -95,15 +101,18 @@ public class AuthController {
     //need to send email for confirm
     @PostMapping("/change-password")
     @ApiOperation(value = "Change password base on old password and userId")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest,
+                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String id = getIdFromToken(authorizationHeader);
+        SendMailRequest request = userService.changePassword(changePasswordRequest, id);
+        messageProducer.send(request);
+        return ResponseEntity.ok("Password has ben changed");
+    }
+
+    private String getIdFromToken(String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String id = jwtUtils.getIdFromJwtToken(jwt);
-
-        boolean isSuccess = userService.changePassword(changePasswordRequest, id);
-
-        return isSuccess
-                ? ResponseEntity.ok("Password has ben changed")
-                : ResponseEntity.badRequest().body("Can not change password");
+        return id;
     }
 
 }

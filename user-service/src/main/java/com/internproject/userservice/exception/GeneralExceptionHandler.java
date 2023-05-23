@@ -55,4 +55,9 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> changeOtherUserInformationException(DoOnOtherUserInformationException e) {
         return createHttpResponse(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
+
+    @ExceptionHandler(ChangePasswordException.class)
+    public ResponseEntity<HttpResponse> changePasswordException(ChangePasswordException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }
