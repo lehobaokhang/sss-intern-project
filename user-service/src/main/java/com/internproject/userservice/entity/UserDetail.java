@@ -36,7 +36,7 @@ public class UserDetail {
     private String phone;
 
     @Column(name = "gender")
-    private boolean gender;
+    private String gender;
 
     @Column(name = "dob")
     private Date dob;

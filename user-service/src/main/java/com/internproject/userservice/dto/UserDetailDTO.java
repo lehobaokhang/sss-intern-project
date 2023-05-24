@@ -17,6 +17,6 @@ public class UserDetailDTO {
     private int districtID;
     private int wardId;
     private String phone;
-    private boolean gender;
+    private String gender;
     private Date dob;
 }

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
     private static final Logger logger = LogManager.getLogger(AuthTokenFilter.class);
-    private final List<String> PUBLIC_URLS = List.of("/auth/login", "/auth/register", "/auth/reset-password", "/swagger-ui.html");
+    private final List<String> PUBLIC_URLS = List.of("/auth/login","/auth/register", "/auth/reset-password", "/swagger-ui.html", "/auth/importRoles", "/auth/importUsers");
 
     @Autowired
     private JwtUtils jwtUtils;
