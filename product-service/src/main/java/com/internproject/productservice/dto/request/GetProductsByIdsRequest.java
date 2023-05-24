@@ -1,4 +1,4 @@
-package com.internproject.productservice.dto;
+package com.internproject.productservice.dto.request;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;

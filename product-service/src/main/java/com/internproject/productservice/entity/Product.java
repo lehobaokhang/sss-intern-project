@@ -51,8 +51,4 @@ public class Product {
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
-
-//    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "product_id", nullable = false)
-//    private List<ProductOption> options;
 }
