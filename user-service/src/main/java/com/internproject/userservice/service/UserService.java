@@ -198,9 +198,10 @@ public class UserService implements UserDetailsService {
 
     public String getUserFullName(String id) {
         Optional<User> userOptional = userRepository.findById(id);
-        return userOptional.isPresent()
-                ? userOptional.get().getUserDetail().getFullName()
-                : null;
+        if (userOptional.isPresent()) {
+            throw new UserNotFoundException(String.format("Can not find any user with id: %s", id));
+        }
+        return userOptional.get().getUserDetail().getFullName();
     }
 
     public boolean checkUserId(String id, String idFromToken) {

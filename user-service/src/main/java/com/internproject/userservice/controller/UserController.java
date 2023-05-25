@@ -61,7 +61,7 @@ public class UserController {
     @ApiOperation(value = "Get fullname of user by user id")
     public ResponseEntity<String> getUserFullName(@PathVariable("id") String id) {
         String fullName = userService.getUserFullName(id);
-        return fullName != null ? ResponseEntity.ok(fullName) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(fullName);
     }
 
     private String getIdFromToken(String authorizationHeader) {

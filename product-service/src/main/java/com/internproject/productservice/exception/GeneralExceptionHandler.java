@@ -22,4 +22,14 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> categoryNotFoundException(CategoryNotFoundException e) {
         return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
+
+    @ExceptionHandler(ChangeProductDetailException.class)
+    public ResponseEntity<HttpResponse> changeProductDetailException(ChangeProductDetailException e) {
+        return createHttpResponse(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<HttpResponse> productNotFoundException(ProductNotFoundException e) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
 }

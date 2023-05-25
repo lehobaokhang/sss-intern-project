@@ -1,5 +1,6 @@
 package com.internproject.productservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Category {
     @Column(name = "category_name", nullable = false)
     private String categoryName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 }
