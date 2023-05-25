@@ -37,16 +37,15 @@ public class JwtUtils {
         return false;
     }
 
+    public Claims getAllClaimsFromJwt(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    }
+
     public String getUsernameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("username", String.class);
     }
 
     public String getIdFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public List<GrantedAuthority> getAuthorityFromJwtToken(String token) {
-        String role = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("role", String.class);
-        return Arrays.asList(new SimpleGrantedAuthority(role));
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("userId", String.class);
     }
 }

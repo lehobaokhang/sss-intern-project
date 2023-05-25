@@ -3,25 +3,29 @@ package com.internproject.productservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.internproject.productservice.dto.response.CategoryGetAllResponse;
-import com.internproject.productservice.dto.request.UpdateCategoryRequest;
+import com.internproject.productservice.dto.CategoryDTO;
 import com.internproject.productservice.entity.Category;
+import com.internproject.productservice.exception.CategoryNotFoundException;
+import com.internproject.productservice.mapper.CategoryMapstruct;
 import com.internproject.productservice.repository.ICategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
     private ICategoryRepository categoryRepository;
+    private CategoryMapstruct categoryMapstruct;
 
     @Autowired
-    public CategoryService(ICategoryRepository categoryRepository) {
+    public CategoryService(ICategoryRepository categoryRepository,
+                           CategoryMapstruct categoryMapstruct) {
         this.categoryRepository = categoryRepository;
+        this.categoryMapstruct = categoryMapstruct;
     }
 
     public void saveCategory(String request) {
@@ -33,27 +37,29 @@ public class CategoryService {
             return;
         }
         Category category = new Category();
-        category.setCategoryName(categoryName);
-
+        category.setCategoryName(bodyMap.get("categoryName"));
         categoryRepository.save(category);
     }
 
-    public List<CategoryGetAllResponse> getAllCategory() {
-//        List<Category> categories = categoryRepository.findAll();
-//        return categories.stream().map(category -> CategoryMapper.getInstance().toDTO(category)).collect(Collectors.toList());
-        return null;
+    public List<CategoryDTO> getAllCategory() {
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(category -> categoryMapstruct.toCategoryDTO(category))
+                .collect(Collectors.toList());
     }
 
-    public boolean updateCategory(UpdateCategoryRequest categoryRequest) {
-        Optional<Category> categoryOptional = categoryRepository.findById(categoryRequest.getId());
-
+    public void updateCategory(String id, CategoryDTO categoryDTO) {
+        Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
-            category.setCategoryName(categoryRequest.getCategoryName());
+            category.setCategoryName(categoryDTO.getCategoryName());
             categoryRepository.save(category);
-            return true;
         } else {
-            return false;
+            throw new CategoryNotFoundException("Can not find any category with id: " + id);
         }
+    }
+
+    public void deleteCategory(String id) {
+        categoryRepository.deleteById(id);
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String msg) {
-        return new ResponseEntity<HttpResponse>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), msg), httpStatus);
+        return new ResponseEntity<HttpResponse>(new HttpResponse(httpStatus.value(),httpStatus, httpStatus.getReasonPhrase().toUpperCase(), msg), httpStatus);
     }
 
     @ExceptionHandler(Exception.class)
