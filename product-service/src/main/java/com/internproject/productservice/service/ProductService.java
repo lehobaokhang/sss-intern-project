@@ -78,7 +78,7 @@ public class ProductService{
         }
         String sellerFullName = userService.getUserFullName(product.getSellerId());
         ProductDTO productDTO = productMapstruct.toProductDTO(product);
-        productDTO.setSellerFullName(sellerFullName);
+//        productDTO.setSellerFullName(sellerFullName);
         return productDTO;
     }
 

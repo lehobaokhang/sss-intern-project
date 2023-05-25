@@ -21,5 +21,5 @@ public class ProductDTO {
     private boolean deleted;
     private int price;
     private int quantity;
-    private String sellerFullName;
+//    private String sellerFullName;
 }

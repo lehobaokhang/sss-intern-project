@@ -34,7 +34,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         }
         try {
             String jwt = parseJwt(request);
-
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 Claims claims = jwtUtils.getAllClaimsFromJwt(jwt);
                 String userId = (String) claims.get("userId");
