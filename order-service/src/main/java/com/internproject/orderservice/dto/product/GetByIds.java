@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetByIdsRequest {
+public class GetByIds {
     private List<String> id;
 }

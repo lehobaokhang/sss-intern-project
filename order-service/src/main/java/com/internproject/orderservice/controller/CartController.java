@@ -1,10 +1,9 @@
 package com.internproject.orderservice.controller;
 
 import com.internproject.orderservice.config.JwtUtils;
-import com.internproject.orderservice.dto.cart.CartRequestDTO;
-import com.internproject.orderservice.dto.cart.CartResponseDTO;
-import com.internproject.orderservice.entity.Cart;
-import com.internproject.orderservice.service.ICartService;
+import com.internproject.orderservice.dto.CartDTO;
+import com.internproject.orderservice.dto.cart.CartResponse;
+import com.internproject.orderservice.service.CartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +17,14 @@ import java.util.List;
 @RequestMapping("/cart")
 @Api(value = "Cart Controller", description = "Cart Controller")
 public class CartController {
-    @Autowired
-    private ICartService cartService;
+    private CartService cartService;
+    private JwtUtils jwtUtils;
 
     @Autowired
-    private JwtUtils jwtUtils;
+    public CartController(CartService cartService, JwtUtils jwtUtils) {
+        this.cartService = cartService;
+        this.jwtUtils = jwtUtils;
+    }
 
     private String getIdFromBearerToken(String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
@@ -32,31 +34,35 @@ public class CartController {
 
     @PostMapping
     @ApiOperation(value = "Add and update product to cart")
-    public ResponseEntity<String> addCart(@RequestBody CartRequestDTO addToCartDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        Cart cart = cartService.addCart(addToCartDTO, getIdFromBearerToken(authorizationHeader));
-        return cart != null
-                ? ResponseEntity.ok("Add product to cart successfully")
-                : ResponseEntity.badRequest().body("Can not add product to cart");
+    public ResponseEntity<String> addCart(@RequestBody CartDTO cartDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String userId = getIdFromBearerToken(authorizationHeader);
+        cartService.addCart(cartDTO, userId);
+        return ResponseEntity.ok("Add product to cart successfully");
     }
 
     @GetMapping
     @ApiOperation(value = "Get all product in cart")
-    public ResponseEntity<List<CartResponseDTO>> getAllCart(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        List<CartResponseDTO> carts = cartService.getAll(getIdFromBearerToken(authorizationHeader));
+    public ResponseEntity<List<CartResponse>> getAllCart(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        List<CartResponse> carts = cartService.getAll(getIdFromBearerToken(authorizationHeader));
         return ResponseEntity.ok(carts);
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete cart")
-    public ResponseEntity<String> deleteCart(@PathVariable String id) {
-        cartService.deleteCart(id);
+    public ResponseEntity<String> deleteCart(@PathVariable String id,
+                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String userId = getIdFromBearerToken(authorizationHeader);
+        cartService.deleteCart(id, userId);
         return ResponseEntity.ok("Delete cart successfully");
     }
 
     @PutMapping("/{id}")
     @ApiOperation(value = "Update cart")
-    public ResponseEntity<String> updateCart(@RequestBody CartRequestDTO cartRequestDTO, @PathVariable String id) {
-        cartService.updateCart(id, cartRequestDTO);
+    public ResponseEntity<String> updateCart(@RequestBody CartDTO cartDTO,
+                                             @PathVariable String id,
+                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String userId = getIdFromBearerToken(authorizationHeader);
+        cartService.updateCart(id, cartDTO, userId);
         return ResponseEntity.ok("Update Cart Successfully");
     }
 }

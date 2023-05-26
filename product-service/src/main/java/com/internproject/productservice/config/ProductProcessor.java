@@ -25,11 +25,10 @@ public class ProductProcessor implements ItemProcessor<ProductCsv, Product> {
         product.setProductName(productCsv.getProductName());
         product.setProductSize("");
         product.setProductWeight(0);
-
-        product.setSellerId(product.getSellerId());
+        product.setSellerId(productCsv.getSellerId());
         product.setCategory(categoryOptional.get());
         product.setDeleted(false);
-        product.setPrice(product.getPrice());
+        product.setPrice(productCsv.getPrice());
         product.setQuantity(productCsv.getQuantity());
         return product;
     }

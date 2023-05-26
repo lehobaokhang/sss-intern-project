@@ -2,6 +2,7 @@ package com.internproject.productservice.controller;
 
 import com.internproject.productservice.config.JwtUtils;
 import com.internproject.productservice.dto.ProductDTO;
+import com.internproject.productservice.dto.request.GetProductsByIdsRequest;
 import com.internproject.productservice.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,11 +81,11 @@ public class ProductController {
         return ResponseEntity.ok("Delete successfully");
     }
 
-//    @PostMapping("/get-all-by-id")
-//    @ApiOperation(value = "Get all product which have id in a List<String> in @RequestBody")
-//    public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody GetProductsByIdsRequest request) {
-//        return ResponseEntity.ok(productService.getAllById(request));
-//    }
+    @PostMapping("/get-all-by-id")
+    @ApiOperation(value = "Get all product which have id in a List<String> in @RequestBody")
+    public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody GetProductsByIdsRequest request) {
+        return ResponseEntity.ok(productService.getAllById(request));
+    }
 
     private String getIdFromToken(String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
