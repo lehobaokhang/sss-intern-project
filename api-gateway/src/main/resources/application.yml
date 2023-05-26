@@ -32,3 +32,9 @@ spring:
             - Path=/cart/**, /order/**
           filters:
             - JWTFilter
+        - id: shipping-service
+          uri: lb://shipping-service
+          predicates:
+            - Path=/ship/**, /rate/**
+          filters:
+            - JWTFilter

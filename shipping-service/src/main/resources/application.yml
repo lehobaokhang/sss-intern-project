@@ -1,0 +1,45 @@
+server:
+  port: 8084
+---
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/ship_service'
+    username: 'postgres'
+    password: '123456'
+  jpa:
+    properties:
+      hibernate:
+        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+    hibernate:
+      ddl-auto: none
+  application:
+    name: shipping-service
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+---
+jwt:
+  secretKey: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+---
+logging:
+  level:
+    com.internproject.productservice.service: DEBUG
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: BASIC
+        fallback: com.internproject.productservice.fallback.UserServiceFallback
+      IUserService:
+        loggerLevel: FULL
+  circuitbreaker:
+    enabled: true
