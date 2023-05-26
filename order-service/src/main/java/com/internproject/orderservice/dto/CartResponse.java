@@ -1,4 +1,4 @@
-package com.internproject.orderservice.dto.cart;
+package com.internproject.orderservice.dto;
 
 import com.internproject.orderservice.dto.product.CategoryDTO;
 import com.internproject.orderservice.dto.product.ProductDTO;

@@ -1,4 +1,4 @@
-package com.internproject.orderservice.dto.product;
+package com.internproject.orderservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetByIds {
+public class IdsRequest {
     private List<String> id;
 }

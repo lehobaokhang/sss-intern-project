@@ -15,7 +15,14 @@ spring:
       hibernate:
         dialect: 'org.hibernate.dialect.PostgreSQLDialect'
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 ---
 app:
   jwtSecret: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'
@@ -24,11 +31,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
----
-spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
 ---
 logging:
   level:

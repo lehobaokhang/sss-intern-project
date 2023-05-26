@@ -1,6 +1,6 @@
 package com.internproject.orderservice.service;
 
-import com.internproject.orderservice.dto.product.GetByIds;
+import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.product.ProductDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,5 +19,5 @@ public interface IProductService {
     int getQuantity(@PathVariable("id") String id);
 
     @PostMapping("/product/get-all-by-id")
-    List<ProductDTO> getProductByIds(@RequestBody GetByIds request);
+    List<ProductDTO> getProductByIds(@RequestBody IdsRequest request);
 }

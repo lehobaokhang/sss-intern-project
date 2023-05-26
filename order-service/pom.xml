@@ -91,6 +91,12 @@
 			<artifactId>mapstruct-processor</artifactId>
 			<version>1.5.3.Final</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>8.5.13</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

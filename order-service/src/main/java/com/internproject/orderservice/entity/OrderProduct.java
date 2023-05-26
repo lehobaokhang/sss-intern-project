@@ -28,7 +28,7 @@ public class OrderProduct {
     @Column(name = "price", nullable = false)
     private int price;
 
-    public OrderProduct(String productId, String[] details, int quantity, int price) {
+    public OrderProduct(String productId, int quantity, int price) {
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;

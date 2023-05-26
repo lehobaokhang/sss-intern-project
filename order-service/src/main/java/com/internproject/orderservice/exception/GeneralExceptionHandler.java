@@ -1,5 +1,6 @@
 package com.internproject.orderservice.exception;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,16 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<HttpResponse> cartNotFoundException (CartNotFoundException e) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<HttpResponse> orderException (OrderException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<HttpResponse> orderNotFoundException (OrderNotFoundException e) {
         return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 }

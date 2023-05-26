@@ -2,7 +2,7 @@ package com.internproject.orderservice.controller;
 
 import com.internproject.orderservice.config.JwtUtils;
 import com.internproject.orderservice.dto.CartDTO;
-import com.internproject.orderservice.dto.cart.CartResponse;
+import com.internproject.orderservice.dto.CartResponse;
 import com.internproject.orderservice.service.CartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

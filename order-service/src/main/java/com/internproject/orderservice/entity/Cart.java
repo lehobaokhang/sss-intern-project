@@ -29,4 +29,7 @@ public class Cart {
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Column(name = "price", nullable = false)
+    private int price;
 }

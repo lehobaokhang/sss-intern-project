@@ -1,8 +1,8 @@
 package com.internproject.orderservice.service;
 
 import com.internproject.orderservice.dto.CartDTO;
-import com.internproject.orderservice.dto.cart.CartResponse;
-import com.internproject.orderservice.dto.product.GetByIds;
+import com.internproject.orderservice.dto.CartResponse;
+import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.exception.CartException;
@@ -42,6 +42,7 @@ public class CartService {
         }
         Cart cart = cartMapstruct.toCart(cartDTO);
         cart.setUserId(userId);
+        cart.setPrice(productDTO.getPrice());
         try {
             cartRepository.save(cart);
         } catch (Exception e) {
@@ -53,7 +54,7 @@ public class CartService {
     public List<CartResponse> getAll(String userId) {
         List<Cart> carts = cartRepository.findByUserId(userId);
         List<String> productIds = carts.stream().map(cart -> cart.getProductId()).collect(Collectors.toList());
-        List<ProductDTO> productDTOList = productService.getProductByIds(new GetByIds(productIds));
+        List<ProductDTO> productDTOList = productService.getProductByIds(new IdsRequest(productIds));
         List<CartResponse> response = new ArrayList<>();
         for (int i = 0; i < carts.size(); i++) {
             CartResponse cartResponse = new CartResponse();
