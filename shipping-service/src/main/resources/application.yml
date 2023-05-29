@@ -16,11 +16,16 @@ spring:
     hibernate:
       ddl-auto: none
   application:
-    name: shipping-service
+    name: ship-service
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
 ---
 jwt:
   secretKey: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'
@@ -32,14 +37,14 @@ eureka:
 ---
 logging:
   level:
-    com.internproject.productservice.service: DEBUG
+    com.internproject.shippingservice.service: DEBUG
 feign:
   client:
     config:
       default:
         loggerLevel: BASIC
-        fallback: com.internproject.productservice.fallback.UserServiceFallback
-      IUserService:
+        fallback: com.internproject.shippingservice.fallback.UserServiceFallback
+      UserService:
         loggerLevel: FULL
   circuitbreaker:
     enabled: true

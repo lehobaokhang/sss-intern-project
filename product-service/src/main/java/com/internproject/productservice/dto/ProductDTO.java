@@ -22,4 +22,5 @@ public class ProductDTO {
     private int price;
     private int quantity;
 //    private String sellerFullName;
+//    private int districtId;
 }

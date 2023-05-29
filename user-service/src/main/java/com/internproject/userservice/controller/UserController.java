@@ -59,9 +59,16 @@ public class UserController {
 
     @GetMapping("/get-fullname/{id}")
     @ApiOperation(value = "Get fullname of user by user id")
-    public ResponseEntity<String> getUserFullName(@PathVariable("id") String id) {
-        String fullName = userService.getUserFullName(id);
-        return ResponseEntity.ok(fullName);
+    public ResponseEntity<String> getSellerInfo(@PathVariable("id") String id) {
+        String sellerFullName = userService.getSellerInfo(id);
+        return ResponseEntity.ok(sellerFullName);
+    }
+
+    @GetMapping("/get-district/{id}")
+    @ApiOperation(value = "Get district id of user by user id")
+    public ResponseEntity<Integer> getDistrictId(@PathVariable("id") String id) {
+        int districtId = userService.getDistrictId(id);
+        return ResponseEntity.ok(districtId);
     }
 
     private String getIdFromToken(String authorizationHeader) {

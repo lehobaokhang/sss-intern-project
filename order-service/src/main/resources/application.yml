@@ -41,7 +41,9 @@ feign:
       default:
         loggerLevel: BASIC
         fallback: com.internproject.orderservice.fallback.ProductServiceFallback
-      IProductService:
+      ProductService:
         loggerLevel: FULL
+      ShipService:
+        loggerLevel: FULl
   circuitbreaker:
     enabled: true

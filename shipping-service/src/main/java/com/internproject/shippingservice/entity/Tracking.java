@@ -19,10 +19,6 @@ public class Tracking {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @ManyToOne()
-    @JoinColumn(name = "ship_id", nullable = false)
-    private Ship ship;
-
     @Column(name = "locate", nullable = false)
-    private String locate;
+    private int locate;
 }

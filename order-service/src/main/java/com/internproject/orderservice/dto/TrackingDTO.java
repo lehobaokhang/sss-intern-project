@@ -1,13 +1,13 @@
-package com.internproject.shippingservice.dto;
+package com.internproject.orderservice.dto;
 
 import lombok.*;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Builder
 public class TrackingDTO {
     private String id;
-    private int locate;
+    private String locate;
 }

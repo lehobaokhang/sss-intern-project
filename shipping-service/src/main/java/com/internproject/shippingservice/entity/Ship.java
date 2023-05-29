@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,14 @@ public class Ship {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "ship")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ship_id", referencedColumnName = "id")
     private List<Tracking> tracking;
+
+    public void addTracking(Tracking t) {
+        if (this.tracking == null) {
+            this.tracking = new ArrayList<>();
+        }
+        this.tracking.add(t);
+    }
 }

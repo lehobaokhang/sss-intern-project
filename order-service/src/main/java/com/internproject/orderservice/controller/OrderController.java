@@ -3,8 +3,11 @@ package com.internproject.orderservice.controller;
 import com.internproject.orderservice.config.JwtUtils;
 import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.OrderDTO;
+import com.internproject.orderservice.dto.ShipDTO;
+import com.internproject.orderservice.dto.TrackingDTO;
 import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.service.OrderService;
+import com.internproject.orderservice.service.ShipService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,11 +24,15 @@ import java.util.List;
 public class OrderController {
     private JwtUtils jwtUtils;
     private OrderService orderService;
+    private ShipService shipService;
 
     @Autowired
-    public OrderController(JwtUtils jwtUtils, OrderService orderService) {
+    public OrderController(JwtUtils jwtUtils,
+                           OrderService orderService,
+                           ShipService shipService) {
         this.jwtUtils = jwtUtils;
         this.orderService = orderService;
+        this.shipService = shipService;
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
@@ -38,6 +46,16 @@ public class OrderController {
     public ResponseEntity<String> saveOrder(@RequestBody IdsRequest idsRequest,
                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         Order order = orderService.saveOrder(idsRequest, getIdFromBearerToken(authorizationHeader));
+
+        ShipDTO shipDTO = new ShipDTO();
+        shipDTO.setOrderId(order.getId());
+        shipDTO.setStatus("SHIPPING");
+        List<TrackingDTO> tracking = new ArrayList<>();
+        TrackingDTO trackingDTO = new TrackingDTO();
+
+        tracking.add(new TrackingDTO());
+        shipDTO.setTracking(tracking);
+        shipService.createShip(shipDTO);
         return ResponseEntity.ok("Create order successfully");
     }
 

@@ -1,12 +1,13 @@
 package com.internproject.orderservice.dto.product;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@Builder
 public class ProductDTO {
     private String id;
     private String productName;
@@ -15,7 +16,8 @@ public class ProductDTO {
     private int productWeight;
     private CategoryDTO category;
     private int price;
+    @JsonIgnore
     private int quantity;
     private String sellerId;
-    private String sellerFullName;
+//    private String sellerFullName;
 }

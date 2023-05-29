@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class CartService {
-    private IProductService productService;
+    private ProductService productService;
     private ICartRepository cartRepository;
     private CartMapstruct cartMapstruct;
 
     @Autowired
-    public CartService(IProductService productService, ICartRepository cartRepository, CartMapstruct cartMapstruct) {
+    public CartService(ProductService productService, ICartRepository cartRepository, CartMapstruct cartMapstruct) {
         this.productService = productService;
         this.cartRepository = cartRepository;
         this.cartMapstruct = cartMapstruct;
@@ -57,6 +57,7 @@ public class CartService {
         List<ProductDTO> productDTOList = productService.getProductByIds(new IdsRequest(productIds));
         List<CartResponse> response = new ArrayList<>();
         for (int i = 0; i < carts.size(); i++) {
+            System.out.println(productDTOList.get(i).toString());
             CartResponse cartResponse = new CartResponse();
             cartResponse.setCartId(carts.get(i).getId());
             cartResponse.setQuantity(carts.get(i).getQuantity());

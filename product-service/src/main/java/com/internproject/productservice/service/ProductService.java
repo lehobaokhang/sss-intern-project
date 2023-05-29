@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductService{
-    private IUserService userService;
+    private UserService userService;
     private IProductRepository productRepository;
     private ICategoryRepository categoryRepository;
     private ProductMapstruct productMapstruct;
 
     @Autowired
-    public ProductService(IUserService userService,
+    public ProductService(UserService userService,
                           IProductRepository productRepository,
                           ICategoryRepository categoryRepository,
                           ProductMapstruct productMapstruct) {
@@ -77,9 +77,7 @@ public class ProductService{
         if (product.isDeleted()) {
             throw new ProductNotFoundException(String.format("Can not find any product with id: %s", id));
         }
-        String sellerFullName = userService.getUserFullName(product.getSellerId());
         ProductDTO productDTO = productMapstruct.toProductDTO(product);
-//        productDTO.setSellerFullName(sellerFullName);
         return productDTO;
     }
 

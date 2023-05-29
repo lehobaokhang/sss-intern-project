@@ -2,7 +2,6 @@ package com.internproject.orderservice.service;
 
 import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.OrderDTO;
-import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.entity.OrderProduct;
@@ -21,13 +20,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private IProductService productService;
+    private ProductService productService;
     private IOrderRepository orderRepository;
     private ICartRepository cartRepository;
     private OrderMapstruct orderMapstruct;
 
     @Autowired
-    public OrderService(IProductService productService,
+    public OrderService(ProductService productService,
                         IOrderRepository orderRepository,
                         ICartRepository cartRepository,
                         OrderMapstruct orderMapstruct) {

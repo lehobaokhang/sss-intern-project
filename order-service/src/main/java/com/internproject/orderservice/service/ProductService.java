@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @FeignClient(name = "PRODUCT-SERVICE")
-public interface IProductService {
+public interface ProductService {
     @GetMapping("/product/{id}")
     ProductDTO getProduct(@PathVariable("id") String id);
 
