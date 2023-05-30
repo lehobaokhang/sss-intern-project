@@ -49,6 +49,22 @@ public class ShipController {
         return ResponseEntity.ok("Update tracking successful");
     }
 
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Check ship status and tracking")
+    public ResponseEntity<ShipDTO> checkShipStatus(@PathVariable String id) {
+        ShipDTO shipDTO = shipService.checkShipStatus(id);
+        return ResponseEntity.ok(shipDTO);
+    }
+
+    @PutMapping("/complete/{id}")
+    @ApiOperation(value = "When customer receive parcel, they will confirm that received")
+    public ResponseEntity<String> completeShipping(@PathVariable String id,
+                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String userId = getIdFromBearerToken(authorizationHeader);
+        shipService.completeShip(id, userId, authorizationHeader);
+        return ResponseEntity.ok("Shipping complete");
+    }
+
     private String getIdFromBearerToken(String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String id = jwtUtils.getIdFromJwtToken(jwt);

@@ -30,4 +30,14 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> trackingException(TrackingException e) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
+
+    @ExceptionHandler(ShipException.class)
+    public ResponseEntity<HttpResponse> shipException(ShipException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(RatingException.class)
+    public ResponseEntity<HttpResponse> ratingException(RatingException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }

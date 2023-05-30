@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class DistrictCSV {
+public class DistrictDTO {
     private int id;
     private String districtName;
     private String districtFullName;

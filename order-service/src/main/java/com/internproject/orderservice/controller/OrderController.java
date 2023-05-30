@@ -70,4 +70,12 @@ public class OrderController {
         OrderDTO order = orderService.getOrderById(id, getIdFromBearerToken(authorizationHeader));
         return ResponseEntity.ok(order);
     }
+
+    @GetMapping("/get-order-by-productid/{id}")
+    @ApiOperation(value = "Ship service get order id to check before customer rating")
+    public ResponseEntity<String> getOrderByProductID(@PathVariable String id,
+                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String orderId = orderService.getOrderByProductID(id, getIdFromBearerToken(authorizationHeader));
+        return ResponseEntity.ok(orderId);
+    }
 }

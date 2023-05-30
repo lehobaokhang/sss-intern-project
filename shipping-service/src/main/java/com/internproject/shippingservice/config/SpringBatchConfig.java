@@ -1,6 +1,6 @@
 package com.internproject.shippingservice.config;
 
-import com.internproject.shippingservice.dto.DistrictCSV;
+import com.internproject.shippingservice.dto.DistrictDTO;
 import com.internproject.shippingservice.entity.District;
 import com.internproject.shippingservice.entity.Province;
 import com.internproject.shippingservice.repository.IDistrictRepository;
@@ -104,7 +104,7 @@ public class SpringBatchConfig {
 
     // Import District Job
     @Bean
-    public FlatFileItemReader<DistrictCSV> districtReader() {
+    public FlatFileItemReader<DistrictDTO> districtReader() {
         FlatFileItemReader flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource("src/main/resources/districts.csv"));
         flatFileItemReader.setName("districtReader");
@@ -127,7 +127,7 @@ public class SpringBatchConfig {
 
     @Bean
     public Step districtStep1() {
-        return stepBuilderFactory.get("csv-step").<DistrictCSV, District>chunk(10)
+        return stepBuilderFactory.get("csv-step").<DistrictDTO, District>chunk(10)
                 .reader(districtReader())
                 .processor(districtProcessor())
                 .writer(districtWriter())
@@ -141,14 +141,14 @@ public class SpringBatchConfig {
                 .flow(districtStep1()).end().build();
     }
 
-    private LineMapper<DistrictCSV> districtLineMapper() {
-        DefaultLineMapper<DistrictCSV> lineMapper = new DefaultLineMapper<>();
+    private LineMapper<DistrictDTO> districtLineMapper() {
+        DefaultLineMapper<DistrictDTO> lineMapper = new DefaultLineMapper<>();
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(",");
         lineTokenizer.setStrict(false);
         lineTokenizer.setNames("id", "districtName", "districtFullName", "provinceId");
-        BeanWrapperFieldSetMapper<DistrictCSV> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(DistrictCSV.class);
+        BeanWrapperFieldSetMapper<DistrictDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setTargetType(DistrictDTO.class);
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
         return lineMapper;

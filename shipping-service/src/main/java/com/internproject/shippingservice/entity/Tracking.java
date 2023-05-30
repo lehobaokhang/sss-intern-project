@@ -1,9 +1,12 @@
 package com.internproject.shippingservice.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "tracking")
@@ -19,6 +22,11 @@ public class Tracking {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "locate", nullable = false)
-    private int locate;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "locate")
+    private District district;
+
+    @Column(name = "tracking_at", nullable = false)
+    @CreationTimestamp
+    private Timestamp trackingAt;
 }

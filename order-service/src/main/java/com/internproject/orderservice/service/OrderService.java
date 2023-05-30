@@ -90,4 +90,12 @@ public class OrderService {
         OrderDTO orderDTO = orderMapstruct.toOrderDTO(order);
         return orderDTO;
     }
+
+    public String getOrderByProductID(String id, String userId) {
+        Optional<Order> orderOptional = orderRepository.findByUserIdAndProductId(userId, id);
+        if (!orderOptional.isPresent()) {
+            throw new OrderNotFoundException(String.format("Can not find any order"));
+        }
+        return orderOptional.get().getId();
+    }
 }

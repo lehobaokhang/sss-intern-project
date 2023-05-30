@@ -1,5 +1,6 @@
 package com.internproject.shippingservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ public class Province {
 
     @Column(name = "province_full_name", nullable = false)
     private String provinceFullName;
-
+    
     @OneToMany(mappedBy = "province")
     private List<District> districts;
 }
