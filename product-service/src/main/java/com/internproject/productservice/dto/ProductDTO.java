@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.internproject.productservice.entity.Category;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +23,5 @@ public class ProductDTO {
     private boolean deleted;
     private int price;
     private int quantity;
-//    private String sellerFullName;
-//    private int districtId;
+    private List<RatingDTO> ratingDTO;
 }

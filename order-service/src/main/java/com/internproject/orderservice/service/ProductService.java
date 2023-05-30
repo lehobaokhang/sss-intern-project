@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "PRODUCT-SERVICE")
 public interface ProductService {
@@ -20,4 +21,7 @@ public interface ProductService {
 
     @PostMapping("/product/get-all-by-id")
     List<ProductDTO> getProductByIds(@RequestBody IdsRequest request);
+
+    @PostMapping("/product/decrease-quantity")
+    void decreaseQuantity(@RequestBody Map<String, Integer> request);
 }

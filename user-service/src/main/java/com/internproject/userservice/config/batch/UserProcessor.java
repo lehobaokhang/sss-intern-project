@@ -1,4 +1,4 @@
-package com.internproject.userservice.config;
+package com.internproject.userservice.config.batch;
 
 import com.internproject.userservice.dto.request.UserCsv;
 import com.internproject.userservice.entity.Role;

@@ -1,6 +1,7 @@
 package com.internproject.productservice.service;
 
 import com.internproject.productservice.dto.ProductDTO;
+import com.internproject.productservice.dto.RatingDTO;
 import com.internproject.productservice.dto.request.GetProductsByIdsRequest;
 import com.internproject.productservice.entity.Category;
 import com.internproject.productservice.entity.Product;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,16 +27,19 @@ public class ProductService{
     private IProductRepository productRepository;
     private ICategoryRepository categoryRepository;
     private ProductMapstruct productMapstruct;
+    private RatingService ratingService;
 
     @Autowired
     public ProductService(UserService userService,
                           IProductRepository productRepository,
                           ICategoryRepository categoryRepository,
-                          ProductMapstruct productMapstruct) {
+                          ProductMapstruct productMapstruct,
+                          RatingService ratingService) {
         this.userService = userService;
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productMapstruct = productMapstruct;
+        this.ratingService = ratingService;
     }
 
     public void saveProduct(ProductDTO productDTO, String id) {
@@ -78,6 +83,8 @@ public class ProductService{
             throw new ProductNotFoundException(String.format("Can not find any product with id: %s", id));
         }
         ProductDTO productDTO = productMapstruct.toProductDTO(product);
+        List<RatingDTO> ratingDTO = ratingService.getRates(productDTO.getId());
+        productDTO.setRatingDTO(ratingDTO);
         return productDTO;
     }
 
@@ -115,5 +122,21 @@ public class ProductService{
         List<Product> products = productRepository.findAllById(request.getId());
         List<ProductDTO> productDTOS = products.stream().map(product -> productMapstruct.toProductDTO(product)).collect(Collectors.toList());
         return productDTOS;
+    }
+
+    @Transactional
+    public void decreaseQuantity(Map<String, Integer> request) {
+        for (String key : request.keySet()) {
+            productRepository.decreaseQuantity(key, request.get(key));
+        }
+    }
+
+    public List<ProductDTO> search(String keyWord) {
+        List<Product> result = productRepository.findByProductNameContainingIgnoreCase(keyWord);
+        if (result.isEmpty()) {
+            throw new ProductNotFoundException(String.format("Can not find any product with keyword: %s", keyWord));
+        }
+        List<ProductDTO> products = result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
+        return products;
     }
 }

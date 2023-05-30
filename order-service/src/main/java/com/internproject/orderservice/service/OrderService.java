@@ -53,7 +53,11 @@ public class OrderService {
 
         List<ProductDTO> products = productService.getProductByIds(new IdsRequest(productIds));
         Map<String, Order> orderMap = new HashMap<>();
+        Map<String, Integer> quantityDecrease = new HashMap<>();
         for (int i = 0 ; i < carts.size() ; i++) {
+            if (products.get(i).getQuantity() < carts.get(i).getQuantity()) {
+                throw new OrderException("One product in your cart have a larger quantity than the remaining stock");
+            }
             if (!orderMap.containsKey(products.get(i).getSellerId())) {
                 Order orderTemp = new Order();
                 orderTemp.setShippingFee(0);
@@ -65,10 +69,12 @@ public class OrderService {
             Cart cartCurrent = carts.get(i);
             orderMap.get(productKey.getSellerId()).setPriceTotal(orderMap.get(productKey.getSellerId()).getPriceTotal() + productKey.getPrice());
             orderMap.get(productKey.getSellerId()).addOrderProduct(new OrderProduct(cartCurrent.getProductId(), cartCurrent.getQuantity(), cartCurrent.getPrice()));
+            quantityDecrease.put(productKey.getId(), cartCurrent.getQuantity());
         }
         List<Order> orders = new ArrayList<>(orderMap.values());
         orderRepository.saveAll(orders);
-//        cartRepository.deleteAllById(idsRequest.getId());
+        cartRepository.deleteAllById(idsRequest.getId());
+        productService.decreaseQuantity(quantityDecrease);
         return orders;
     }
 

@@ -16,7 +16,6 @@ public class ProductDTO {
     private int productWeight;
     private CategoryDTO category;
     private int price;
-    @JsonIgnore
     private int quantity;
     private String sellerId;
 //    private String sellerFullName;

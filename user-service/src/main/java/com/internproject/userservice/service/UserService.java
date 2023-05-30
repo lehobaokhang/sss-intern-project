@@ -56,9 +56,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
         UserDetailsImpl userDetails = UserDetailsImpl.build(user);
-
         return userDetails;
-
     }
 
     public Optional<User> register(RegisterRequest registerRequest) {

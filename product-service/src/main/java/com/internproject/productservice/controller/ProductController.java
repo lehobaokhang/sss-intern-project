@@ -3,6 +3,7 @@ package com.internproject.productservice.controller;
 import com.internproject.productservice.config.JwtUtils;
 import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.dto.request.GetProductsByIdsRequest;
+import com.internproject.productservice.entity.Product;
 import com.internproject.productservice.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,17 +15,21 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
 @RequestMapping("/product")
 @Api(value = "Product Controller", description = "Product Controller")
 public class ProductController {
-    @Autowired
     private ProductService productService;
+    private JwtUtils jwtUtils;
 
     @Autowired
-    private JwtUtils jwtUtils;
+    public ProductController(ProductService productService, JwtUtils jwtUtils) {
+        this.productService = productService;
+        this.jwtUtils = jwtUtils;
+    }
 
     @PostMapping
     @ApiOperation(value = "Create new product")
@@ -85,6 +90,19 @@ public class ProductController {
     @ApiOperation(value = "Get all product which have id in a List<String> in @RequestBody")
     public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody GetProductsByIdsRequest request) {
         return ResponseEntity.ok(productService.getAllById(request));
+    }
+
+    @PostMapping("/decrease-quantity")
+    public ResponseEntity<String> decreaseQuantity(@RequestBody Map<String, Integer> request) {
+        productService.decreaseQuantity(request);
+        return ResponseEntity.ok("Success");
+    }
+
+    @GetMapping("/search")
+    @ApiOperation(value = "Search product by name")
+    public ResponseEntity<List<ProductDTO>> searchProduct(@RequestParam("search") String keyWord) {
+        List<ProductDTO> products = productService.search(keyWord);
+        return ResponseEntity.ok(products);
     }
 
     private String getIdFromToken(String authorizationHeader) {
