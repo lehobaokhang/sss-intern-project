@@ -1,10 +1,10 @@
 package com.internproject.orderservice.controller;
 
 import com.internproject.orderservice.config.JwtUtils;
+import com.internproject.orderservice.dto.CreateShipRequest;
 import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.OrderDTO;
 import com.internproject.orderservice.dto.ShipDTO;
-import com.internproject.orderservice.dto.TrackingDTO;
 import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.service.OrderService;
 import com.internproject.orderservice.service.ShipService;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/order")
@@ -45,17 +46,13 @@ public class OrderController {
     @ApiOperation(value = "Create new order")
     public ResponseEntity<String> saveOrder(@RequestBody IdsRequest idsRequest,
                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        Order order = orderService.saveOrder(idsRequest, getIdFromBearerToken(authorizationHeader));
+        List<Order> orders = orderService.saveOrder(idsRequest, getIdFromBearerToken(authorizationHeader));
 
-        ShipDTO shipDTO = new ShipDTO();
-        shipDTO.setOrderId(order.getId());
-        shipDTO.setStatus("SHIPPING");
-        List<TrackingDTO> tracking = new ArrayList<>();
-        TrackingDTO trackingDTO = new TrackingDTO();
+        // bring this code to facade pattern after complete week 7
+        List<ShipDTO> ships =
+            orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
 
-        tracking.add(new TrackingDTO());
-        shipDTO.setTracking(tracking);
-        shipService.createShip(shipDTO);
+        shipService.createShip(new CreateShipRequest(ships));
         return ResponseEntity.ok("Create order successfully");
     }
 

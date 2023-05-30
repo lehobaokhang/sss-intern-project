@@ -1,5 +1,6 @@
 package com.internproject.shippingservice.service;
 
+import com.internproject.shippingservice.dto.CreateShipRequest;
 import com.internproject.shippingservice.dto.ShipDTO;
 import com.internproject.shippingservice.entity.Ship;
 import com.internproject.shippingservice.entity.Tracking;
@@ -10,7 +11,9 @@ import com.internproject.shippingservice.repository.IShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ShipService {
@@ -24,10 +27,10 @@ public class ShipService {
         this.shipMapstruct = shipMapstruct;
     }
 
-    public void createShip(ShipDTO shipDTO) {
-        Ship ship = shipMapstruct.toShip(shipDTO);
+    public void createShip(CreateShipRequest ships) {
+        List<Ship> shipEntity = ships.getShips().stream().map(ship -> shipMapstruct.toShip(ship)).collect(Collectors.toList());
         try {
-            shipRepository.save(ship);
+            shipRepository.saveAll(shipEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }

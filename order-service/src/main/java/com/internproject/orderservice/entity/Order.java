@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,5 +38,12 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", nullable = false)
-    private List<OrderProduct> oderProducts;
+    private List<OrderProduct> orderProducts;
+
+    public void addOrderProduct(OrderProduct orderProduct) {
+        if (this.orderProducts == null) {
+            this.orderProducts = new ArrayList<>();
+        }
+        orderProducts.add(orderProduct);
+    }
 }

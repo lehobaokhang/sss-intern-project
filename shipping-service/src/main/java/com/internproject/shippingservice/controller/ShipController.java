@@ -1,6 +1,7 @@
 package com.internproject.shippingservice.controller;
 
 import com.internproject.shippingservice.config.JwtUtils;
+import com.internproject.shippingservice.dto.CreateShipRequest;
 import com.internproject.shippingservice.dto.ShipDTO;
 import com.internproject.shippingservice.repository.IShipRepository;
 import com.internproject.shippingservice.service.ShipService;
@@ -32,8 +33,8 @@ public class ShipController {
 
     @PostMapping
     @ApiOperation(value = "Create new ship label for order")
-    public ResponseEntity<String> createShip(@RequestBody ShipDTO shipDTO) {
-        shipService.createShip(shipDTO);
+    public ResponseEntity<String> createShip(@RequestBody CreateShipRequest ships) {
+        shipService.createShip(ships);
         return ResponseEntity.ok("Create new ship label successful");
     }
 

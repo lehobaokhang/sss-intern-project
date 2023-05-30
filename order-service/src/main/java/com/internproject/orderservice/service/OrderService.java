@@ -2,6 +2,7 @@ package com.internproject.orderservice.service;
 
 import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.OrderDTO;
+import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.entity.OrderProduct;
@@ -10,12 +11,11 @@ import com.internproject.orderservice.exception.OrderNotFoundException;
 import com.internproject.orderservice.mapper.OrderMapstruct;
 import com.internproject.orderservice.repository.ICartRepository;
 import com.internproject.orderservice.repository.IOrderRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +36,7 @@ public class OrderService {
         this.orderMapstruct = orderMapstruct;
     }
 
-    public Order saveOrder(IdsRequest idsRequest, String userId) {
+    public List<Order> saveOrder(IdsRequest idsRequest, String userId) {
         List<Cart> carts = cartRepository.findAllById(idsRequest.getId());
         if (carts.size() == 0) {
             throw new OrderException("Have one product does not in your cart");
@@ -49,17 +49,27 @@ public class OrderService {
                 throw new OrderException(String.format("Have one product does not in your cart. productId: %s", cart.getProductId()));
             }
             productIds.add(cart.getProductId());
-            orderProducts.add(new OrderProduct(cart.getProductId(), cart.getQuantity(), cart.getPrice()));
-            totalPrice += cart.getPrice();
         }
-        Order order = new Order();
-        order.setShippingFee(0);
-        order.setUserId(userId);
-        order.setOderProducts(orderProducts);
-        order.setPriceTotal(totalPrice);
-        orderRepository.save(order);
-        cartRepository.deleteAllById(idsRequest.getId());
-        return order;
+
+        List<ProductDTO> products = productService.getProductByIds(new IdsRequest(productIds));
+        Map<String, Order> orderMap = new HashMap<>();
+        for (int i = 0 ; i < carts.size() ; i++) {
+            if (!orderMap.containsKey(products.get(i).getSellerId())) {
+                Order orderTemp = new Order();
+                orderTemp.setShippingFee(0);
+                orderTemp.setUserId(userId);
+                orderTemp.setPriceTotal(0);
+                orderMap.put(products.get(i).getSellerId(), orderTemp);
+            }
+            ProductDTO productKey = products.get(i);
+            Cart cartCurrent = carts.get(i);
+            orderMap.get(productKey.getSellerId()).setPriceTotal(orderMap.get(productKey.getSellerId()).getPriceTotal() + productKey.getPrice());
+            orderMap.get(productKey.getSellerId()).addOrderProduct(new OrderProduct(cartCurrent.getProductId(), cartCurrent.getQuantity(), cartCurrent.getPrice()));
+        }
+        List<Order> orders = new ArrayList<>(orderMap.values());
+        orderRepository.saveAll(orders);
+//        cartRepository.deleteAllById(idsRequest.getId());
+        return orders;
     }
 
     public List<OrderDTO> getAll(String id) {
