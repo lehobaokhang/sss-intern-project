@@ -27,4 +27,8 @@ public interface IProductRepository extends JpaRepository<Product, String> {
     void decreaseQuantity(@Param("productId") String productId, @Param("quantity") int quantity);
 
     List<Product> findByProductNameContainingIgnoreCase(String productName);
+
+    List<Product> filterByCategoryAndPrice(@Param("categoryId") String categoryId,
+                                           @Param("minPrice") Integer minPrice,
+                                           @Param("maxPrice") Integer maxPrice);
 }

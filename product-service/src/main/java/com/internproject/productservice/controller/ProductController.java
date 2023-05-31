@@ -100,10 +100,20 @@ public class ProductController {
 
     @GetMapping("/search")
     @ApiOperation(value = "Search product by name")
-    public ResponseEntity<List<ProductDTO>> searchProduct(@RequestParam("search") String keyWord) {
+    public ResponseEntity<List<ProductDTO>> searchProduct(@RequestParam("keyword") String keyWord) {
         List<ProductDTO> products = productService.search(keyWord);
         return ResponseEntity.ok(products);
     }
+
+    @GetMapping("/filter")
+    @ApiOperation(value = "Filter product")
+    public ResponseEntity<List<ProductDTO>> filterProduct(@RequestParam(value = "category", required = false) String category,
+                                                          @RequestParam(value = "minPrice", required = false) Integer minPrice,
+                                                          @RequestParam(value = "maxPrice", required = false) Integer maxPrice) {
+        List<ProductDTO> products = productService.filterProduct(category, minPrice, maxPrice);
+        return ResponseEntity.ok(products);
+    }
+
 
     private String getIdFromToken(String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());

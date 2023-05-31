@@ -14,6 +14,7 @@ import com.internproject.productservice.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -135,6 +136,15 @@ public class ProductService{
         List<Product> result = productRepository.findByProductNameContainingIgnoreCase(keyWord);
         if (result.isEmpty()) {
             throw new ProductNotFoundException(String.format("Can not find any product with keyword: %s", keyWord));
+        }
+        List<ProductDTO> products = result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
+        return products;
+    }
+
+    public List<ProductDTO> filterProduct(String categoryId, Integer minPrice, Integer maxPrice) {
+        List<Product> result = productRepository.filterByCategoryAndPrice(categoryId, minPrice, maxPrice);
+        if (result.isEmpty()) {
+            throw new ProductNotFoundException("Can not find any product with this filter");
         }
         List<ProductDTO> products = result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
         return products;

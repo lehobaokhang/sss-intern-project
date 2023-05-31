@@ -17,6 +17,13 @@ import java.util.List;
 @NamedQuery(name = "Product.deleteProduct", query = "UPDATE Product p SET p.deleted = True WHERE p.id = :productId AND p.sellerId = :sellerId")
 @NamedQuery(name = "Product.getAllProduct", query = "SELECT p FROM Product p WHERE p.deleted = false")
 @NamedQuery(name = "Product.getProduct", query = "SELECT p FROM Product p WHERE p.deleted = false AND p.id = :id")
+@NamedQuery(name = "Product.getProductsByCategoryId", query = "SELECT p FROM Product p WHERE p.deleted = false AND p.category.id = :categoryId")
+@NamedQuery(
+        name = "Product.filterByCategoryAndPrice",
+        query = "SELECT p FROM Product p WHERE p.deleted = false " +
+                "AND (:categoryId IS NULL OR p.category.id = :categoryId) " +
+                "AND (:minPrice IS NULL OR p.price >= :minPrice) " +
+                "AND (:maxPrice IS NULL OR p.price <= :maxPrice)")
 public class Product {
     @Id
     @GeneratedValue(generator = "uuid2")
