@@ -18,10 +18,10 @@ public class ProductDTO {
     private String productSize;
     private int productWeight;
     private String sellerId;
-    private Category category;
+    private CategoryDTO category;
     @JsonIgnore
     private boolean deleted;
     private int price;
     private int quantity;
-    private List<RatingDTO> ratingDTO;
+    private List<RatingDTO> rating;
 }

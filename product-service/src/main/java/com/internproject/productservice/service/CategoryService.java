@@ -28,6 +28,14 @@ public class CategoryService {
         this.categoryMapstruct = categoryMapstruct;
     }
 
+    public Category getCategoryByCategoryName(String categoryName) {
+        Optional<Category> categoryOptional = categoryRepository.findByCategoryName(categoryName);
+        if (!categoryOptional.isPresent()) {
+            throw new CategoryNotFoundException(String.format("Can not find any category with name: %s", categoryName));
+        }
+        return categoryOptional.get();
+    }
+
     public void saveCategory(String request) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> bodyMap = null;
