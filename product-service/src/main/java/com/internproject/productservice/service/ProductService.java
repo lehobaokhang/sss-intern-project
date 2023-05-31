@@ -1,7 +1,6 @@
 package com.internproject.productservice.service;
 
 import com.internproject.productservice.dto.ProductDTO;
-import com.internproject.productservice.dto.request.GetProductsByIdsRequest;
 import com.internproject.productservice.entity.Category;
 import com.internproject.productservice.entity.Product;
 import com.internproject.productservice.exception.ChangeProductDetailException;
@@ -92,8 +91,8 @@ public class ProductService{
         productRepository.deleteProduct(id, userId);
     }
 
-    public List<ProductDTO> getAllById(GetProductsByIdsRequest request) {
-        List<Product> products = productRepository.findAllById(request.getId());
+    public List<ProductDTO> getAllById(List<String> request) {
+        List<Product> products = productRepository.findAllById(request);
         List<ProductDTO> productDTOS = products.stream().map(product -> productMapstruct.toProductDTO(product)).collect(Collectors.toList());
         return productDTOS;
     }

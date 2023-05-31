@@ -77,4 +77,9 @@ public class ProductFacade {
     public List<ProductDTO> filterProduct(String categoryId, Integer minPrice, Integer maxPrice) {
         return productService.filterProduct(categoryId, minPrice, maxPrice);
     }
+
+    public List<ProductDTO> getAllById(List<String> request) {
+        List<ProductDTO> products = productService.getAllById(request);
+        return products;
+    }
 }

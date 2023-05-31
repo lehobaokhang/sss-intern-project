@@ -1,7 +1,6 @@
 package com.internproject.productservice.controller;
 
 import com.internproject.productservice.dto.ProductDTO;
-import com.internproject.productservice.dto.request.GetProductsByIdsRequest;
 import com.internproject.productservice.service.ProductFacade;
 import com.internproject.productservice.service.ProductService;
 import io.swagger.annotations.Api;
@@ -84,8 +83,8 @@ public class ProductController {
 
     @PostMapping("/get-all-by-id")
     @ApiOperation(value = "Get all product which have id in a List<String> in @RequestBody")
-    public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody GetProductsByIdsRequest request) {
-        return ResponseEntity.ok(productService.getAllById(request));
+    public ResponseEntity<List<ProductDTO>> getAllByID(@RequestBody List<String> request) {
+        return ResponseEntity.ok(productFacade.getAllById(request));
     }
 
     @PostMapping("/decrease-quantity")

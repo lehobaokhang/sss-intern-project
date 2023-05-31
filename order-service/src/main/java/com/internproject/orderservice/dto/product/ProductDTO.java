@@ -18,5 +18,4 @@ public class ProductDTO {
     private int price;
     private int quantity;
     private String sellerId;
-//    private String sellerFullName;
 }

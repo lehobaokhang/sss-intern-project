@@ -1,13 +1,10 @@
 package com.internproject.orderservice.service;
 
 import com.internproject.orderservice.dto.CartDTO;
-import com.internproject.orderservice.dto.CartResponse;
-import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.exception.CartException;
 import com.internproject.orderservice.exception.CartNotFoundException;
-import com.internproject.orderservice.exception.ProductNotFoundException;
 import com.internproject.orderservice.mapper.CartMapstruct;
 import com.internproject.orderservice.repository.ICartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +29,7 @@ public class CartService {
         this.cartMapstruct = cartMapstruct;
     }
 
-    public Cart addCart(CartDTO cartDTO, String userId) {
-        ProductDTO productDTO = productService.getProduct(cartDTO.getProductId());
-        if (productDTO == null) {
-            throw new ProductNotFoundException(String.format("Can not find any product with id: %s", cartDTO.getProductId()));
-        }
-        if (productDTO.getSellerId().equals(userId)) {
-            throw new CartException("Can not add product of yourself to your cart");
-        }
+    public Cart addCart(CartDTO cartDTO, String userId, ProductDTO productDTO) {
         Cart cart = cartMapstruct.toCart(cartDTO);
         cart.setUserId(userId);
         cart.setPrice(productDTO.getPrice());
@@ -51,31 +41,16 @@ public class CartService {
         return cart;
     }
 
-    public List<CartResponse> getAll(String userId) {
+    public List<CartDTO> getAll(String userId) {
         List<Cart> carts = cartRepository.findByUserId(userId);
-        List<String> productIds = carts.stream().map(cart -> cart.getProductId()).collect(Collectors.toList());
-        List<ProductDTO> productDTOList = productService.getProductByIds(new IdsRequest(productIds));
-        List<CartResponse> response = new ArrayList<>();
-        for (int i = 0; i < carts.size(); i++) {
-            System.out.println(productDTOList.get(i).toString());
-            CartResponse cartResponse = new CartResponse();
-            cartResponse.setCartId(carts.get(i).getId());
-            cartResponse.setQuantity(carts.get(i).getQuantity());
-            cartResponse.setProductDTO(productDTOList.get(i));
-            response.add(cartResponse);
-        }
-        return response;
+        List<CartDTO> cartsReturn = carts.stream().map(cart -> cartMapstruct.toCartDTO(cart)).collect(Collectors.toList());
+        return cartsReturn;
     }
 
     @Transactional
     public void deleteCart(String id, String userId) {
         cartRepository.deleteByIdAndUserId(id, userId);
     }
-
-//    public Cart getCartById(String cartId) {
-//        Optional<Cart> cartOptional = cartRepository.findById(cartId);
-//        return cartOptional.isPresent() ? cartOptional.get() : new Cart();
-//    }
 
     public Cart updateCart(String id, CartDTO cartDTO, String userId) {
         Optional<Cart> cartOptional = cartRepository.findById(id);
@@ -89,5 +64,9 @@ public class CartService {
         cart.setQuantity(cartDTO.getQuantity());
         cartRepository.save(cart);
         return cart;
+    }
+
+    public List<Cart> getByIds(List<String> cartIds) {
+        return cartRepository.findAllById(cartIds);
     }
 }

@@ -36,11 +36,8 @@ public class OrderService {
         this.orderMapstruct = orderMapstruct;
     }
 
-    public List<Order> saveOrder(IdsRequest idsRequest, String userId) {
-        List<Cart> carts = cartRepository.findAllById(idsRequest.getId());
-        if (carts.size() == 0) {
-            throw new OrderException("Have one product does not in your cart");
-        }
+    public List<Order> saveOrder(List<String> cartIds, String userId) {
+
         List<String> productIds = new ArrayList<>();
         List<OrderProduct> orderProducts = new ArrayList<>();
         int totalPrice = 0;
@@ -51,7 +48,7 @@ public class OrderService {
             productIds.add(cart.getProductId());
         }
 
-        List<ProductDTO> products = productService.getProductByIds(new IdsRequest(productIds));
+        List<ProductDTO> products = productService.getProductByIds(productIds);
         Map<String, Order> orderMap = new HashMap<>();
         Map<String, Integer> quantityDecrease = new HashMap<>();
         for (int i = 0 ; i < carts.size() ; i++) {

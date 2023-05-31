@@ -6,6 +6,7 @@ import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.OrderDTO;
 import com.internproject.orderservice.dto.ShipDTO;
 import com.internproject.orderservice.entity.Order;
+import com.internproject.orderservice.service.Facade;
 import com.internproject.orderservice.service.OrderService;
 import com.internproject.orderservice.service.ShipService;
 import io.swagger.annotations.Api;
@@ -26,14 +27,17 @@ public class OrderController {
     private JwtUtils jwtUtils;
     private OrderService orderService;
     private ShipService shipService;
+    private Facade facade;
 
     @Autowired
     public OrderController(JwtUtils jwtUtils,
                            OrderService orderService,
-                           ShipService shipService) {
+                           ShipService shipService,
+                           Facade facade) {
         this.jwtUtils = jwtUtils;
         this.orderService = orderService;
         this.shipService = shipService;
+        this.facade = facade;
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
@@ -44,11 +48,10 @@ public class OrderController {
 
     @PostMapping
     @ApiOperation(value = "Create new order")
-    public ResponseEntity<String> saveOrder(@RequestBody IdsRequest idsRequest,
+    public ResponseEntity<String> addOrder(@RequestBody List<String> cartIds,
                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        List<Order> orders = orderService.saveOrder(idsRequest, getIdFromBearerToken(authorizationHeader));
+        facade.addOrder(cartIds, authorizationHeader);
 
-        // bring this code to facade pattern after complete week 7
         List<ShipDTO> ships =
             orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
 
