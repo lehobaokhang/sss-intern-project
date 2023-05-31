@@ -13,7 +13,7 @@ import java.util.Date;
 @ToString
 public class UserDetailDTO {
     private String fullName;
-    private int provinceId;
+    private int provinceID;
     private int districtID;
     private int wardId;
     private String phone;

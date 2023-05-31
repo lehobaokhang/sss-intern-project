@@ -94,4 +94,15 @@ public class ShipService {
         ship.setStatus("COMPLETE");
         shipRepository.save(ship);
     }
+
+    public boolean isDistrictValid(int district, int province) {
+        Optional<District> districtOptional = districtRepository.findById(district);
+        if (!districtOptional.isPresent()) {
+            return false;
+        }
+        if (districtOptional.get().getProvince().getId() != province) {
+            return false;
+        }
+        return true;
+    }
 }

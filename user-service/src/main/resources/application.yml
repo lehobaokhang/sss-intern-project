@@ -45,5 +45,14 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
-
-
+---
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: BASIC
+        fallback: com.internproject.userservice.fallback.UserServiceFallback
+      IUserService:
+        loggerLevel: FULL
+  circuitbreaker:
+    enabled: true

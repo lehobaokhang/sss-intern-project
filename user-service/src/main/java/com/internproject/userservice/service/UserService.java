@@ -33,22 +33,15 @@ import java.util.Set;
 @Service
 public class UserService implements UserDetailsService {
     private IUserRepository userRepository;
-    private IRoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private JwtUtils jwtUtils;
     private UserMapstruct userMapstruct;
-    private static final Logger logger = LogManager.getLogger(UserService.class);
 
     @Autowired
     public UserService(IUserRepository userRepository,
-                       IRoleRepository roleRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       JwtUtils jwtUtils,
                        UserMapstruct userMapstruct) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.jwtUtils = jwtUtils;
         this.userMapstruct = userMapstruct;
     }
 
@@ -59,26 +52,20 @@ public class UserService implements UserDetailsService {
         return userDetails;
     }
 
-    public Optional<User> register(RegisterRequest registerRequest) {
-        if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            logger.error("Username '" + registerRequest.getUsername() + "' already exists");
-            throw new UsernameExistException("Username '" + registerRequest.getUsername() + "' already exists");
-        }
+    public boolean existsByUserName(String username) {
+        return userRepository.existsByUsername(username);
+    }
 
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            logger.error("Email '" + registerRequest.getEmail() + "' already exists");
-            throw new EmailExistException("Email '" + registerRequest.getEmail() + "' already exists");
-        }
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
-        Optional<Role> roleOptional = roleRepository.findByRoleName("ROLE_USER");
+    public User register(RegisterRequest registerRequest, Role role) {
         Set<Role> roles = new HashSet<>();
-        if (!roleOptional.isPresent()) {
-            throw new RoleNotFoundException("Role not found");
-        }
+        roles.add(role);
 
         User newUser = new User();
         UserDetail newUserDetail = new UserDetail();
-        roles.add(roleOptional.get());
 
         newUserDetail.setFullName(registerRequest.getFullName());
         newUser.setUsername(registerRequest.getUsername());
@@ -86,68 +73,55 @@ public class UserService implements UserDetailsService {
         newUser.setEmail(registerRequest.getEmail());
         newUser.setUserDetail(newUserDetail);
         newUser.setRoles(roles);
-        userRepository.save(newUser);
-
-        return Optional.of(newUser);
+        return userRepository.save(newUser);
     }
 
     public UserDTO getMe(String userId) {
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return userMapstruct.toUserDTO(user);
-        } else {
+        if (!userOptional.isPresent()) {
             throw new UserNotFoundException("User not found");
         }
+        User user = userOptional.get();
+        return userMapstruct.toUserDTO(user);
     }
 
     public UserDTO getUserById(String id) {
         Optional<User> userOptional = userRepository.findById(id);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return userMapstruct.toUserDTO(user);
-        } else {
-            throw new UserNotFoundException("Can not find any user with id: " + id);
-        }
-    }
-
-    public boolean deleteUser(String userId, String idFromToken) {
-        if (!checkUserId(userId, idFromToken)) {
-            throw new DoOnOtherUserInformationException("Can not delete another user's account");
-        }
-        userRepository.deleteById(userId);
-        return true;
-    }
-
-    public User updateUser(String userId, String idFromToken, UserDetailDTO userDetailDTO) {
-        if (!checkUserId(userId, idFromToken)) {
-            throw new DoOnOtherUserInformationException("Cannot change other users' information");
-        }
-        UserDetail newUserDetail = userMapstruct.toUserDetail(userDetailDTO);
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            newUserDetail.setId(user.getUserDetail().getId());
-            user.setUserDetail(newUserDetail);
-            userRepository.save(user);
-            return user;
-        } else {
-            throw new UserNotFoundException("Can not find user with id: " + userId + " for update");
-        }
-    }
-
-    public void addRoleForUser(String id, RoleDTO roleDTO) {
-        Optional<User> userOptional = userRepository.findById(id);
-        Optional<Role> roleOptional = roleRepository.findByRoleName(roleDTO.getRoleName());
         if (!userOptional.isPresent()) {
             throw new UserNotFoundException("Can not find any user with id: " + id);
         }
-        if (!roleOptional.isPresent()) {
-            throw new RoleNotFoundException("Can not find any role with role's name: " + roleDTO.getRoleName());
+        User user = userOptional.get();
+        UserDTO userDTO = userMapstruct.toUserDTO(user);
+        userDTO.setUsername(null);
+        userDTO.setCreatedAt(null);
+        userDTO.getUserDetailDTO().setPhone(null);
+        userDTO.getUserDetailDTO().setDob(null);
+        return userDTO;
+    }
+
+    public void deleteUser(String userId) {
+        userRepository.deleteById(userId);
+    }
+
+    public User updateUser(UserDetailDTO userDetailDTO, String userId) {
+        UserDetail userDetail = userMapstruct.toUserDetail(userDetailDTO);
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException("Can not find user with id: " + userId + " for update");
         }
         User user = userOptional.get();
-        Role role = roleOptional.get();
+        userDetail.setId(user.getUserDetail().getId());
+        user.setUserDetail(userDetail);
+        userRepository.save(user);
+        return user;
+    }
+
+    public void addRoleForUser(String id, Role role) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException("Can not find any user with id: " + id);
+        }
+        User user = userOptional.get();
         user.addRole(role);
         userRepository.save(user);
     }
@@ -192,31 +166,6 @@ public class UserService implements UserDetailsService {
                 user.getUserDetail().getFullName(),
                 String.format("New password of your account is: %s\nPlease change your password as soon as you receive this email", newPassword)
         );
-    }
-
-    public String getSellerInfo(String id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException(String.format("Can not find any user with id: %s", id));
-        }
-        User user = userOptional.get();
-        return user.getUserDetail().getFullName();
-    }
-
-    public boolean checkUserId(String id, String idFromToken) {
-        if (id.equals(idFromToken)) {
-            return true;
-        }
-        return false;
-    }
-
-    public int getDistrictId(String id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException(String.format("Can not find any user with id: %s", id));
-        }
-        User user = userOptional.get();
-        return user.getUserDetail().getDistrictID();
     }
 
     private String generatePassword() {

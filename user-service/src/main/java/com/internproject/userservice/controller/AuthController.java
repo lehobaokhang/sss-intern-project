@@ -2,10 +2,10 @@ package com.internproject.userservice.controller;
 
 import com.internproject.userservice.dto.RoleDTO;
 import com.internproject.userservice.dto.request.*;
-import com.internproject.userservice.entity.User;
 import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.service.MessageProducer;
 import com.internproject.userservice.service.RoleService;
+import com.internproject.userservice.service.UserFacade;
 import com.internproject.userservice.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,29 +19,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/auth")
 @Api(value = "Auth", description = "Authenticate and authorization user")
 public class AuthController {
-    private UserService userService;
     private RoleService roleService;
+
+    private UserFacade userFacade;
+
     private AuthenticationManager authenticationManager;
-    private JwtUtils jwtUtils;
-    private MessageProducer messageProducer;
 
     @Autowired
-    public AuthController(UserService userService,
+    public AuthController(UserFacade userFacade,
                           RoleService roleService,
-                          AuthenticationManager authenticationManager,
-                          JwtUtils jwtUtils,
-                          MessageProducer messageProducer) {
-        this.userService = userService;
+                          AuthenticationManager authenticationManager) {
         this.roleService = roleService;
+        this.userFacade = userFacade;
         this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-        this.messageProducer = messageProducer;
     }
 
     @PostMapping("/role")
@@ -63,10 +57,8 @@ public class AuthController {
     @PostMapping("/register")
     @ApiOperation(value = "Create new account")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        Optional<User> user = userService.register(registerRequest);
-        return (user.isPresent()) ?
-                ResponseEntity.ok("User is registered successfully") :
-                ResponseEntity.badRequest().body("User can not registered");
+        userFacade.register(registerRequest);
+        return ResponseEntity.ok("User is registered successfully");
     }
 
     @PostMapping("/login")
@@ -75,7 +67,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        String jwt = userFacade.generateToken(authentication);
         return ResponseEntity.ok(jwt);
     }
 
@@ -84,7 +76,7 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addRoleForUser(@PathVariable("id") String userId,
                                                  @RequestBody RoleDTO roleDTO) {
-        userService.addRoleForUser(userId, roleDTO);
+        userFacade.addRoleForUser(userId, roleDTO);
         return ResponseEntity.ok("Add role for user successful");
     }
 
@@ -92,24 +84,14 @@ public class AuthController {
     @ApiOperation(value = "Change password base on old password and userId")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest,
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        String id = getIdFromToken(authorizationHeader);
-        SendMailRequest request = userService.changePassword(changePasswordRequest, id);
-        messageProducer.send(request);
+        userFacade.changePassword(changePasswordRequest, authorizationHeader);
         return ResponseEntity.ok("Password has ben changed");
     }
 
     @PostMapping("/reset-password")
     @ApiOperation(value = "Password will randomize by 10 character from ascii and send this password to user's email")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
-        SendMailRequest sendMailRequest = userService.resetPassword(request);
-        messageProducer.send(sendMailRequest);
+        userFacade.resetPassword(request);
         return ResponseEntity.ok("New password has been send to your email");
     }
-
-    private String getIdFromToken(String authorizationHeader) {
-        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
-        String id = jwtUtils.getIdFromJwtToken(jwt);
-        return id;
-    }
-
 }

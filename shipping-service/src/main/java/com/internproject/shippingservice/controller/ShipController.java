@@ -65,6 +65,13 @@ public class ShipController {
         return ResponseEntity.ok("Shipping complete");
     }
 
+    @GetMapping("/district/is-valid")
+    public ResponseEntity<Boolean> isDistrictValid(@RequestParam("district") int district,
+                                                   @RequestParam("province") int province) {
+        boolean result = shipService.isDistrictValid(district, province);
+        return ResponseEntity.ok(result);
+    }
+
     private String getIdFromBearerToken(String authorizationHeader) {
         String jwt = authorizationHeader.substring(7, authorizationHeader.length());
         String id = jwtUtils.getIdFromJwtToken(jwt);

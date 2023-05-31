@@ -60,4 +60,9 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> changePasswordException(ChangePasswordException e) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
+
+    @ExceptionHandler(AddressException.class)
+    public ResponseEntity<HttpResponse> addressException(AddressException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }
