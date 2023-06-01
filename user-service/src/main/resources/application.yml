@@ -56,3 +56,9 @@ feign:
         loggerLevel: FULL
   circuitbreaker:
     enabled: true
+---
+logging:
+  level:
+    com.internproject.userservice.service: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

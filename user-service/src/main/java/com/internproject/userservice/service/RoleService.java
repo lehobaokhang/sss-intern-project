@@ -14,8 +14,12 @@ import java.util.Optional;
 
 @Service
 public class RoleService {
-    @Autowired
     private IRoleRepository roleRepository;
+
+    @Autowired
+    public RoleService(IRoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     public void addNewRole(String request) {
         ObjectMapper objectMapper = new ObjectMapper();

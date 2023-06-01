@@ -1,18 +1,16 @@
 package com.internproject.userservice.dto.request;
 
 import com.sun.istack.NotNull;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @ToString
 public class RegisterRequest {
-    @NotNull
     private String username;
-    @NotNull
     private String password;
-    @NotNull
     private String email;
-    @NotNull
     private String fullName;
 }
