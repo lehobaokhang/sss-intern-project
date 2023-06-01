@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface IOrderRepository extends JpaRepository<Order, String> {
     List<Order> findByUserId(String userId);
+
+    Optional<Order> findByIdAndUserId(String id, String userId);
+
     @Query("SELECT o FROM Order o JOIN o.orderProducts op WHERE o.userId = :userId AND op.productId = :productId")
     Optional<Order> findByUserIdAndProductId(@Param("userId") String userId, @Param("productId") String productId);
 }

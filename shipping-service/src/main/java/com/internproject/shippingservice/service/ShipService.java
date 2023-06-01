@@ -39,9 +39,9 @@ public class ShipService {
         this.orderService = orderService;
     }
 
-    public void createShip(CreateShipRequest ships) {
+    public void createShip(List<ShipDTO> ships) {
         List<Ship> shipEntity =
-                ships.getShips().stream().map(ship -> shipMapstruct.toShip(ship)).collect(Collectors.toList());
+                ships.stream().map(ship -> shipMapstruct.toShip(ship)).collect(Collectors.toList());
         try {
             shipRepository.saveAll(shipEntity);
         } catch (Exception e) {

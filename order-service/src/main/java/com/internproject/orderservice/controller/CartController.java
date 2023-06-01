@@ -33,7 +33,7 @@ public class CartController {
     @GetMapping
     @ApiOperation(value = "Get all product in cart")
     public ResponseEntity<List<CartDTO>> getAll(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        List<CartDTO> carts = facade.getAll(authorizationHeader);
+        List<CartDTO> carts = facade.getAllCart(authorizationHeader);
         return ResponseEntity.ok(carts);
     }
 

@@ -35,6 +35,8 @@ eureka:
 logging:
   level:
     com.internproject.orderservice.service: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 feign:
   client:
     config:

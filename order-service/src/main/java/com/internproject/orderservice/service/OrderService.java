@@ -36,42 +36,26 @@ public class OrderService {
         this.orderMapstruct = orderMapstruct;
     }
 
-    public List<Order> saveOrder(List<String> cartIds, String userId) {
-
-        List<String> productIds = new ArrayList<>();
-        List<OrderProduct> orderProducts = new ArrayList<>();
-        int totalPrice = 0;
-        for (Cart cart : carts) {
-            if (!cart.getUserId().equals(userId)) {
-                throw new OrderException(String.format("Have one product does not in your cart. productId: %s", cart.getProductId()));
-            }
-            productIds.add(cart.getProductId());
-        }
-
-        List<ProductDTO> products = productService.getProductByIds(productIds);
+    public List<Order> saveOrder(List<Cart> carts, List<ProductDTO> products) {
         Map<String, Order> orderMap = new HashMap<>();
-        Map<String, Integer> quantityDecrease = new HashMap<>();
         for (int i = 0 ; i < carts.size() ; i++) {
             if (products.get(i).getQuantity() < carts.get(i).getQuantity()) {
                 throw new OrderException("One product in your cart have a larger quantity than the remaining stock");
             }
-            if (!orderMap.containsKey(products.get(i).getSellerId())) {
+            ProductDTO currentProduct = products.get(i);
+            Cart currentCart = carts.get(i);
+            if (!orderMap.containsKey(currentProduct.getSellerId())) {
                 Order orderTemp = new Order();
                 orderTemp.setShippingFee(0);
-                orderTemp.setUserId(userId);
+                orderTemp.setUserId(currentCart.getUserId());
                 orderTemp.setPriceTotal(0);
                 orderMap.put(products.get(i).getSellerId(), orderTemp);
             }
-            ProductDTO productKey = products.get(i);
-            Cart cartCurrent = carts.get(i);
-            orderMap.get(productKey.getSellerId()).setPriceTotal(orderMap.get(productKey.getSellerId()).getPriceTotal() + productKey.getPrice());
-            orderMap.get(productKey.getSellerId()).addOrderProduct(new OrderProduct(cartCurrent.getProductId(), cartCurrent.getQuantity(), cartCurrent.getPrice()));
-            quantityDecrease.put(productKey.getId(), cartCurrent.getQuantity());
+            orderMap.get(currentProduct.getSellerId()).setPriceTotal(orderMap.get(currentProduct.getSellerId()).getPriceTotal() + currentProduct.getPrice());
+            orderMap.get(currentProduct.getSellerId()).addOrderProduct(new OrderProduct(currentCart.getProductId(), currentCart.getQuantity(), currentCart.getPrice()));
         }
         List<Order> orders = new ArrayList<>(orderMap.values());
         orderRepository.saveAll(orders);
-        cartRepository.deleteAllById(idsRequest.getId());
-        productService.decreaseQuantity(quantityDecrease);
         return orders;
     }
 
@@ -81,16 +65,12 @@ public class OrderService {
         return orderDTOS;
     }
 
-    public OrderDTO getOrderById(String id, String userid) {
-        Optional<Order> orderOptional = orderRepository.findById(id);
+    public OrderDTO getOrderById(String id, String userId) {
+        Optional<Order> orderOptional = orderRepository.findByIdAndUserId(id, userId);
         if (!orderOptional.isPresent()) {
             throw new OrderNotFoundException(String.format("Can not find any order with id: %s", id));
         }
-        Order order = orderOptional.get();
-        if (!userid.equals(order.getUserId())) {
-            throw new OrderException("Can not get order of another user");
-        }
-        OrderDTO orderDTO = orderMapstruct.toOrderDTO(order);
+        OrderDTO orderDTO = orderMapstruct.toOrderDTO(orderOptional.get());
         return orderDTO;
     }
 

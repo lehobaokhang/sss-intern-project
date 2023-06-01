@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/ship")
 @Api(value = "Ship Controller", description = "Ship Controller")
@@ -33,7 +35,7 @@ public class ShipController {
 
     @PostMapping
     @ApiOperation(value = "Create new ship label for order")
-    public ResponseEntity<String> createShip(@RequestBody CreateShipRequest ships) {
+    public ResponseEntity<String> createShip(@RequestBody List<ShipDTO> ships) {
         shipService.createShip(ships);
         return ResponseEntity.ok("Create new ship label successful");
     }

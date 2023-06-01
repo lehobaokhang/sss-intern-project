@@ -69,4 +69,8 @@ public class CartService {
     public List<Cart> getByIds(List<String> cartIds) {
         return cartRepository.findAllById(cartIds);
     }
+
+    public void deleteAllByIds(List<String> ids) {
+        cartRepository.deleteAllById(ids);
+    }
 }

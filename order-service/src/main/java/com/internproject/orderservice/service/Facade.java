@@ -2,6 +2,8 @@ package com.internproject.orderservice.service;
 
 import com.internproject.orderservice.config.JwtUtils;
 import com.internproject.orderservice.dto.CartDTO;
+import com.internproject.orderservice.dto.OrderDTO;
+import com.internproject.orderservice.dto.ShipDTO;
 import com.internproject.orderservice.dto.product.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
@@ -11,8 +13,8 @@ import com.internproject.orderservice.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,7 +57,7 @@ public class Facade {
         cartService.addCart(cartDTO, userId, productDTO);
     }
 
-    public List<CartDTO> getAll(String authorizationHeader) {
+    public List<CartDTO> getAllCart(String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
         List<CartDTO> carts = cartService.getAll(userId);
         List<String> productIds = carts.stream().map(cart -> cart.getProductId()).collect(Collectors.toList());
@@ -85,7 +87,41 @@ public class Facade {
         if (carts.size() == 0) {
             throw new OrderException("Have one product does not in your cart");
         }
+        List<String> cartUserId = carts.stream()
+                .map(Cart::getUserId)
+                .distinct()
+                .collect(Collectors.toList());
+        if (cartUserId.size() != 1 || !cartUserId.get(0).equals(userId)) {
+            throw new OrderException("Have one product does not in your cart");
+        }
 
-        List<Order> orders = orderService.saveOrder(cartIds, userId);
+        List<String> productIds = carts.stream().map(Cart::getProductId).collect(Collectors.toList());
+        List<ProductDTO> products = productService.getProductByIds(productIds);
+        List<Order> orders = orderService.saveOrder(carts, products);
+        Map<String, Integer> quantityDecrease = carts.stream().collect(Collectors.toMap(Cart::getProductId, Cart::getQuantity));
+        cartService.deleteAllByIds(cartIds);
+        productService.decreaseQuantity(quantityDecrease);
+
+        List<ShipDTO> ships =
+            orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
+        shipService.createShip(ships);
+    }
+
+    public List<OrderDTO> getAllOrder(String authorizationHeader) {
+        String userId = getIdFromBearerToken(authorizationHeader);
+        List<OrderDTO> orders = orderService.getAll(userId);
+        return orders;
+    }
+
+    public OrderDTO getOrderById(String id, String authorizationHeader) {
+        String userId = getIdFromBearerToken(authorizationHeader);
+        OrderDTO order = orderService.getOrderById(id, userId);
+        return order;
+    }
+
+    public String getOrderByProductID(String id, String authorizationHeader) {
+        String userId = getIdFromBearerToken(authorizationHeader);
+        String orderId = orderService.getOrderByProductID(id, userId);
+        return orderId;
     }
 }

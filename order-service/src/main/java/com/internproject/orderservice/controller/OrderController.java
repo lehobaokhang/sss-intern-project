@@ -49,20 +49,15 @@ public class OrderController {
     @PostMapping
     @ApiOperation(value = "Create new order")
     public ResponseEntity<String> addOrder(@RequestBody List<String> cartIds,
-                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         facade.addOrder(cartIds, authorizationHeader);
-
-        List<ShipDTO> ships =
-            orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
-
-        shipService.createShip(new CreateShipRequest(ships));
         return ResponseEntity.ok("Create order successfully");
     }
 
     @GetMapping
     @ApiOperation(value = "Get all order")
     public ResponseEntity<List<OrderDTO>> getAllOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        List<OrderDTO> orders = orderService.getAll(getIdFromBearerToken(authorizationHeader));
+        List<OrderDTO> orders = facade.getAllOrder(authorizationHeader);
         return ResponseEntity.ok(orders);
     }
 
@@ -70,7 +65,7 @@ public class OrderController {
     @ApiOperation(value = "Get order by order id")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable String id,
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        OrderDTO order = orderService.getOrderById(id, getIdFromBearerToken(authorizationHeader));
+        OrderDTO order = facade.getOrderById(id, authorizationHeader);
         return ResponseEntity.ok(order);
     }
 
@@ -78,7 +73,7 @@ public class OrderController {
     @ApiOperation(value = "Ship service get order id to check before customer rating")
     public ResponseEntity<String> getOrderByProductID(@PathVariable String id,
                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        String orderId = orderService.getOrderByProductID(id, getIdFromBearerToken(authorizationHeader));
+        String orderId = facade.getOrderByProductID(id, authorizationHeader);
         return ResponseEntity.ok(orderId);
     }
 }
