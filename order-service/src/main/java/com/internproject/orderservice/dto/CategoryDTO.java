@@ -1,4 +1,4 @@
-package com.internproject.orderservice.dto.product;
+package com.internproject.orderservice.dto;
 
 import lombok.*;
 

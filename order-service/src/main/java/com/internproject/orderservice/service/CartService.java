@@ -1,7 +1,7 @@
 package com.internproject.orderservice.service;
 
 import com.internproject.orderservice.dto.CartDTO;
-import com.internproject.orderservice.dto.product.ProductDTO;
+import com.internproject.orderservice.dto.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.exception.CartException;
 import com.internproject.orderservice.exception.CartNotFoundException;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

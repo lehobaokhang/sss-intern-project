@@ -1,7 +1,7 @@
 package com.internproject.shippingservice.controller;
 
-import com.internproject.shippingservice.config.JwtUtils;
 import com.internproject.shippingservice.dto.RatingDTO;
+import com.internproject.shippingservice.service.Facade;
 import com.internproject.shippingservice.service.RatingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,27 +16,26 @@ import java.util.List;
 @RequestMapping("/rating")
 @Api(value = "Rating Controller", description = "Rating Controller")
 public class RatingController {
-        private RatingService ratingService;
+    private Facade facade;
 
     @Autowired
-    public RatingController(RatingService ratingService) {
-        this.ratingService = ratingService;
+    public RatingController(RatingService ratingService,
+                            Facade facade) {
+        this.facade = facade;
     }
 
     @PostMapping
     @ApiOperation(value = "Add new rating for product which customer has been buy and complete")
     public ResponseEntity<String> addRating(@RequestBody RatingDTO ratingDTO,
                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        ratingService.addRating(ratingDTO, authorizationHeader);
+        facade.addRating(ratingDTO, authorizationHeader);
         return ResponseEntity.ok("Add rating complete");
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get all rating of one product")
     public ResponseEntity<List<RatingDTO>> getAll(@PathVariable String id) {
-        List<RatingDTO> ratings = ratingService.getAll(id);
+        List<RatingDTO> ratings = facade.getAllRatingByProductId(id);
         return ResponseEntity.ok(ratings);
     }
-
-
 }

@@ -50,4 +50,10 @@ public class UserController {
         userFacade.updateUser(userDetailDTO, authorizationHeader);
         return ResponseEntity.ok("Update user's information successful");
     }
+
+    @GetMapping("/get-district/{id}")
+    public ResponseEntity<Integer> getDistrict(@PathVariable String id) {
+        int district = userFacade.getDistrict(id);
+        return ResponseEntity.ok(district);
+    }
 }

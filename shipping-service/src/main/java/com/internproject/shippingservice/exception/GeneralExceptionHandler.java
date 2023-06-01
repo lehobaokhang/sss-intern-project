@@ -40,4 +40,9 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> ratingException(RatingException e) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
+
+    @ExceptionHandler(DistrictNotFoundException.class)
+    public ResponseEntity<HttpResponse> districtNotFoundException(DistrictNotFoundException e) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
 }

@@ -1,6 +1,5 @@
-package com.internproject.orderservice.dto.product;
+package com.internproject.orderservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Data

@@ -101,4 +101,9 @@ public class UserFacade {
         }
         userService.updateUser(userDetailDTO, id);
     }
+
+    public int getDistrict(String id) {
+        UserDTO user = userService.getUserById(id);
+        return user.getUserDetailDTO().getDistrictID();
+    }
 }

@@ -1,22 +1,16 @@
 package com.internproject.shippingservice.service;
 
-import com.internproject.shippingservice.dto.CreateShipRequest;
-import com.internproject.shippingservice.dto.OrderDTO;
 import com.internproject.shippingservice.dto.ShipDTO;
-import com.internproject.shippingservice.dto.TrackingDTO;
 import com.internproject.shippingservice.entity.District;
 import com.internproject.shippingservice.entity.Ship;
 import com.internproject.shippingservice.entity.Tracking;
-import com.internproject.shippingservice.exception.ShipException;
 import com.internproject.shippingservice.exception.ShipNotFoundException;
 import com.internproject.shippingservice.exception.TrackingException;
 import com.internproject.shippingservice.mapper.ShipMapstruct;
-import com.internproject.shippingservice.repository.IDistrictRepository;
 import com.internproject.shippingservice.repository.IShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,18 +19,12 @@ import java.util.stream.Collectors;
 public class ShipService {
     private IShipRepository shipRepository;
     private ShipMapstruct shipMapstruct;
-    private IDistrictRepository districtRepository;
-    private OrderService orderService;
 
     @Autowired
     public ShipService(IShipRepository shipRepository,
-                       ShipMapstruct shipMapstruct,
-                       IDistrictRepository districtRepository,
-                       OrderService orderService) {
+                       ShipMapstruct shipMapstruct) {
         this.shipRepository = shipRepository;
         this.shipMapstruct = shipMapstruct;
-        this.districtRepository = districtRepository;
-        this.orderService = orderService;
     }
 
     public void createShip(List<ShipDTO> ships) {
@@ -49,14 +37,13 @@ public class ShipService {
         }
     }
 
-    public void updateTracking(String id, int districtId) {
+    public void updateTracking(String id, District district) {
         Optional<Ship> shipOptional = shipRepository.findById(id);
         if (!shipOptional.isPresent()) {
             throw new ShipNotFoundException(String.format("Can not find any shipping information from id: %s", id));
         }
         Ship ship = shipOptional.get();
         Tracking tracking = new Tracking();
-        District district = districtRepository.findById(districtId).get();
         tracking.setDistrict(district);
         ship.addTracking(tracking);
         try {
@@ -66,7 +53,7 @@ public class ShipService {
         }
     }
 
-    public ShipDTO checkShipStatus(String id) {
+    public ShipDTO trackingOrder(String id) {
         Optional<Ship> shipOptional = shipRepository.findById(id);
         if (!shipOptional.isPresent()) {
             throw new ShipNotFoundException(String.format("Can not find any shipping information from id: %s", id));
@@ -75,34 +62,31 @@ public class ShipService {
         ShipDTO shipDTO = shipMapstruct.toShipDto(ship);
         for (int i = 0; i < shipDTO.getTracking().size() ; i++) {
             Tracking currentTracking = ship.getTracking().get(i);
-            String trackingAddress = String.format("%s, %s", currentTracking.getDistrict().getDistrictFullName(), currentTracking.getDistrict().getProvince().getProvinceFullName());
+            String trackingAddress =
+                    String.format("%s, %s", currentTracking.getDistrict().getDistrictFullName(), currentTracking.getDistrict().getProvince().getProvinceFullName());
             shipDTO.getTracking().get(i).setTrackingDistrict(trackingAddress);
         }
         return shipDTO;
     }
 
-    public void completeShip(String id, String userId, String authorizationHeader) {
+    public Ship findShipById(String id) {
         Optional<Ship> shipOptional = shipRepository.findById(id);
         if (!shipOptional.isPresent()) {
             throw new ShipNotFoundException(String.format("Can not find any shipping information from id: %s", id));
         }
-        Ship ship = shipOptional.get();
-        OrderDTO orderDTO = orderService.getOrder(ship.getOrderId(), authorizationHeader);
-        if (!orderDTO.getUserId().equals(userId)) {
-            throw new ShipException("Can not update status order of another user");
-        }
+        return shipOptional.get();
+    }
+
+    public void updateShipStatus(Ship ship, String status) {
         ship.setStatus("COMPLETE");
         shipRepository.save(ship);
     }
 
-    public boolean isDistrictValid(int district, int province) {
-        Optional<District> districtOptional = districtRepository.findById(district);
-        if (!districtOptional.isPresent()) {
-            return false;
+    public Ship findShipByOrderId(String orderId) {
+        Optional<Ship> shipOptional = shipRepository.findByOrderId(orderId);
+        if (!shipOptional.isPresent()) {
+            throw new ShipNotFoundException(String.format("Can not find any ship with order's id: %s", orderId));
         }
-        if (districtOptional.get().getProvince().getId() != province) {
-            return false;
-        }
-        return true;
+        return shipOptional.get();
     }
 }

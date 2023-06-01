@@ -1,17 +1,14 @@
 package com.internproject.orderservice.service;
 
-import com.internproject.orderservice.dto.IdsRequest;
 import com.internproject.orderservice.dto.OrderDTO;
-import com.internproject.orderservice.dto.product.ProductDTO;
+import com.internproject.orderservice.dto.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.entity.OrderProduct;
 import com.internproject.orderservice.exception.OrderException;
 import com.internproject.orderservice.exception.OrderNotFoundException;
 import com.internproject.orderservice.mapper.OrderMapstruct;
-import com.internproject.orderservice.repository.ICartRepository;
 import com.internproject.orderservice.repository.IOrderRepository;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +17,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private ProductService productService;
     private IOrderRepository orderRepository;
-    private ICartRepository cartRepository;
     private OrderMapstruct orderMapstruct;
 
     @Autowired
-    public OrderService(ProductService productService,
-                        IOrderRepository orderRepository,
-                        ICartRepository cartRepository,
+    public OrderService(IOrderRepository orderRepository,
                         OrderMapstruct orderMapstruct) {
-        this.productService = productService;
         this.orderRepository = orderRepository;
-        this.cartRepository = cartRepository;
         this.orderMapstruct = orderMapstruct;
     }
 

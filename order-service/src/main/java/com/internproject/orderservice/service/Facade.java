@@ -4,7 +4,7 @@ import com.internproject.orderservice.config.JwtUtils;
 import com.internproject.orderservice.dto.CartDTO;
 import com.internproject.orderservice.dto.OrderDTO;
 import com.internproject.orderservice.dto.ShipDTO;
-import com.internproject.orderservice.dto.product.ProductDTO;
+import com.internproject.orderservice.dto.ProductDTO;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.exception.CartException;
