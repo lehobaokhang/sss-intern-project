@@ -39,12 +39,11 @@ public class Facade {
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
-        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
-        String id = jwtUtils.getIdFromJwtToken(jwt);
+        String id = jwtUtils.getIdFromJwtToken(authorizationHeader);
         return id;
     }
     // Cart Facade
-    public void addCart(CartDTO cartDTO,
+    public Cart addCart(CartDTO cartDTO,
                         String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
         ProductDTO productDTO = productService.getProduct(cartDTO.getProductId());
@@ -54,7 +53,8 @@ public class Facade {
         if (productDTO.getSellerId().equals(userId)) {
             throw new CartException("Can not add product of yourself to your cart");
         }
-        cartService.addCart(cartDTO, userId, productDTO);
+        Cart cart = cartService.addCart(cartDTO, userId, productDTO);
+        return cart;
     }
 
     public List<CartDTO> getAllCart(String authorizationHeader) {

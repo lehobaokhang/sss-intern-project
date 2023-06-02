@@ -45,7 +45,8 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("username", String.class);
     }
 
-    public String getIdFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("userId", String.class);
+    public String getIdFromJwtToken(String authorizationHeader) {
+        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().get("userId", String.class);
     }
 }
