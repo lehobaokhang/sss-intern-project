@@ -36,8 +36,7 @@ public class UserFacade {
     }
 
     private String getIdFromToken(String authorizationHeader) {
-        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
-        String id = jwtUtils.getIdFromJwtToken(jwt);
+        String id = jwtUtils.getIdFromJwtToken(authorizationHeader);
         return id;
     }
 
