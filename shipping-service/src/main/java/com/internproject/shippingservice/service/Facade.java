@@ -38,8 +38,7 @@ public class Facade {
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
-        String jwt = authorizationHeader.substring(7, authorizationHeader.length());
-        String id = jwtUtils.getIdFromJwtToken(jwt);
+        String id = jwtUtils.getIdFromJwtToken(authorizationHeader);
         return id;
     }
 

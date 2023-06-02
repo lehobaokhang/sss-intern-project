@@ -397,5 +397,4 @@ public class FacadeTest {
         when(orderService.getOrderById(productId, userId)).thenThrow(OrderNotFoundException.class);
         assertThrows(OrderNotFoundException.class, () -> facade.getOrderById(productId, authorizationHeader));
     }
-
 }
