@@ -29,12 +29,12 @@ public class ShipController {
         this.facade = facade;
     }
 
-    @PostMapping
-    @ApiOperation(value = "Create new ship label for order")
-    public ResponseEntity<String> createShip(@RequestBody List<ShipDTO> ships) {
-        facade.createShip(ships);
-        return ResponseEntity.ok("Create new ship label successful");
-    }
+//    @PostMapping
+//    @ApiOperation(value = "Create new ship label for order")
+//    public ResponseEntity<String> createShip(@RequestBody List<ShipDTO> ships) {
+//        facade.createShip(ships);
+//        return ResponseEntity.ok("Create new ship label successful");
+//    }
 
     @PutMapping("/{id}")
     @ApiOperation(value = "Update tracking. This feature just used by SHIPPER role")

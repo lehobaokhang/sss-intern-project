@@ -26,6 +26,23 @@ spring:
       initialize-schema: always
     job:
       enabled: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: orderQueue
+      rabbit:
+        bindings:
+          input:
+            consumer:
+              exchangeType: topic
+              routingKey: orderQueue
+              exchangeName: rabbitmq.exchange
 ---
 jwt:
   secretKey: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'

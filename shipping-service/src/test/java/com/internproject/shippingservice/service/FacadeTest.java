@@ -42,23 +42,23 @@ public class FacadeTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    public void createShip_ShouldCreateShip() {
-        List<ShipDTO> ships = new ArrayList<>();
-        ShipDTO ship1 = ShipDTO.builder()
-                .orderId("orderId1")
-                .status("SHIPPING")
-                .build();
-        ShipDTO ship2 = ShipDTO.builder()
-                .orderId("orderId2")
-                .status("SHIPPING")
-                .build();
-        ships.add(ship1);
-        ships.add(ship2);
-
-        facade.createShip(ships);
-        verify(shipService).createShip(ships);
-    }
+//    @Test
+//    public void createShip_ShouldCreateShip() {
+//        List<ShipDTO> ships = new ArrayList<>();
+//        ShipDTO ship1 = ShipDTO.builder()
+//                .orderId("orderId1")
+//                .status("SHIPPING")
+//                .build();
+//        ShipDTO ship2 = ShipDTO.builder()
+//                .orderId("orderId2")
+//                .status("SHIPPING")
+//                .build();
+//        ships.add(ship1);
+//        ships.add(ship2);
+//
+//        facade.createShip(ships);
+//        verify(shipService).createShip(ships);
+//    }
 
     @Test
     public void updateTracking_ShouldUpdate() {

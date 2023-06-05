@@ -23,6 +23,23 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: orderQueue
+      rabbit:
+        bindings:
+          output:
+            producer:
+              exchangeType: topic
+              routingKey: orderQueue
+              exchangeName: rabbitmq.exchange
 ---
 app:
   jwtSecret: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'

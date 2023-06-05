@@ -24,18 +24,21 @@ public class Facade {
     private ProductService productService;
     private ShipService shipService;
     private OrderService orderService;
+    private OrderMessageSender orderMessageSender;
 
     @Autowired
     public Facade(JwtUtils jwtUtils,
                   CartService cartService,
                   ProductService productService,
                   ShipService shipService,
-                  OrderService orderService) {
+                  OrderService orderService,
+                  OrderMessageSender orderMessageSender) {
         this.jwtUtils = jwtUtils;
         this.cartService = cartService;
         this.productService = productService;
         this.shipService = shipService;
         this.orderService = orderService;
+        this.orderMessageSender = orderMessageSender;
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
@@ -97,12 +100,13 @@ public class Facade {
         List<ProductDTO> products = productService.getProductByIds(productIds, authorizationHeader);
         List<Order> orders = orderService.saveOrder(carts, products);
         Map<String, Integer> quantityDecrease = carts.stream().collect(Collectors.toMap(Cart::getProductId, Cart::getQuantity));
-        cartService.deleteAllByIds(cartIds);
+//        cartService.deleteAllByIds(cartIds);
         productService.decreaseQuantity(quantityDecrease, authorizationHeader);
 
         List<ShipDTO> ships =
             orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
-        shipService.createShip(ships, authorizationHeader);
+//        shipService.createShip(ships, authorizationHeader);
+        orderMessageSender.sendOrderMessage(ships);
     }
 
     public List<OrderDTO> getAllOrder(String authorizationHeader) {

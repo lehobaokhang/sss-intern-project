@@ -43,9 +43,9 @@ public class Facade {
     }
 
     // Ship Facade
-    public void createShip(List<ShipDTO> ships) {
-        shipService.createShip(ships);
-    }
+//    public void createShip(List<ShipDTO> ships) {
+//        shipService.createShip(ships);
+//    }
 
     public void updateTracking(String id, String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
