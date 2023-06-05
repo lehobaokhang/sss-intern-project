@@ -11,11 +11,14 @@ import java.util.Map;
 @FeignClient(name = "PRODUCT-SERVICE")
 public interface ProductService {
     @GetMapping("/product/{id}")
-    ProductDTO getProduct(@PathVariable("id") String id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader);
+    ProductDTO getProduct(@PathVariable("id") String id,
+                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader);
 
     @PostMapping("/product/get-all-by-id")
-    List<ProductDTO> getProductByIds(@RequestBody List<String> request);
+    List<ProductDTO> getProductByIds(@RequestBody List<String> request,
+                                     @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader);
 
     @PostMapping("/product/decrease-quantity")
-    void decreaseQuantity(@RequestBody Map<String, Integer> request);
+    void decreaseQuantity(@RequestBody Map<String, Integer> request,
+                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader);
 }

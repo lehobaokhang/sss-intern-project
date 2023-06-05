@@ -49,7 +49,7 @@ public class Facade {
 
     public void updateTracking(String id, String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
-        int districtId = userService.getDistrict(userId);
+        int districtId = userService.getDistrict(userId, authorizationHeader);
         District district = districtService.getDistrict(districtId);
         shipService.updateTracking(id, district);
     }

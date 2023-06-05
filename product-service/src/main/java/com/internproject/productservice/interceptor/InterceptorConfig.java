@@ -19,9 +19,6 @@ public class InterceptorConfig implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getServletPath().contains("/auth/login")) {
-            return true;
-        }
         String userId = getUserIdFromRequest(request);
         String methodName = getMethodName(handler);
         String logMessage = "User ID: " + userId + " | Method: " + methodName + " | ";
@@ -31,9 +28,6 @@ public class InterceptorConfig implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        if (request.getServletPath().contains("/auth/login")) {
-            return;
-        }
         String userId = getUserIdFromRequest(request);
         String methodName = getMethodName(handler);
         boolean success = response.getStatus() < 400;

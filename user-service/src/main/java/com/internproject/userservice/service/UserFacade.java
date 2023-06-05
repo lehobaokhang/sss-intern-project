@@ -91,7 +91,7 @@ public class UserFacade {
     public void updateUser(UserDetailDTO userDetailDTO,
                            String authorizationHeader) {
         String id = getIdFromToken(authorizationHeader);
-        boolean validAddress = shipService.isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID());
+        boolean validAddress = shipService.isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID(), authorizationHeader);
         if (!validAddress) {
             throw new AddressException("Address invalid");
         }

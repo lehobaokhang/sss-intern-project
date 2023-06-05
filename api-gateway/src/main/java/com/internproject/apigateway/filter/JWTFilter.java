@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 @Component
 public class JWTFilter extends AbstractGatewayFilterFactory<JWTFilter.Config> {
@@ -33,13 +37,21 @@ public class JWTFilter extends AbstractGatewayFilterFactory<JWTFilter.Config> {
                 // check jwt is in header or not
                 if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
                     LOGGER.error("Missing Authorization Header");
-                    throw new JWTNotFoundException("Missing Authorization Header");
+//                    throw new JWTNotFoundException("Missing Authorization Header");
+                    URI location = URI.create("/login/authentication");
+                    return Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
+                            .then(exchange.getResponse().setComplete())
+                            .then(Mono.fromRunnable(() -> exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, location.toString())));
                 }
 
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                     LOGGER.error("Missing Authorization Header");
-                    throw new JWTNotFoundException("Missing Authorization Header");
+//                    throw new JWTNotFoundException("Missing Authorization Header");
+                    URI location = URI.create("/login/authentication");
+                    return Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
+                            .then(exchange.getResponse().setComplete())
+                            .then(Mono.fromRunnable(() -> exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, location.toString())));
                 }
             }
 

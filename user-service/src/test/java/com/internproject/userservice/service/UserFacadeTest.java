@@ -222,14 +222,14 @@ public class UserFacadeTest {
 
         User user = new User();
 
-        when(shipService.isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID()))
+        when(shipService.isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID(), authorizationHeader))
                 .thenReturn(true);
         when(userService.updateUser(userDetailDTO, userId)).thenReturn(user);
 
         userFacade.updateUser(userDetailDTO, authorizationHeader);
 
         verify(jwtUtils).getIdFromJwtToken(authorizationHeader);
-        verify(shipService).isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID());
+        verify(shipService).isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID(), authorizationHeader);
         verify(userService).updateUser(userDetailDTO, userId);
     }
 
@@ -247,7 +247,7 @@ public class UserFacadeTest {
         userDetailDTO.setDob(new Date());
         when(jwtUtils.getIdFromJwtToken(authorizationHeader)).thenReturn(userId);
 
-        when(shipService.isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID()))
+        when(shipService.isDistrictValid(userDetailDTO.getDistrictID(), userDetailDTO.getProvinceID(), authorizationHeader))
                 .thenReturn(false);
 
         assertThrows(AddressException.class, () -> userFacade.updateUser(userDetailDTO, authorizationHeader));

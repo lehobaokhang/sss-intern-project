@@ -61,7 +61,7 @@ public class Facade {
         String userId = getIdFromBearerToken(authorizationHeader);
         List<CartDTO> carts = cartService.getAll(userId);
         List<String> productIds = carts.stream().map(cart -> cart.getProductId()).collect(Collectors.toList());
-        List<ProductDTO> productDTOList = productService.getProductByIds(productIds);
+        List<ProductDTO> productDTOList = productService.getProductByIds(productIds, authorizationHeader);
         for (int i = 0; i < carts.size(); i++) {
             ProductDTO currentProduct = productDTOList.get(i);
             carts.get(i).setProductName(currentProduct.getProductName());
@@ -96,15 +96,15 @@ public class Facade {
         }
 
         List<String> productIds = carts.stream().map(Cart::getProductId).collect(Collectors.toList());
-        List<ProductDTO> products = productService.getProductByIds(productIds);
+        List<ProductDTO> products = productService.getProductByIds(productIds, authorizationHeader);
         List<Order> orders = orderService.saveOrder(carts, products);
         Map<String, Integer> quantityDecrease = carts.stream().collect(Collectors.toMap(Cart::getProductId, Cart::getQuantity));
         cartService.deleteAllByIds(cartIds);
-        productService.decreaseQuantity(quantityDecrease);
+        productService.decreaseQuantity(quantityDecrease, authorizationHeader);
 
         List<ShipDTO> ships =
             orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
-        shipService.createShip(ships);
+        shipService.createShip(ships, authorizationHeader);
     }
 
     public List<OrderDTO> getAllOrder(String authorizationHeader) {

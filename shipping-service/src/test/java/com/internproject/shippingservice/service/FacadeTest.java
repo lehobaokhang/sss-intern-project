@@ -69,7 +69,7 @@ public class FacadeTest {
         District district = District.builder().id(districtId).build();
 
         when(jwtUtils.getIdFromJwtToken(anyString())).thenReturn(userId);
-        when(userService.getDistrict(userId)).thenReturn(districtId);
+        when(userService.getDistrict(userId, authorizationHeader)).thenReturn(districtId);
 
         when(districtService.getDistrict(districtId)).thenReturn(district);
 
@@ -86,7 +86,7 @@ public class FacadeTest {
         District district = District.builder().id(districtId).build();
 
         when(jwtUtils.getIdFromJwtToken(anyString())).thenReturn(userId);
-        when(userService.getDistrict(userId)).thenReturn(districtId);
+        when(userService.getDistrict(userId, authorizationHeader)).thenReturn(districtId);
 
         when(districtService.getDistrict(districtId)).thenThrow(DistrictNotFoundException.class);
         assertThrows(DistrictNotFoundException.class, () -> facade.updateTracking(id, authorizationHeader));

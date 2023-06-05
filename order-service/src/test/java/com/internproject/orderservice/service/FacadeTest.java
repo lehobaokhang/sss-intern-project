@@ -50,14 +50,14 @@ public class FacadeTest {
 
         ProductDTO productDTO = new ProductDTO();
         productDTO.setSellerId("seller id");
-        when(productService.getProduct(cartDTO.getProductId())).thenReturn(productDTO);
+        when(productService.getProduct(cartDTO.getProductId(), authorizationHeader)).thenReturn(productDTO);
 
         Cart cart = new Cart();
         when(cartService.addCart(cartDTO, userId, productDTO)).thenReturn(cart);
 
         Cart result = facade.addCart(cartDTO, authorizationHeader);
         verify(jwtUtils).getIdFromJwtToken(authorizationHeader);
-        verify(productService).getProduct(cartDTO.getProductId());
+        verify(productService).getProduct(cartDTO.getProductId(), authorizationHeader);
         verify(cartService).addCart(cartDTO, userId, productDTO);
         assertEquals(cart, result);
     }
@@ -75,7 +75,7 @@ public class FacadeTest {
 
         ProductDTO productDTO = new ProductDTO();
         productDTO.setSellerId("seller id");
-        when(productService.getProduct(cartDTO.getProductId()))
+        when(productService.getProduct(cartDTO.getProductId(), authorizationHeader))
                 .thenThrow(ProductNotFoundException.class);
 
         assertThrows(ProductNotFoundException.class,
@@ -95,7 +95,7 @@ public class FacadeTest {
 
         ProductDTO productDTO = new ProductDTO();
         productDTO.setSellerId("seller id");
-        when(productService.getProduct(cartDTO.getProductId()))
+        when(productService.getProduct(cartDTO.getProductId(), authorizationHeader))
                 .thenThrow(CartException.class);
 
         assertThrows(CartException.class,
@@ -121,7 +121,7 @@ public class FacadeTest {
 
         when(cartService.getAll(userId)).thenReturn(expectedCarts);
 
-        when(productService.getProductByIds(List.of("product123", "product456"))).thenReturn(
+        when(productService.getProductByIds(List.of("product123", "product456"), authorizationHeader)).thenReturn(
                 List.of(
                         ProductDTO.builder()
                                 .id("product123")
@@ -237,7 +237,7 @@ public class FacadeTest {
         product2.setProductName("Product 2");
         products.add(product1);
         products.add(product2);
-        when(productService.getProductByIds(productIds)).thenReturn(products);
+        when(productService.getProductByIds(productIds, authorizationHeader)).thenReturn(products);
 
         // Mock the behavior of OrderService
         List<Order> orders = new ArrayList<>();
@@ -254,11 +254,11 @@ public class FacadeTest {
 
         // Verify that the necessary methods were called with the correct arguments
         verify(cartService).deleteAllByIds(cartIds);
-        verify(productService).decreaseQuantity(Map.of("product123", 2, "product456", 1));
+        verify(productService).decreaseQuantity(Map.of("product123", 2, "product456", 1), authorizationHeader);
         verify(shipService).createShip(List.of(
                 ShipDTO.builder().orderId("order123").status("SHIPPING").build(),
                 ShipDTO.builder().orderId("order456").status("SHIPPING").build()
-        ));
+        ), authorizationHeader);
     }
 
     @Test

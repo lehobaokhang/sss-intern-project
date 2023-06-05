@@ -13,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class InterceptorConfig implements HandlerInterceptor {
@@ -20,10 +22,11 @@ public class InterceptorConfig implements HandlerInterceptor {
     private JwtUtils jwtUtils;
 
     private static final Logger logger = LoggerFactory.getLogger(InterceptorConfig.class);
+    private static final List<String> nonInterceptorPath = List.of("/auth/login", "/auth/register", "/auth/reset-password");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getServletPath().contains("/auth/login")) {
+        if (checkNonInterceptorPath(request)) {
             return true;
         }
         String userId = getUserIdFromRequest(request);
@@ -35,7 +38,7 @@ public class InterceptorConfig implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        if (request.getServletPath().contains("/auth/login")) {
+        if (checkNonInterceptorPath(request)) {
             return;
         }
         String userId = getUserIdFromRequest(request);
@@ -55,5 +58,15 @@ public class InterceptorConfig implements HandlerInterceptor {
 
     private String getMethodName(Object handler) {
         return handler.toString();
+    }
+
+    private boolean checkNonInterceptorPath(HttpServletRequest request) {
+        List<String> publicUrls = nonInterceptorPath.stream()
+                .filter((path) -> request.getServletPath().contains(path))
+                .collect(Collectors.toList());
+        if (!publicUrls.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 }
