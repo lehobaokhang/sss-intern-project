@@ -1,5 +1,6 @@
 package com.internproject.orderservice.service;
 
+import com.internproject.orderservice.config.feign.FeignClientConfig;
 import com.internproject.orderservice.dto.ProductDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "PRODUCT-SERVICE")
+@FeignClient(name = "PRODUCT-SERVICE", configuration = FeignClientConfig.class)
 public interface ProductService {
     @GetMapping("/product/{id}")
     ProductDTO getProduct(@PathVariable("id") String id,

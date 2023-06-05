@@ -45,4 +45,9 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> districtNotFoundException(DistrictNotFoundException e) {
         return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<HttpResponse> notFoundException(NotFoundException e) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
 }

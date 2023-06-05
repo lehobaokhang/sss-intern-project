@@ -47,9 +47,6 @@ public class Facade {
                         String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
         ProductDTO productDTO = productService.getProduct(cartDTO.getProductId(), authorizationHeader);
-        if (productDTO == null) {
-            throw new ProductNotFoundException(String.format("Can not find any product with id: %s", cartDTO.getProductId()));
-        }
         if (productDTO.getSellerId().equals(userId)) {
             throw new CartException("Can not add product of yourself to your cart");
         }
@@ -62,6 +59,7 @@ public class Facade {
         List<CartDTO> carts = cartService.getAll(userId);
         List<String> productIds = carts.stream().map(cart -> cart.getProductId()).collect(Collectors.toList());
         List<ProductDTO> productDTOList = productService.getProductByIds(productIds, authorizationHeader);
+
         for (int i = 0; i < carts.size(); i++) {
             ProductDTO currentProduct = productDTOList.get(i);
             carts.get(i).setProductName(currentProduct.getProductName());
