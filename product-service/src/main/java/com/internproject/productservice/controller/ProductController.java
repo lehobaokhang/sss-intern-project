@@ -50,8 +50,9 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get product by id")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable String id) {
-        ProductDTO product = productFacade.getProductById(id);
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable String id,
+                                                     @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        ProductDTO product = productFacade.getProductById(id, authorizationHeader);
         return ResponseEntity.ok(product);
     }
 

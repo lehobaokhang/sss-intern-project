@@ -30,16 +30,19 @@ public class SpringBatchConfig {
     private StepBuilderFactory stepBuilderFactory;
     private ICategoryRepository categoryRepository;
     private IProductRepository productRepository;
+    private ProductProcessor productProcessor;
 
     @Autowired
     public SpringBatchConfig(JobBuilderFactory jobBuilderFactory,
                              StepBuilderFactory stepBuilderFactory,
                              ICategoryRepository categoryRepository,
-                             IProductRepository productRepository) {
+                             IProductRepository productRepository,
+                             ProductProcessor productProcessor) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
+        this.productProcessor = productProcessor;
     }
 
     @Bean
@@ -112,11 +115,6 @@ public class SpringBatchConfig {
     }
 
     @Bean
-    public ProductProcessor productProcessor() {
-        return new ProductProcessor();
-    }
-
-    @Bean
     public RepositoryItemWriter<Product> productWriter() {
         RepositoryItemWriter<Product> writer = new RepositoryItemWriter<>();
         writer.setRepository(productRepository);
@@ -128,7 +126,7 @@ public class SpringBatchConfig {
     public Step productStep1() {
         return stepBuilderFactory.get("csv-step").<ProductCsv, Product>chunk(10)
                 .reader(productReader())
-                .processor(productProcessor())
+                .processor(productProcessor)
                 .writer(productWriter())
                 .taskExecutor(taskExecutor())
                 .build();

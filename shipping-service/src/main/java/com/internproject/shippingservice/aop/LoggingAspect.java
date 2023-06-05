@@ -1,8 +1,11 @@
-package com.internproject.userservice.aop;
+package com.internproject.shippingservice.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,25 +14,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import java.util.Arrays;
-
 @Aspect
 @Component
 public class LoggingAspect {
-    private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-    @Pointcut("execution(* com.internproject.userservice.service.*.*(..))")
-    public void servicePointCut(){}
+    private final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Pointcut("execution(* com.internproject.userservice.service.UserService.loadUserByUsername(..))")
-    public void loginPointCut(){}
+    @Pointcut("execution(* com.internproject.shippingservice.service.*.*(..))")
+    public void servicePointCut(){}
 
     @AfterThrowing(pointcut = "servicePointCut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        LOGGER.error("Exception in {}.{}() with cause = {}", joinPoint.getSignature().getDeclaringTypeName(),
+        logger.error("Exception in {}.{}() with cause = {}", joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(), e.getMessage());
     }
 
-    @Around("servicePointCut() && !loginPointCut()")
+    @Around("servicePointCut()")
     public Object logMethodExecutionTime(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -41,7 +40,7 @@ public class LoggingAspect {
         Object result = proceedingJoinPoint.proceed();
         stopWatch.stop();
 
-        LOGGER.info("Execution time of "
+        logger.info("Execution time of "
                 + methodSignature.getDeclaringType().getSimpleName()
                 + "." + methodSignature.getName() + " "
                 + ":: " + stopWatch.getTotalTimeMillis() + " ms");

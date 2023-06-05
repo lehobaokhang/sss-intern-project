@@ -47,9 +47,9 @@ public class ProductFacade {
         productService.saveProductImage(id, productImage, userId);
     }
 
-    public ProductDTO getProductById(String id) {
+    public ProductDTO getProductById(String id, String authorizationHeader) {
         ProductDTO product = productService.getProductById(id);
-        List<RatingDTO> ratingDTO = ratingService.getRates(product.getId());
+        List<RatingDTO> ratingDTO = ratingService.getRates(product.getId(), authorizationHeader);
         product.setRating(ratingDTO);
         return product;
     }

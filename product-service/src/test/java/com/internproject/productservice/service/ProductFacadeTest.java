@@ -124,25 +124,27 @@ public class ProductFacadeTest {
     @Test
     public void getProductById_ShouldReturnProductDTO() {
         String productId = "product Id";
+        String authorizationHeader = "Token <Bearer>";
         ProductDTO product = new ProductDTO();
         when(productService.getProductById(productId)).thenReturn(product);
 
         List<RatingDTO> ratings = new ArrayList<>();
-        when(ratingService.getRates(product.getId())).thenReturn(ratings);
+        when(ratingService.getRates(product.getId(), authorizationHeader)).thenReturn(ratings);
 
-        ProductDTO productResult = productFacade.getProductById(productId);
+        ProductDTO productResult = productFacade.getProductById(productId, authorizationHeader);
         verify(productService).getProductById(productId);
-        verify(ratingService).getRates(productResult.getId());
+        verify(ratingService).getRates(productResult.getId(), authorizationHeader);
         assertEquals(productResult, product);
     }
 
     @Test
     public void getProductById_ShouldThrowProductNotFoundException() {
         String productId = "product Id";
+        String authorizationHeader = "Token <Bearer>";
         ProductDTO product = new ProductDTO();
         when(productService.getProductById(productId)).thenThrow(ProductNotFoundException.class);
 
-        assertThrows(ProductNotFoundException.class, () -> productFacade.getProductById(productId));
+        assertThrows(ProductNotFoundException.class, () -> productFacade.getProductById(productId, authorizationHeader));
     }
 
     @Test

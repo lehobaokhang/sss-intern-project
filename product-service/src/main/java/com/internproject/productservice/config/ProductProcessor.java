@@ -7,10 +7,13 @@ import com.internproject.productservice.exception.CategoryNotFoundException;
 import com.internproject.productservice.repository.ICategoryRepository;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Component
 public class ProductProcessor implements ItemProcessor<ProductCsv, Product> {
     @Autowired
     private ICategoryRepository categoryRepository;
@@ -25,7 +28,7 @@ public class ProductProcessor implements ItemProcessor<ProductCsv, Product> {
         product.setProductName(productCsv.getProductName());
         product.setProductSize("");
         product.setProductWeight(0);
-        product.setSellerId(productCsv.getSellerId());
+        product.setSellerId("");
         product.setCategory(categoryOptional.get());
         product.setDeleted(false);
         product.setPrice(productCsv.getPrice());

@@ -46,7 +46,7 @@ public class Facade {
     public Cart addCart(CartDTO cartDTO,
                         String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
-        ProductDTO productDTO = productService.getProduct(cartDTO.getProductId());
+        ProductDTO productDTO = productService.getProduct(cartDTO.getProductId(), authorizationHeader);
         if (productDTO == null) {
             throw new ProductNotFoundException(String.format("Can not find any product with id: %s", cartDTO.getProductId()));
         }
