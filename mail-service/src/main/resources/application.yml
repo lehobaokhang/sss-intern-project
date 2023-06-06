@@ -4,11 +4,6 @@ server:
 spring:
   application:
     name: mail-service
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
   mail:
     properties:
       mail:
@@ -20,10 +15,28 @@ spring:
     username: khang.dacntt2@gmail.com
     password: afiqemoiyxzgthxg
     port: 587
-rabbitmq:
-  queue: user-service
-  exchange: rabbitmq.exchange
-  routingkey: user-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: mailQueue
+          group: mailConsumerGroup
+      rabbit:
+        bindings:
+          input:
+            consumer:
+              exchangeType: topic
+              bindingRoutingKey: mailQueue
+              exchangeName: rabbitmq.exchange
+#rabbitmq:
+#  queue: user-service
+#  exchange: rabbitmq.exchange
+#  routingkey: user-service
 ---
 eureka:
   client:

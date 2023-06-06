@@ -1,15 +1,11 @@
 package com.internproject.orderservice.service;
 
 import com.internproject.orderservice.config.JwtUtils;
-import com.internproject.orderservice.dto.CartDTO;
-import com.internproject.orderservice.dto.OrderDTO;
-import com.internproject.orderservice.dto.ShipDTO;
-import com.internproject.orderservice.dto.ProductDTO;
+import com.internproject.orderservice.dto.*;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
 import com.internproject.orderservice.exception.CartException;
 import com.internproject.orderservice.exception.OrderException;
-import com.internproject.orderservice.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +20,7 @@ public class Facade {
     private ProductService productService;
     private ShipService shipService;
     private OrderService orderService;
-    private OrderMessageSender orderMessageSender;
+    private MessageSender messageSender;
 
     @Autowired
     public Facade(JwtUtils jwtUtils,
@@ -32,13 +28,13 @@ public class Facade {
                   ProductService productService,
                   ShipService shipService,
                   OrderService orderService,
-                  OrderMessageSender orderMessageSender) {
+                  MessageSender messageSender) {
         this.jwtUtils = jwtUtils;
         this.cartService = cartService;
         this.productService = productService;
         this.shipService = shipService;
         this.orderService = orderService;
-        this.orderMessageSender = orderMessageSender;
+        this.messageSender = messageSender;
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
@@ -100,13 +96,12 @@ public class Facade {
         List<ProductDTO> products = productService.getProductByIds(productIds, authorizationHeader);
         List<Order> orders = orderService.saveOrder(carts, products);
         Map<String, Integer> quantityDecrease = carts.stream().collect(Collectors.toMap(Cart::getProductId, Cart::getQuantity));
-//        cartService.deleteAllByIds(cartIds);
+        cartService.deleteAllByIds(cartIds);
         productService.decreaseQuantity(quantityDecrease, authorizationHeader);
 
         List<ShipDTO> ships =
             orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
-//        shipService.createShip(ships, authorizationHeader);
-        orderMessageSender.sendOrderMessage(ships);
+        messageSender.sendOrderMessage(ships);
     }
 
     public List<OrderDTO> getAllOrder(String authorizationHeader) {

@@ -36,12 +36,13 @@ spring:
       bindings:
         input:
           destination: orderQueue
+          group: orderConsumerGroup
       rabbit:
         bindings:
           input:
             consumer:
               exchangeType: topic
-              routingKey: orderQueue
+              bindingRoutingKey: orderQueue
               exchangeName: rabbitmq.exchange
 ---
 jwt:

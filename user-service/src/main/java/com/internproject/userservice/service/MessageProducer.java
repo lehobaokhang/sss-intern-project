@@ -3,27 +3,29 @@ package com.internproject.userservice.service;
 import com.internproject.userservice.dto.request.SendMailRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
+@EnableBinding(Source.class)
 public class MessageProducer {
-    @Value("${rabbitmq.exchange}")
-    private String exchange;
-    @Value("${rabbitmq.routingkey}")
-    private String routingKey;
-    private RabbitTemplate rabbitTemplate;
     private static final Logger logger = LoggerFactory.getLogger(MessageProducer.class);
 
+    private Source source;
     @Autowired
-    public MessageProducer(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
+    public MessageProducer(Source source) {
+        this.source = source;
     }
 
     public void send(SendMailRequest sendMailRequest) {
+        Message<SendMailRequest> mailMessage = MessageBuilder.withPayload(sendMailRequest).build();
         logger.info(String.format("Send JSON message: %s", sendMailRequest.toString()));
-        rabbitTemplate.convertAndSend(exchange, routingKey, sendMailRequest);
+        source.output().send(mailMessage);
     }
 }

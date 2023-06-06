@@ -33,12 +33,13 @@ spring:
       bindings:
         output:
           destination: orderQueue
+          group: orderConsumerGroup
       rabbit:
         bindings:
           output:
             producer:
               exchangeType: topic
-              routingKey: orderQueue
+              bindingRoutingKey: orderQueue
               exchangeName: rabbitmq.exchange
 ---
 app:

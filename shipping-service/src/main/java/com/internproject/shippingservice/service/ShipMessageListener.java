@@ -17,7 +17,6 @@ public class ShipMessageListener {
     private ShipService shipService;
     public static final Logger logger = LoggerFactory.getLogger(ShipMessageListener.class);
 
-
     @Autowired
     public ShipMessageListener(ShipService shipService) {
         this.shipService = shipService;

@@ -14,11 +14,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -31,11 +26,24 @@ spring:
       initialize-schema: always
     job:
       enabled: false
-
-rabbitmq:
-  queue: user-service
-  exchange: rabbitmq.exchange
-  routingkey: user-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: mailQueue
+          group: mailConsumerGroup
+      rabbit:
+        bindings:
+          output:
+            producer:
+              exchangeType: topic
+              bindingRoutingKey: mailQueue
+              exchangeName: rabbitmq.exchange
 ---
 jwt:
   secretKey: 'YvWrvQ198TtPYQNBs6VyWJRdgtAVjQMq'

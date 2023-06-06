@@ -6,9 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.stereotype.Component;
 
 @Component
+@EnableBinding(Sink.class)
 public class MessageConsumer {
     private SendMailService sendMailService;
     public static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
@@ -18,7 +22,7 @@ public class MessageConsumer {
         this.sendMailService = sendMailService;
     }
 
-    @RabbitListener(queues = {"${rabbitmq.queue}"})
+    @StreamListener(Sink.INPUT)
     public void receiver(EmailDetails emailDetails) {
         logger.info(String.format("Receive JSON message queue -> %s", emailDetails.toString()));
         sendMailService.sendEmail(emailDetails);
