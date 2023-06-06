@@ -4,6 +4,7 @@ import com.internproject.orderservice.config.JwtUtils;
 import com.internproject.orderservice.dto.*;
 import com.internproject.orderservice.entity.Cart;
 import com.internproject.orderservice.entity.Order;
+import com.internproject.orderservice.enumeration.ShipStatusEnum;
 import com.internproject.orderservice.exception.CartException;
 import com.internproject.orderservice.exception.OrderException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ public class Facade {
     private JwtUtils jwtUtils;
     private CartService cartService;
     private ProductService productService;
-    private ShipService shipService;
     private OrderService orderService;
     private MessageSender messageSender;
 
@@ -26,13 +26,11 @@ public class Facade {
     public Facade(JwtUtils jwtUtils,
                   CartService cartService,
                   ProductService productService,
-                  ShipService shipService,
                   OrderService orderService,
                   MessageSender messageSender) {
         this.jwtUtils = jwtUtils;
         this.cartService = cartService;
         this.productService = productService;
-        this.shipService = shipService;
         this.orderService = orderService;
         this.messageSender = messageSender;
     }
@@ -100,7 +98,8 @@ public class Facade {
         productService.decreaseQuantity(quantityDecrease, authorizationHeader);
 
         List<ShipDTO> ships =
-            orders.stream().map(order -> ShipDTO.builder().orderId(order.getId()).status("SHIPPING").build()).collect(Collectors.toList());
+            orders.stream().map(order -> ShipDTO.builder().orderId(order.getId())
+                    .status(ShipStatusEnum.SHIPPING.getStatus()).build()).collect(Collectors.toList());
         messageSender.sendOrderMessage(ships);
     }
 

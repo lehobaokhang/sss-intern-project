@@ -11,7 +11,7 @@ import java.util.List;
 
 @FeignClient(name = "SHIP-SERVICE")
 public interface RatingService {
-    @GetMapping("/rating/{id}")
+    @GetMapping("/rate/{id}")
     List<RatingDTO> getRates(@PathVariable("id") String id,
                              @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeaders);
 }

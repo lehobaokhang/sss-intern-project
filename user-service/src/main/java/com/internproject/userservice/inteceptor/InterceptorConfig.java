@@ -22,7 +22,7 @@ public class InterceptorConfig implements HandlerInterceptor {
     private JwtUtils jwtUtils;
 
     private static final Logger logger = LoggerFactory.getLogger(InterceptorConfig.class);
-    private static final List<String> nonInterceptorPath = List.of("/auth/login", "/auth/register", "/auth/reset-password");
+    private static final List<String> nonInterceptorPath = List.of("/auth/login", "/auth/register", "/auth/reset-password", "/auth/importRoles", "/auth/importUsers");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

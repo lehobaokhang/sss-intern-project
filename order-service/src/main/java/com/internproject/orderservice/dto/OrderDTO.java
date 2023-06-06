@@ -1,5 +1,6 @@
 package com.internproject.orderservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.Date;
@@ -16,5 +17,6 @@ public class OrderDTO {
     private int priceTotal;
     private int shippingFee;
     private Date createdAt;
+    @JsonProperty("orderProducts")
     private List<OrderProductDTO> orderProductsDTO;
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rating")
+@RequestMapping("/rate")
 @Api(value = "Rating Controller", description = "Rating Controller")
 public class RatingController {
     private Facade facade;

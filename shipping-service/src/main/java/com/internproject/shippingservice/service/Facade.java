@@ -6,6 +6,7 @@ import com.internproject.shippingservice.dto.RatingDTO;
 import com.internproject.shippingservice.dto.ShipDTO;
 import com.internproject.shippingservice.entity.District;
 import com.internproject.shippingservice.entity.Ship;
+import com.internproject.shippingservice.enumeration.ShipStatusEnum;
 import com.internproject.shippingservice.exception.RatingException;
 import com.internproject.shippingservice.exception.ShipException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class Facade {
         if (!orderDTO.getUserId().equals(userId)) {
             throw new ShipException("Can not update status order of another user");
         }
-        shipService.updateShipStatus(ship, "COMPLETE");
+        shipService.updateShipStatus(ship, ShipStatusEnum.COMPLETE.getStatus());
     }
 
     public boolean isDistrictValid(int district, int province) {
@@ -82,7 +83,7 @@ public class Facade {
             throw new RatingException("If you want to rating this product, you must buy this product yet");
         }
         Ship ship = shipService.findShipByOrderId(orderId);
-        if (!ship.getStatus().equals("COMPLETE")) {
+        if (!ship.getStatus().equals(ShipStatusEnum.COMPLETE.getStatus())) {
             throw new RatingException("This order must complete shipping before rating");
         }
         ratingService.addRating(ratingDTO, userId);

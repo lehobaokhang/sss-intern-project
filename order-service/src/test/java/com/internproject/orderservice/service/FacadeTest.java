@@ -26,7 +26,7 @@ public class FacadeTest {
     @Mock
     private ProductService productService;
     @Mock
-    private ShipService shipService;
+    private MessageSender messageSender;
     @Mock
     private OrderService orderService;
     @InjectMocks
@@ -255,10 +255,10 @@ public class FacadeTest {
         // Verify that the necessary methods were called with the correct arguments
         verify(cartService).deleteAllByIds(cartIds);
         verify(productService).decreaseQuantity(Map.of("product123", 2, "product456", 1), authorizationHeader);
-        verify(shipService).createShip(List.of(
+        verify(messageSender).sendOrderMessage(List.of(
                 ShipDTO.builder().orderId("order123").status("SHIPPING").build(),
                 ShipDTO.builder().orderId("order456").status("SHIPPING").build()
-        ), authorizationHeader);
+        ));
     }
 
     @Test

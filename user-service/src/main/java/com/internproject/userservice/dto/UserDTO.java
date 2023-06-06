@@ -1,6 +1,7 @@
 package com.internproject.userservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.internproject.userservice.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class UserDTO {
     private String password;
     private String email;
     private Timestamp createdAt;
+    @JsonProperty("userDetail")
     private UserDetailDTO userDetailDTO;
     @JsonIgnore
     private Set<Role> roles;

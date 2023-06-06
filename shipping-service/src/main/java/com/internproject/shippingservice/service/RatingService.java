@@ -2,9 +2,11 @@ package com.internproject.shippingservice.service;
 
 import com.internproject.shippingservice.dto.RatingDTO;
 import com.internproject.shippingservice.entity.Rating;
+import com.internproject.shippingservice.exception.RatingException;
 import com.internproject.shippingservice.mapper.RatingMapstruct;
 import com.internproject.shippingservice.repository.IRatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +26,11 @@ public class RatingService {
     public void addRating(RatingDTO ratingDTO, String userId) {
         Rating rating = ratingMapstruct.toRating(ratingDTO);
         rating.setUserId(userId);
-        ratingRepository.save(rating);
+        try {
+            ratingRepository.save(rating);
+        } catch (DataIntegrityViolationException e) {
+            throw new RatingException("You have already rate this product");
+        }
     }
 
     public List<RatingDTO> getAll(String id) {
