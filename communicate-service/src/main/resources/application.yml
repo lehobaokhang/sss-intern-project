@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: communicate-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      bindings:
+        mailInput:
+          destination: mailQueue
+          group: mailConsumerGroup
+        orderInput:
+          destination: orderQueue
+          group: orderConsumerGroup
+        mailOutput:
+          destination: mailQueue
+          group: mailConsumerGroup
+        orderOutput:
+          destination: orderQueue
+          group: orderConsumerGroup
+      rabbit:
+        bindings:
+          mailInput:
+            consumer:
+              exchangeType: topic
+              bindingRoutingKey: mailQueue
+              exchangeName: rabbitmq.exchange
+          orderInput:
+            consumer:
+              exchangeType: topic
+              bindingRoutingKey: orderQueue
+              exchangeName: rabbitmq.exchange
+          mailOutput:
+            producer:
+              exchangeType: topic
+              bindingRoutingKey: mailQueue
+              exchangeName: rabbitmq.exchange
+          orderOutput:
+            producer:
+              exchangeType: topic
+              bindingRoutingKey: orderQueue
+              exchangeName: rabbitmq.exchange
+logging:
+  level:
+    com:
+      internproject:
+        communicateservice:
+          service: DEBUG
+server:
+  port: 8086
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
