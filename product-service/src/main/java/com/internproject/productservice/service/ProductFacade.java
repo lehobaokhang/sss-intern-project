@@ -41,8 +41,8 @@ public class ProductFacade {
     }
 
     public void saveProductImage(MultipartFile productImage,
-                                String id,
-                                String authorizationHeader) {
+                                 String id,
+                                 String authorizationHeader) {
         String userId = getIdFromToken(authorizationHeader);
         productService.saveProductImage(id, productImage, userId);
     }
