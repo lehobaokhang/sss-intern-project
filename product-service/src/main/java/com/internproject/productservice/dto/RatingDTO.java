@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class RatingDTO {
     private String userId;
-    private int rating;
+    private int rate;
     private String review;
 }

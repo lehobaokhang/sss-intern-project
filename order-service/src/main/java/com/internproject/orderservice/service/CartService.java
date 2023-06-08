@@ -17,13 +17,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class CartService {
-    private ProductService productService;
     private ICartRepository cartRepository;
     private CartMapstruct cartMapstruct;
 
     @Autowired
-    public CartService(ProductService productService, ICartRepository cartRepository, CartMapstruct cartMapstruct) {
-        this.productService = productService;
+    public CartService(ICartRepository cartRepository,
+                       CartMapstruct cartMapstruct) {
         this.cartRepository = cartRepository;
         this.cartMapstruct = cartMapstruct;
     }
@@ -42,8 +41,7 @@ public class CartService {
 
     public List<CartDTO> getAll(String userId) {
         List<Cart> carts = cartRepository.findByUserId(userId);
-        List<CartDTO> cartsReturn = carts.stream().map(cart -> cartMapstruct.toCartDTO(cart)).collect(Collectors.toList());
-        return cartsReturn;
+        return carts.stream().map(cart -> cartMapstruct.toCartDTO(cart)).collect(Collectors.toList());
     }
 
     @Transactional

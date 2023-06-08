@@ -1,6 +1,5 @@
 package com.internproject.apigateway.filter;
 
-import com.internproject.apigateway.exception.JWTNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,6 @@ public class JWTFilter extends AbstractGatewayFilterFactory<JWTFilter.Config> {
                 // check jwt is in header or not
                 if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
                     LOGGER.error("Missing Authorization Header");
-//                    throw new JWTNotFoundException("Missing Authorization Header");
                     URI location = URI.create("/login/authentication");
                     return Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
                             .then(exchange.getResponse().setComplete())
@@ -47,7 +45,6 @@ public class JWTFilter extends AbstractGatewayFilterFactory<JWTFilter.Config> {
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                     LOGGER.error("Missing Authorization Header");
-//                    throw new JWTNotFoundException("Missing Authorization Header");
                     URI location = URI.create("/login/authentication");
                     return Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
                             .then(exchange.getResponse().setComplete())

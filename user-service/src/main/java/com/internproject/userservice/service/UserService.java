@@ -10,13 +10,9 @@ import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.entity.UserDetail;
 import com.internproject.userservice.exception.*;
-import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.mapper.UserMapstruct;
-import com.internproject.userservice.repository.IRoleRepository;
 import com.internproject.userservice.repository.IUserRepository;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -48,8 +43,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
-        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
-        return userDetails;
+        return UserDetailsImpl.build(user);
     }
 
     public boolean existsByUserName(String username) {
@@ -77,20 +71,12 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDTO getMe(String userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException("User not found");
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         return userMapstruct.toUserDTO(user);
     }
 
     public UserDTO getUserById(String id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException("Can not find any user with id: " + id);
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Can not find any user with id: " + id));
         UserDTO userDTO = userMapstruct.toUserDTO(user);
         userDTO.setUsername(null);
         userDTO.setCreatedAt(null);
@@ -104,12 +90,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User updateUser(UserDetailDTO userDetailDTO, String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Can not find user with id: " + userId + " for update"));
         UserDetail userDetail = userMapstruct.toUserDetail(userDetailDTO);
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException("Can not find user with id: " + userId + " for update");
-        }
-        User user = userOptional.get();
         userDetail.setId(user.getUserDetail().getId());
         user.setUserDetail(userDetail);
         userRepository.save(user);
@@ -117,21 +99,13 @@ public class UserService implements UserDetailsService {
     }
 
     public void addRoleForUser(String id, Role role) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException("Can not find any user with id: " + id);
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Can not find any user with id: " + id));
         user.addRole(role);
         userRepository.save(user);
     }
 
     public SendMailRequest changePassword(ChangePasswordRequest changePasswordRequest, String id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException("Can not find any user with id :" + id);
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Can not find any user with id :" + id));
         if (!user.getId().equals(id)) {
             throw new DoOnOtherUserInformationException("Can not chang information of another user");
         }
@@ -152,11 +126,8 @@ public class UserService implements UserDetailsService {
     }
 
     public SendMailRequest resetPassword(ResetPasswordRequest request) {
-        Optional<User> userOptional = userRepository.findByUsernameOrEmail(request.getUsername(), request.getEmail());
-        if (!userOptional.isPresent()) {
-            throw new UserNotFoundException(String.format("Can not find any user with username '%s' or email '%s'", request.getUsername(), request.getEmail()));
-        }
-        User user = userOptional.get();
+        User user = userRepository.findByUsernameOrEmail(request.getUsername(), request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException(String.format("Can not find any user with username '%s' or email '%s'", request.getUsername(), request.getEmail())));
         String newPassword = generatePassword();
         user.setPassword(bCryptPasswordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -164,7 +135,7 @@ public class UserService implements UserDetailsService {
                 user.getEmail(),
                 "NEW PASSWORD",
                 user.getUserDetail().getFullName(),
-                String.format("New password of your account is: %s\nPlease change your password as soon as you receive this email", newPassword)
+                String.format("New password of your account is: %s%nPlease change your password as soon as you receive this email", newPassword)
         );
     }
 

@@ -24,7 +24,7 @@ public class ShipMessageListener {
 
     @StreamListener(Sink.INPUT)
     public void receiveOrderMessage(List<ShipDTO> ships) {
-        logger.info(String.format("Receive List<ShipDTO> from message queue -> size: %d", ships.size()));
+        logger.info("Receive List<ShipDTO> from message queue -> size: {}", ships.size());
         shipService.createShip(ships);
     }
 }

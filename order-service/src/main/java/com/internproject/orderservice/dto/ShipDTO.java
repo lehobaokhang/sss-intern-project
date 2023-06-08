@@ -2,8 +2,6 @@ package com.internproject.orderservice.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

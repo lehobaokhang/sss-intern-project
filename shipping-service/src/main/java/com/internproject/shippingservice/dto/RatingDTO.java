@@ -11,6 +11,6 @@ public class RatingDTO {
     private String id;
     private String userId;
     private String productId;
-    private int rating;
+    private int rate;
     private String review;
 }

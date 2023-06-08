@@ -4,6 +4,7 @@ import com.internproject.userservice.dto.request.UserCsv;
 import com.internproject.userservice.entity.Role;
 import com.internproject.userservice.entity.User;
 import com.internproject.userservice.entity.UserDetail;
+import com.internproject.userservice.exception.RoleNotFoundException;
 import com.internproject.userservice.repository.IRoleRepository;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 public class UserProcessor implements ItemProcessor<UserCsv, User> {
     @Autowired
@@ -50,8 +50,8 @@ public class UserProcessor implements ItemProcessor<UserCsv, User> {
             List<Role> roles = roleRepository.findAll();
             user.setRoles(new HashSet<>(roles));
         } else {
-            Optional<Role> role = roleRepository.findByRoleName("ROLE_USER");
-            user.setRoles(new HashSet<>(Arrays.asList(role.get())));
+            Role role = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new RoleNotFoundException("Can not find any role with ROLE_USER"));
+            user.setRoles(new HashSet<>(Arrays.asList(role)));
         }
 
         return user;

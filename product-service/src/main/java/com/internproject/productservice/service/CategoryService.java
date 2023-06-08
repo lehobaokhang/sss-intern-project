@@ -1,8 +1,5 @@
 package com.internproject.productservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.internproject.productservice.dto.CategoryDTO;
 import com.internproject.productservice.entity.Category;
 import com.internproject.productservice.exception.CategoryNotFoundException;
@@ -12,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,16 +32,8 @@ public class CategoryService {
         return categoryOptional.get();
     }
 
-    public void saveCategory(String request) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> bodyMap = null;
-        try {
-            bodyMap = objectMapper.readValue(request, new TypeReference<Map<String, String>>(){});
-        } catch (JsonProcessingException e) {
-            return;
-        }
-        Category category = new Category();
-        category.setCategoryName(bodyMap.get("categoryName"));
+    public void saveCategory(CategoryDTO categoryDTO) {
+        Category category = categoryMapstruct.toCategory(categoryDTO);
         categoryRepository.save(category);
     }
 
@@ -57,14 +45,9 @@ public class CategoryService {
     }
 
     public void updateCategory(String id, CategoryDTO categoryDTO) {
-        Optional<Category> categoryOptional = categoryRepository.findById(id);
-        if (categoryOptional.isPresent()) {
-            Category category = categoryOptional.get();
-            category.setCategoryName(categoryDTO.getCategoryName());
-            categoryRepository.save(category);
-        } else {
-            throw new CategoryNotFoundException("Can not find any category with id: " + id);
-        }
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Can not find any category with id: " + id));
+        category.setCategoryName(categoryDTO.getCategoryName());
+        categoryRepository.save(category);
     }
 
     public void deleteCategory(String id) {

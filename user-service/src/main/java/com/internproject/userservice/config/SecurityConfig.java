@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private UserDetailsService userService;
     private AuthEntryPointJwt authEntryPointJwt;
-    public BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService,
                           AuthEntryPointJwt authEntryPointJwt,
@@ -74,6 +74,6 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/**");
+        return web -> web.ignoring().antMatchers("/**");
     }
 }

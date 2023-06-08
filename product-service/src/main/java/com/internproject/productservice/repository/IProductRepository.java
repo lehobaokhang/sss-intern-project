@@ -23,7 +23,7 @@ public interface IProductRepository extends JpaRepository<Product, String> {
     @Query("UPDATE Product p SET p.quantity = p.quantity - :quantity WHERE p.id = :productId")
     void decreaseQuantity(@Param("productId") String productId, @Param("quantity") int quantity);
 
-    List<Product> findByProductNameContainingIgnoreCase(String productName);
+    List<Product> searchProduct(@Param("keyword") String keyword);
 
     List<Product> filterByCategoryAndPrice(@Param("categoryId") String categoryId,
                                            @Param("minPrice") Integer minPrice,

@@ -2,11 +2,8 @@ package com.internproject.userservice.controller;
 
 import com.internproject.userservice.dto.RoleDTO;
 import com.internproject.userservice.dto.request.*;
-import com.internproject.userservice.jwt.JwtUtils;
-import com.internproject.userservice.service.MessageProducer;
 import com.internproject.userservice.service.RoleService;
 import com.internproject.userservice.service.UserFacade;
-import com.internproject.userservice.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +38,8 @@ public class AuthController {
     @PostMapping("/role")
     @ApiOperation(value = "Create new role")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> addNewRole(@RequestBody String requestBody) {
-        roleService.addNewRole(requestBody);
+    public ResponseEntity<String> addNewRole(@RequestBody RoleDTO roleDTO) {
+        roleService.addNewRole(roleDTO);
         return ResponseEntity.ok("Role is created successfully");
     }
 

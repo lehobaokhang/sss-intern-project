@@ -29,8 +29,7 @@ public class ProductFacade {
     }
 
     private String getIdFromToken(String authorizationHeader) {
-        String id = jwtUtils.getIdFromJwtToken(authorizationHeader);
-        return id;
+        return jwtUtils.getIdFromJwtToken(authorizationHeader);
     }
 
     public void saveProduct(ProductDTO productDTO,
@@ -50,7 +49,7 @@ public class ProductFacade {
     public ProductDTO getProductById(String id, String authorizationHeader) {
         ProductDTO product = productService.getProductById(id);
         List<RatingDTO> ratingDTO = ratingService.getRates(product.getId(), authorizationHeader);
-        product.setRating(ratingDTO);
+        product.setRate(ratingDTO);
         return product;
     }
 
@@ -78,7 +77,6 @@ public class ProductFacade {
     }
 
     public List<ProductDTO> getAllById(List<String> request) {
-        List<ProductDTO> products = productService.getAllById(request);
-        return products;
+        return productService.getAllById(request);
     }
 }

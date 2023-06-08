@@ -1,6 +1,5 @@
 package com.internproject.userservice.dto.request;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 @Data

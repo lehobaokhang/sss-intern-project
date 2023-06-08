@@ -36,8 +36,7 @@ public class UserFacade {
     }
 
     private String getIdFromToken(String authorizationHeader) {
-        String id = jwtUtils.getIdFromJwtToken(authorizationHeader);
-        return id;
+        return jwtUtils.getIdFromJwtToken(authorizationHeader);
     }
 
     public String generateToken(Authentication authentication) {
@@ -53,8 +52,7 @@ public class UserFacade {
         }
         Role role = roleService.findByRoleName("ROLE_USER");
 
-        User userSave = userService.register(registerRequest, role);
-        return userSave;
+        return userService.register(registerRequest, role);
     }
 
     public void addRoleForUser(String id, RoleDTO roleDTO) {

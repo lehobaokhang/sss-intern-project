@@ -3,11 +3,10 @@ package com.internproject.shippingservice.config;
 import com.internproject.shippingservice.dto.DistrictDTO;
 import com.internproject.shippingservice.entity.District;
 import com.internproject.shippingservice.entity.Province;
+import com.internproject.shippingservice.exception.ProvinceNotFoundException;
 import com.internproject.shippingservice.repository.IProvinceRepository;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
 
 public class DistrictProcessor implements ItemProcessor<DistrictDTO, District> {
     @Autowired
@@ -16,8 +15,9 @@ public class DistrictProcessor implements ItemProcessor<DistrictDTO, District> {
     @Override
     public District process(DistrictDTO district) throws Exception {
         District districtEntity = new District();
-        Optional<Province> provinceOptional = provinceRepository.findById(district.getProvinceId());
-        districtEntity.setProvince(provinceOptional.get());
+        Province province = provinceRepository.findById(district.getProvinceId())
+                .orElseThrow(() -> new ProvinceNotFoundException(String.format("Can not find any province with district id: %s", district.getProvinceId())));
+        districtEntity.setProvince(province);
         districtEntity.setId(district.getId());
         districtEntity.setDistrictFullName(district.getDistrictFullName());
         districtEntity.setDistrictName(district.getDistrictName());

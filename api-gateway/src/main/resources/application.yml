@@ -35,6 +35,6 @@ spring:
         - id: shipping-service
           uri: lb://ship-service
           predicates:
-            - Path=/ship/**, /rate/**
+            - Path=/ship/**, /rate/**, /province/**, /district/**
           filters:
             - JWTFilter

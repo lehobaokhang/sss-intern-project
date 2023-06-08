@@ -17,12 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
-    private static final Logger logger = LogManager.getLogger(AuthTokenFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger(AuthTokenFilter.class);
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -40,7 +39,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = (String) claims.get("username");
                 ArrayList<String> roles = (ArrayList<String>) claims.get("roles");
                 List<GrantedAuthority> authorities = roles.stream()
-                        .map(role -> new SimpleGrantedAuthority(role))
+                        .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userId, username, authorities);
@@ -48,7 +47,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            LOGGER.error("Cannot set user authentication: {0}", e);
         }
         filterChain.doFilter(request, response);
     }

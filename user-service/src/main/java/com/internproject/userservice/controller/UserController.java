@@ -2,9 +2,7 @@ package com.internproject.userservice.controller;
 
 import com.internproject.userservice.dto.UserDTO;
 import com.internproject.userservice.dto.UserDetailDTO;
-import com.internproject.userservice.jwt.JwtUtils;
 import com.internproject.userservice.service.UserFacade;
-import com.internproject.userservice.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

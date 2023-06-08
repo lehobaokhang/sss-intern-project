@@ -27,12 +27,6 @@ public class DistrictService {
 
     public boolean isDistrictValid(int district, int province) {
         Optional<District> districtOptional = districtRepository.findById(district);
-        if (!districtOptional.isPresent()) {
-            return false;
-        }
-        if (districtOptional.get().getProvince().getId() != province) {
-            return false;
-        }
-        return true;
+        return (districtOptional.isPresent() && districtOptional.get().getProvince().getId() == province);
     }
 }

@@ -4,7 +4,6 @@ import com.internproject.mailservice.dto.EmailDetails;
 import com.internproject.mailservice.service.SendMailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -24,7 +23,8 @@ public class MessageConsumer {
 
     @StreamListener(Sink.INPUT)
     public void receiver(EmailDetails emailDetails) {
-        logger.info(String.format("Receive JSON message queue -> %s", emailDetails.toString()));
+        String emailDetailsToString = emailDetails.toString();
+        logger.info("Receive JSON message queue -> {}", emailDetailsToString);
         sendMailService.sendEmail(emailDetails);
     }
 }

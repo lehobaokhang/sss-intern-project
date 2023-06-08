@@ -39,14 +39,8 @@ public class Facade {
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
-        String id = jwtUtils.getIdFromJwtToken(authorizationHeader);
-        return id;
+        return jwtUtils.getIdFromJwtToken(authorizationHeader);
     }
-
-    // Ship Facade
-//    public void createShip(List<ShipDTO> ships) {
-//        shipService.createShip(ships);
-//    }
 
     public void updateTracking(String id, String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
@@ -56,8 +50,7 @@ public class Facade {
     }
 
     public ShipDTO trackingOrder(String id) {
-        ShipDTO ship = shipService.trackingOrder(id);
-        return ship;
+        return shipService.trackingOrder(id);
     }
 
     public void completeShipping(String id, String authorizationHeader) {
@@ -71,8 +64,7 @@ public class Facade {
     }
 
     public boolean isDistrictValid(int district, int province) {
-        boolean result = districtService.isDistrictValid(district, province);
-        return result;
+        return districtService.isDistrictValid(district, province);
     }
 
     // Rating Facade
@@ -90,7 +82,6 @@ public class Facade {
     }
 
     public List<RatingDTO> getAllRatingByProductId(String id) {
-        List<RatingDTO> ratings = ratingService.getAll(id);
-        return ratings;
+        return ratingService.getAll(id);
     }
 }

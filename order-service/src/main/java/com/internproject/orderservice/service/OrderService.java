@@ -52,8 +52,7 @@ public class OrderService {
 
     public List<OrderDTO> getAll(String id) {
         List<Order> orders = orderRepository.findByUserId(id);
-        List<OrderDTO> orderDTOS = orders.stream().map(order -> orderMapstruct.toOrderDTO(order)).collect(Collectors.toList());
-        return orderDTOS;
+        return orders.stream().map(order -> orderMapstruct.toOrderDTO(order)).collect(Collectors.toList());
     }
 
     public OrderDTO getOrderById(String id, String userId) {
@@ -61,14 +60,13 @@ public class OrderService {
         if (!orderOptional.isPresent()) {
             throw new OrderNotFoundException(String.format("Can not find any order with id: %s", id));
         }
-        OrderDTO orderDTO = orderMapstruct.toOrderDTO(orderOptional.get());
-        return orderDTO;
+        return orderMapstruct.toOrderDTO(orderOptional.get());
     }
 
     public String getOrderByProductID(String id, String userId) {
         Optional<Order> orderOptional = orderRepository.findByUserIdAndProductId(userId, id);
         if (!orderOptional.isPresent()) {
-            throw new OrderNotFoundException(String.format("Can not find any order"));
+            throw new OrderNotFoundException("Can not find any order");
         }
         return orderOptional.get().getId();
     }

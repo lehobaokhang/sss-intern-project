@@ -76,7 +76,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete product")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<?> deleteProduct(@PathVariable String id,
+    public ResponseEntity<String> deleteProduct(@PathVariable String id,
                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         productFacade.deleteProduct(id, authorizationHeader);
         return ResponseEntity.ok("Delete successfully");

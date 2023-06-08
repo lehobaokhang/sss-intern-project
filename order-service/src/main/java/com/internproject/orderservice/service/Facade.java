@@ -36,8 +36,7 @@ public class Facade {
     }
 
     private String getIdFromBearerToken(String authorizationHeader) {
-        String id = jwtUtils.getIdFromJwtToken(authorizationHeader);
-        return id;
+        return jwtUtils.getIdFromJwtToken(authorizationHeader);
     }
     // Cart Facade
     public Cart addCart(CartDTO cartDTO,
@@ -47,14 +46,13 @@ public class Facade {
         if (productDTO.getSellerId().equals(userId)) {
             throw new CartException("Can not add product of yourself to your cart");
         }
-        Cart cart = cartService.addCart(cartDTO, userId, productDTO);
-        return cart;
+        return cartService.addCart(cartDTO, userId, productDTO);
     }
 
     public List<CartDTO> getAllCart(String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
         List<CartDTO> carts = cartService.getAll(userId);
-        List<String> productIds = carts.stream().map(cart -> cart.getProductId()).collect(Collectors.toList());
+        List<String> productIds = carts.stream().map(CartDTO::getProductId).collect(Collectors.toList());
         List<ProductDTO> productDTOList = productService.getProductByIds(productIds, authorizationHeader);
 
         for (int i = 0; i < carts.size(); i++) {
@@ -79,7 +77,7 @@ public class Facade {
     public void addOrder(List<String> cartIds, String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
         List<Cart> carts = cartService.getByIds(cartIds);
-        if (carts.size() == 0) {
+        if (carts.isEmpty()) {
             throw new OrderException("Have one product does not in your cart");
         }
         List<String> cartUserId = carts.stream()
@@ -105,19 +103,16 @@ public class Facade {
 
     public List<OrderDTO> getAllOrder(String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
-        List<OrderDTO> orders = orderService.getAll(userId);
-        return orders;
+        return orderService.getAll(userId);
     }
 
     public OrderDTO getOrderById(String id, String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
-        OrderDTO order = orderService.getOrderById(id, userId);
-        return order;
+        return orderService.getOrderById(id, userId);
     }
 
     public String getOrderByProductID(String id, String authorizationHeader) {
         String userId = getIdFromBearerToken(authorizationHeader);
-        String orderId = orderService.getOrderByProductID(id, userId);
-        return orderId;
+        return orderService.getOrderByProductID(id, userId);
     }
 }

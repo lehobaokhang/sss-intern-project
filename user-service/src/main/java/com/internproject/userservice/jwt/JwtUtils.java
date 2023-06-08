@@ -21,18 +21,14 @@ public class JwtUtils {
     private long jwtExpirationMs;
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrinciple = (UserDetailsImpl) authentication.getPrincipal();
-
         Map<String, Object> claims = setClaims(userPrinciple);
-
-        String jwtToken = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(userPrinciple.getId())
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
-
-        return jwtToken;
     }
 
     private Map<String, Object> setClaims(UserDetailsImpl userDetails) {

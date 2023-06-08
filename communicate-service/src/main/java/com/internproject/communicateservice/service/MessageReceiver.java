@@ -6,10 +6,8 @@ import com.internproject.communicateservice.dto.SendMailRequest;
 import com.internproject.communicateservice.dto.ShipDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.messaging.handler.annotation.SendTo;
 
 import java.util.List;
@@ -18,17 +16,11 @@ import java.util.List;
 public class MessageReceiver {
     public static final Logger LOGGER = LoggerFactory.getLogger(MessageReceiver.class);
 
-    private CustomProcessor customProcessor;
-
-    @Autowired
-    public MessageReceiver(CustomProcessor customProcessor) {
-        this.customProcessor = customProcessor;
-    }
-
     @StreamListener(RabbitMQConstant.MAIL_INPUT)
     @SendTo(RabbitMQConstant.MAIL_OUTPUT)
     public SendMailRequest processMailQueue(SendMailRequest sendMailRequest) {
-        LOGGER.info("Processing JSON message -> {}",sendMailRequest.toString());
+        String sendMailRequestToString = sendMailRequest.toString();
+        LOGGER.info("Processing JSON message -> {}",sendMailRequestToString);
         return sendMailRequest;
     }
 
@@ -36,7 +28,8 @@ public class MessageReceiver {
     @SendTo(RabbitMQConstant.ORDER_OUTPUT)
     public List<ShipDTO> processOrderQueue(List<ShipDTO> ships) {
         for (ShipDTO ship : ships) {
-            LOGGER.info(ship.toString());
+            String shipToString = ship.toString();
+            LOGGER.info(shipToString);
         }
         return ships;
     }

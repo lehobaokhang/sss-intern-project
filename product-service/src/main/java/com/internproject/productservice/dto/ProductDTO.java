@@ -1,7 +1,6 @@
 package com.internproject.productservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.internproject.productservice.entity.Category;
 import lombok.*;
 
 import java.util.List;
@@ -23,5 +22,5 @@ public class ProductDTO {
     private boolean deleted;
     private int price;
     private int quantity;
-    private List<RatingDTO> rating;
+    private List<RatingDTO> rate;
 }

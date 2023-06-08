@@ -52,7 +52,7 @@ public class SpringBatchConfig {
     // Import Role Job
     @Bean
     public FlatFileItemReader<Role> roleReader() {
-        FlatFileItemReader flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<Role> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource("src/main/resources/roles.csv"));
         flatFileItemReader.setName("roleReader");
         flatFileItemReader.setLineMapper(roleLineMapper());
@@ -105,7 +105,7 @@ public class SpringBatchConfig {
     // Import User Job
     @Bean
     public FlatFileItemReader<UserCsv> userReader() {
-        FlatFileItemReader flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<UserCsv> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource("src/main/resources/users.csv"));
         flatFileItemReader.setName("userReader");
         flatFileItemReader.setLineMapper(userLineMapper());

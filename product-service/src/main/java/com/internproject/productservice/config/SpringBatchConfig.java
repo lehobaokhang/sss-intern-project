@@ -55,7 +55,7 @@ public class SpringBatchConfig {
     // Import Category Job
     @Bean
     public FlatFileItemReader<Category> categoryReader() {
-        FlatFileItemReader flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<Category> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource("src/main/resources/categories.csv"));
         flatFileItemReader.setName("categoryReader");
         flatFileItemReader.setLineMapper(categoryLineMapper());
@@ -107,7 +107,7 @@ public class SpringBatchConfig {
     // Import Product Job
     @Bean
     public FlatFileItemReader<ProductCsv> productReader() {
-        FlatFileItemReader flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<ProductCsv> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource("src/main/resources/products.csv"));
         flatFileItemReader.setName("productReader");
         flatFileItemReader.setLineMapper(productLineMapper());

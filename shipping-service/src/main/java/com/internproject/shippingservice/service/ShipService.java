@@ -40,7 +40,7 @@ public class ShipService {
     public void updateTracking(String id, District district) {
         Optional<Ship> shipOptional = shipRepository.findById(id);
         if (!shipOptional.isPresent()) {
-            throw new ShipNotFoundException(String.format("Can not find any shipping information from id: %s", id));
+            throw new ShipNotFoundException(id);
         }
         Ship ship = shipOptional.get();
         Tracking tracking = new Tracking();
@@ -56,7 +56,7 @@ public class ShipService {
     public ShipDTO trackingOrder(String id) {
         Optional<Ship> shipOptional = shipRepository.findById(id);
         if (!shipOptional.isPresent()) {
-            throw new ShipNotFoundException(String.format("Can not find any shipping information from id: %s", id));
+            throw new ShipNotFoundException(id);
         }
         Ship ship = shipOptional.get();
         ShipDTO shipDTO = shipMapstruct.toShipDto(ship);
@@ -72,13 +72,13 @@ public class ShipService {
     public Ship findShipById(String id) {
         Optional<Ship> shipOptional = shipRepository.findById(id);
         if (!shipOptional.isPresent()) {
-            throw new ShipNotFoundException(String.format("Can not find any shipping information from id: %s", id));
+            throw new ShipNotFoundException(id);
         }
         return shipOptional.get();
     }
 
     public void updateShipStatus(Ship ship, String status) {
-        ship.setStatus("COMPLETE");
+        ship.setStatus(status);
         shipRepository.save(ship);
     }
 

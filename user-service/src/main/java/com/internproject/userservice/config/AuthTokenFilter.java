@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
-    private static final Logger logger = LogManager.getLogger(AuthTokenFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger(AuthTokenFilter.class);
     private final List<String> PUBLIC_URLS = List.of("/auth/login","/auth/register", "/auth/reset-password", "/swagger-ui.html", "/auth/importRoles", "/auth/importUsers");
 
     @Autowired
@@ -30,7 +30,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         List<String> publicUrls = PUBLIC_URLS.stream()
-                .filter((path) -> request.getServletPath().equals(path))
+                .filter(path -> request.getServletPath().equals(path))
                 .collect(Collectors.toList());
 
         if (!publicUrls.isEmpty()) {
@@ -55,7 +55,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            LOGGER.error("Cannot set user authentication: {0}", e);
         }
 
         filterChain.doFilter(request, response);

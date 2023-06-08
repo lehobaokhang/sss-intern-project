@@ -9,13 +9,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String msg) {
-        return new ResponseEntity<HttpResponse>(new HttpResponse(httpStatus.value(),httpStatus, httpStatus.getReasonPhrase().toUpperCase(), msg), httpStatus);
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(),httpStatus, httpStatus.getReasonPhrase().toUpperCase(), msg), httpStatus);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> generalExceptionHandler(Exception e) {
-        e.printStackTrace();
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<HttpResponse> generalExceptionHandler(Exception e) {
+        return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
     @ExceptionHandler(CategoryNotFoundException.class)

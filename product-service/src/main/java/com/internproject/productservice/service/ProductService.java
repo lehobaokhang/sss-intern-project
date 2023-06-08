@@ -39,7 +39,7 @@ public class ProductService{
     public void saveProductImage(String id, MultipartFile productImage, String userId) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (!productOptional.isPresent()) {
-            throw new ProductNotFoundException(String.format("Can not find any product with id: %s", id));
+            throw new ProductNotFoundException(id);
         }
         Product product = productOptional.get();
         if (!userId.equals(product.getSellerId())) {
@@ -57,23 +57,21 @@ public class ProductService{
     public ProductDTO getProductById(String id) {
         Optional<Product> productOptional = productRepository.getProduct(id);
         if (!productOptional.isPresent()) {
-            throw new ProductNotFoundException(String.format("Can not find any product with id: %s", id));
+            throw new ProductNotFoundException(id);
         }
         Product product = productOptional.get();
-        ProductDTO productDTO = productMapstruct.toProductDTO(product);
-        return productDTO;
+        return productMapstruct.toProductDTO(product);
     }
 
     public List<ProductDTO> getAllProduct() {
         List<Product> products = productRepository.getAllProduct();
-        List<ProductDTO> productDTOS = products.stream().map(product -> productMapstruct.toProductDTO(product)).collect(Collectors.toList());
-        return productDTOS;
+        return products.stream().map(product -> productMapstruct.toProductDTO(product)).collect(Collectors.toList());
     }
 
     public void updateProduct(String id, ProductDTO productDTO, String userId, Category category) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (!productOptional.isPresent()) {
-            throw new ProductNotFoundException(String.format("Can not find any product with id: %s", id));
+            throw new ProductNotFoundException(id);
         }
         if (!productOptional.get().getSellerId().equals(userId)) {
             throw new ChangeProductDetailException("You can not change detail of this product");
@@ -93,24 +91,22 @@ public class ProductService{
 
     public List<ProductDTO> getAllById(List<String> request) {
         List<Product> products = productRepository.findAllById(request);
-        List<ProductDTO> productDTOS = products.stream().map(product -> productMapstruct.toProductDTO(product)).collect(Collectors.toList());
-        return productDTOS;
+        return products.stream().map(product -> productMapstruct.toProductDTO(product)).collect(Collectors.toList());
     }
 
     @Transactional
     public void decreaseQuantity(Map<String, Integer> request) {
-        for (String key : request.keySet()) {
-            productRepository.decreaseQuantity(key, request.get(key));
+        for (Map.Entry<String, Integer> entry : request.entrySet()) {
+            productRepository.decreaseQuantity(entry.getKey(), entry.getValue());
         }
     }
 
     public List<ProductDTO> search(String keyWord) {
-        List<Product> result = productRepository.findByProductNameContainingIgnoreCase(keyWord);
+        List<Product> result = productRepository.searchProduct(keyWord);
         if (result.isEmpty()) {
             throw new ProductNotFoundException(String.format("Can not find any product with keyword: %s", keyWord));
         }
-        List<ProductDTO> products = result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
-        return products;
+        return result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
     }
 
     public List<ProductDTO> filterProduct(String categoryId, Integer minPrice, Integer maxPrice) {
@@ -118,7 +114,6 @@ public class ProductService{
         if (result.isEmpty()) {
             throw new ProductNotFoundException("Can not find any product with this filter");
         }
-        List<ProductDTO> products = result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
-        return products;
+        return result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
     }
 }

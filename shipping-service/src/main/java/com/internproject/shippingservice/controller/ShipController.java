@@ -1,10 +1,7 @@
 package com.internproject.shippingservice.controller;
 
-import com.internproject.shippingservice.config.JwtUtils;
 import com.internproject.shippingservice.dto.ShipDTO;
 import com.internproject.shippingservice.service.Facade;
-import com.internproject.shippingservice.service.ShipService;
-import com.internproject.shippingservice.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,28 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/ship")
 @Api(value = "Ship Controller", description = "Ship Controller")
 public class ShipController {
-    private ShipService shipService;
-    private JwtUtils jwtUtils;
-    private UserService userService;
     private Facade facade;
 
     @Autowired
     public ShipController(Facade facade) {
         this.facade = facade;
     }
-
-//    @PostMapping
-//    @ApiOperation(value = "Create new ship label for order")
-//    public ResponseEntity<String> createShip(@RequestBody List<ShipDTO> ships) {
-//        facade.createShip(ships);
-//        return ResponseEntity.ok("Create new ship label successful");
-//    }
 
     @PutMapping("/{id}")
     @ApiOperation(value = "Update tracking. This feature just used by SHIPPER role")

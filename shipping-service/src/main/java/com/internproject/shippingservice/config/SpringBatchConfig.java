@@ -52,7 +52,7 @@ public class SpringBatchConfig {
     // Import Role Job
     @Bean
     public FlatFileItemReader<Province> provinceReader() {
-        FlatFileItemReader flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<Province> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource("src/main/resources/provinces.csv"));
         flatFileItemReader.setName("provinceReader");
         flatFileItemReader.setLineMapper(provinceLineMapper());
@@ -105,7 +105,7 @@ public class SpringBatchConfig {
     // Import District Job
     @Bean
     public FlatFileItemReader<DistrictDTO> districtReader() {
-        FlatFileItemReader flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<DistrictDTO> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource("src/main/resources/districts.csv"));
         flatFileItemReader.setName("districtReader");
         flatFileItemReader.setLineMapper(districtLineMapper());

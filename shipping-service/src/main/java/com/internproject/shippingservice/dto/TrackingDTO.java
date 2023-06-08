@@ -1,7 +1,6 @@
 package com.internproject.shippingservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.internproject.shippingservice.entity.District;
 import lombok.*;
 
 import java.util.Date;

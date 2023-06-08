@@ -26,7 +26,7 @@ public class Rating {
     private String productId;
 
     @Column(name = "rating", nullable = false)
-    private int rating;
+    private int rate;
 
     @Column(name = "review", nullable = false)
     private String review;

@@ -10,12 +10,10 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @EnableBinding(Source.class)
 public class MessageProducer {
-    private static final Logger logger = LoggerFactory.getLogger(MessageProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageProducer.class);
 
     private Source source;
     @Autowired
@@ -25,7 +23,7 @@ public class MessageProducer {
 
     public void send(SendMailRequest sendMailRequest) {
         Message<SendMailRequest> mailMessage = MessageBuilder.withPayload(sendMailRequest).build();
-        logger.info(String.format("Send JSON message: %s", sendMailRequest.toString()));
+        LOGGER.info("Send JSON message: {}", sendMailRequest.getTo());
         source.output().send(mailMessage);
     }
 }

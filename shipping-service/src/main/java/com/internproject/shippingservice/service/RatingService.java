@@ -35,7 +35,6 @@ public class RatingService {
 
     public List<RatingDTO> getAll(String id) {
         List<Rating> ratings = ratingRepository.findByProductId(id);
-        List<RatingDTO> ratingDto = ratings.stream().map(rating -> ratingMapstruct.toRatingDto(rating)).collect(Collectors.toList());
-        return ratingDto;
+        return ratings.stream().map(rating -> ratingMapstruct.toRatingDto(rating)).collect(Collectors.toList());
     }
 }

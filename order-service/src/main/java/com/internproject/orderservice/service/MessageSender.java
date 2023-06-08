@@ -25,6 +25,6 @@ public class MessageSender {
     public void sendOrderMessage(List<ShipDTO> ships) {
         Message<List<ShipDTO>> shipMessage = MessageBuilder.withPayload(ships).build();
         source.output().send(shipMessage);
-        LOGGER.info(String.format("Send List<ShipDTO> to message queue -> size: %d", ships.size()));
+        LOGGER.info("Send List<ShipDTO> to message queue -> size: {}", ships.size());
     }
 }

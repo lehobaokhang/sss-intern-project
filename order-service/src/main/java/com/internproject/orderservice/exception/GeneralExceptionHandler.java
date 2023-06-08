@@ -1,6 +1,5 @@
 package com.internproject.orderservice.exception;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,12 +9,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String msg) {
-        return new ResponseEntity<HttpResponse>(new HttpResponse(httpStatus.value(),httpStatus, httpStatus.getReasonPhrase().toUpperCase(), msg), httpStatus);
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(),httpStatus, httpStatus.getReasonPhrase().toUpperCase(), msg), httpStatus);
     }
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> generalExceptionHandler(Exception e) {
+    public ResponseEntity<HttpResponse> generalExceptionHandler(Exception e) {
         e.printStackTrace();
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<HttpResponse> productNotFoundException(ProductNotFoundException e) {

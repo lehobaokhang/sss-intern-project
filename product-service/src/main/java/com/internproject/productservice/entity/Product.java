@@ -18,6 +18,9 @@ import javax.persistence.*;
 @NamedQuery(name = "Product.getProduct", query = "SELECT p FROM Product p WHERE p.deleted = false AND p.id = :id")
 @NamedQuery(name = "Product.getProductsByCategoryId", query = "SELECT p FROM Product p WHERE p.deleted = false AND p.category.id = :categoryId")
 @NamedQuery(
+        name = "Product.searchProduct",
+        query = "SELECT p FROM Product p WHERE p.deleted = false AND LOWER(p.productName) LIKE LOWER(:keyword)")
+@NamedQuery(
         name = "Product.filterByCategoryAndPrice",
         query = "SELECT p FROM Product p WHERE p.deleted = false " +
                 "AND (:categoryId IS NULL OR p.category.id = :categoryId) " +

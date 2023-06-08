@@ -22,7 +22,7 @@ public class InterceptorConfig implements HandlerInterceptor {
         String userId = getUserIdFromRequest(request);
         String methodName = getMethodName(handler);
         String logMessage = "User ID: " + userId + " | Method: " + methodName + " | ";
-        logger.info(logMessage + "START");
+        logger.info("{}START", logMessage);
         return true;
     }
 
@@ -33,9 +33,9 @@ public class InterceptorConfig implements HandlerInterceptor {
         boolean success = response.getStatus() < 400;
         String logMessage = "User ID: " + userId + " | Method: " + methodName + " | Success: " + success + " | ";
         if (ex == null) {
-            logger.info(logMessage + "END");
+            logger.info("{}END", logMessage);
         } else {
-            logger.error(logMessage + "ERROR: " + ex.getMessage());
+            logger.error("{}ERROR: {}", logMessage, ex.getMessage());
         }
     }
 

@@ -9,8 +9,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -30,8 +28,6 @@ public class LoggingAspect {
 
     @Around("servicePointCut()")
     public Object logMethodExecutionTime(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
 
         final StopWatch stopWatch = new StopWatch();
@@ -40,10 +36,10 @@ public class LoggingAspect {
         Object result = proceedingJoinPoint.proceed();
         stopWatch.stop();
 
-        logger.info("Execution time of "
-                + methodSignature.getDeclaringType().getSimpleName()
-                + "." + methodSignature.getName() + " "
-                + ":: " + stopWatch.getTotalTimeMillis() + " ms");
+        logger.info("Execution time of {}.{} :: {} ms",
+                methodSignature.getDeclaringType().getSimpleName(),
+                methodSignature.getName(),
+                stopWatch.getTotalTimeMillis());
         return result;
     }
 }
