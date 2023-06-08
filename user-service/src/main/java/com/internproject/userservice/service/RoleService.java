@@ -2,6 +2,7 @@ package com.internproject.userservice.service;
 
 import com.internproject.userservice.dto.RoleDTO;
 import com.internproject.userservice.entity.Role;
+import com.internproject.userservice.exception.RoleException;
 import com.internproject.userservice.exception.RoleNotFoundException;
 import com.internproject.userservice.mapper.RoleMapstruct;
 import com.internproject.userservice.repository.IRoleRepository;
@@ -21,6 +22,9 @@ public class RoleService {
     }
 
     public void addNewRole(RoleDTO roleDTO) {
+        if (roleRepository.existsByRoleName(roleDTO.getRoleName())) {
+            throw new RoleException("This role already exists");
+        }
         Role role = roleMapstruct.toRole(roleDTO);
         roleRepository.save(role);
     }

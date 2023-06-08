@@ -1,6 +1,5 @@
 package com.internproject.productservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.List;
@@ -18,7 +17,6 @@ public class ProductDTO {
     private int productWeight;
     private String sellerId;
     private CategoryDTO category;
-    @JsonIgnore
     private boolean deleted;
     private int price;
     private int quantity;

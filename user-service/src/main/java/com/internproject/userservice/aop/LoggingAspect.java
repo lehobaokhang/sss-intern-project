@@ -35,9 +35,7 @@ public class LoggingAspect {
         Object result = proceedingJoinPoint.proceed();
         stopWatch.stop();
 
-        String loggerFormat = "Execution time of %s.%s::%ld ms";
-
-        LOGGER.info(loggerFormat,
+        LOGGER.info("Execution time of {}.{} :: {} ms",
                 methodSignature.getDeclaringType().getSimpleName(),
                 methodSignature.getName(),
                 stopWatch.getTotalTimeMillis());

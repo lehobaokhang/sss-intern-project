@@ -28,4 +28,10 @@ public interface IProductRepository extends JpaRepository<Product, String> {
     List<Product> filterByCategoryAndPrice(@Param("categoryId") String categoryId,
                                            @Param("minPrice") Integer minPrice,
                                            @Param("maxPrice") Integer maxPrice);
+
+    List<Product> findBySellerId(@Param("sellerId") String sellerId);
+
+    @Modifying
+    int restoreProduct(@Param("productId") String productId,
+                        @Param("sellerId") String userId);
 }

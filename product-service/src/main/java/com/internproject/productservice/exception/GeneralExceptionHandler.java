@@ -31,4 +31,14 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> productNotFoundException(ProductNotFoundException e) {
         return createHttpResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<HttpResponse> productException(ProductException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(CategoryException.class)
+    public ResponseEntity<HttpResponse> categoryException(CategoryException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }

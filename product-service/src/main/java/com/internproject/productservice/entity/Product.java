@@ -14,6 +14,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @NamedQuery(name = "Product.deleteProduct", query = "UPDATE Product p SET p.deleted = True WHERE p.id = :productId AND p.sellerId = :sellerId")
+@NamedQuery(name = "Product.restoreProduct", query = "UPDATE Product p SET p.deleted = False WHERE p.id = :productId AND p.sellerId = :sellerId")
 @NamedQuery(name = "Product.getAllProduct", query = "SELECT p FROM Product p WHERE p.deleted = false")
 @NamedQuery(name = "Product.getProduct", query = "SELECT p FROM Product p WHERE p.deleted = false AND p.id = :id")
 @NamedQuery(name = "Product.getProductsByCategoryId", query = "SELECT p FROM Product p WHERE p.deleted = false AND p.category.id = :categoryId")

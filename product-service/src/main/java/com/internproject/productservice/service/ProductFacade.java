@@ -79,4 +79,14 @@ public class ProductFacade {
     public List<ProductDTO> getAllById(List<String> request) {
         return productService.getAllById(request);
     }
+
+    public List<ProductDTO> getBySellerId(String authorizationHeader) {
+        String id = getIdFromToken(authorizationHeader);
+        return productService.getBySellerId(id);
+    }
+
+    public void restoreProduct(String id, String authorizationHeader) {
+        String sellerId = getIdFromToken(authorizationHeader);
+        productService.restoreProduct(id, sellerId);
+    }
 }

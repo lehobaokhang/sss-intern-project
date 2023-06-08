@@ -56,6 +56,13 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
+    @GetMapping("/get-by-seller-id")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<List<ProductDTO>> getBySellerId(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        List<ProductDTO> products = productFacade.getBySellerId(authorizationHeader);
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping
     @ApiOperation(value = "Get all product")
     public ResponseEntity<List<ProductDTO>> getAllProduct() {
@@ -71,6 +78,14 @@ public class ProductController {
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         productFacade.updateProduct(id, productDTO, authorizationHeader);
         return ResponseEntity.ok("Product has been updated");
+    }
+
+    @PutMapping("/restore/{id}")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<String> restoreProduct(@PathVariable String id,
+                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        productFacade.restoreProduct(id, authorizationHeader);
+        return ResponseEntity.ok("Restore product successful");
     }
 
     @DeleteMapping("/{id}")

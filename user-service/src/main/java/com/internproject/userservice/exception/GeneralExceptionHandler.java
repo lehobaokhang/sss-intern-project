@@ -65,4 +65,9 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<HttpResponse> addressException(AddressException e) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
+
+    @ExceptionHandler(RoleException.class)
+    public ResponseEntity<HttpResponse> roleException(RoleException e) {
+        return createHttpResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }

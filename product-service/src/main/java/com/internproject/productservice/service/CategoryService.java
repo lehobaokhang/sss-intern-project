@@ -2,6 +2,7 @@ package com.internproject.productservice.service;
 
 import com.internproject.productservice.dto.CategoryDTO;
 import com.internproject.productservice.entity.Category;
+import com.internproject.productservice.exception.CategoryException;
 import com.internproject.productservice.exception.CategoryNotFoundException;
 import com.internproject.productservice.mapper.CategoryMapstruct;
 import com.internproject.productservice.repository.ICategoryRepository;
@@ -33,6 +34,9 @@ public class CategoryService {
     }
 
     public void saveCategory(CategoryDTO categoryDTO) {
+        if (categoryRepository.existsByCategoryName(categoryDTO.getCategoryName())) {
+            throw new CategoryException("This category already exists");
+        }
         Category category = categoryMapstruct.toCategory(categoryDTO);
         categoryRepository.save(category);
     }

@@ -23,6 +23,6 @@ public class Province {
     @Column(name = "province_full_name", nullable = false)
     private String provinceFullName;
     
-    @OneToMany(mappedBy = "province")
+    @OneToMany(mappedBy = "province", cascade = CascadeType.ALL)
     private List<District> districts;
 }

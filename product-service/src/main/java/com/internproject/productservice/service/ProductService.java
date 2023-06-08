@@ -4,6 +4,7 @@ import com.internproject.productservice.dto.ProductDTO;
 import com.internproject.productservice.entity.Category;
 import com.internproject.productservice.entity.Product;
 import com.internproject.productservice.exception.ChangeProductDetailException;
+import com.internproject.productservice.exception.ProductException;
 import com.internproject.productservice.exception.ProductNotFoundException;
 import com.internproject.productservice.mapper.ProductMapstruct;
 import com.internproject.productservice.repository.IProductRepository;
@@ -115,5 +116,18 @@ public class ProductService{
             throw new ProductNotFoundException("Can not find any product with this filter");
         }
         return result.stream().map(res -> productMapstruct.toProductDTO(res)).collect(Collectors.toList());
+    }
+
+    public List<ProductDTO> getBySellerId(String id) {
+        List<Product> products = productRepository.findBySellerId(id);
+        return products.stream().map(product -> productMapstruct.toProductDTO(product)).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void restoreProduct(String id, String sellerId) {
+        int result = productRepository.restoreProduct(id, sellerId);
+        if (result == 0) {
+            throw new ProductException("Can not restore product");
+        }
     }
 }
