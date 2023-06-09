@@ -42,7 +42,10 @@ public class OrderService {
                 orderTemp.setPriceTotal(0);
                 orderMap.put(products.get(i).getSellerId(), orderTemp);
             }
-            orderMap.get(currentProduct.getSellerId()).setPriceTotal(orderMap.get(currentProduct.getSellerId()).getPriceTotal() + currentProduct.getPrice());
+            orderMap.get(currentProduct
+                    .getSellerId())
+                    .setPriceTotal(
+                            orderMap.get(currentProduct.getSellerId()).getPriceTotal() + currentProduct.getPrice() * currentCart.getQuantity());
             orderMap.get(currentProduct.getSellerId()).addOrderProduct(new OrderProduct(currentCart.getProductId(), currentCart.getQuantity(), currentCart.getPrice()));
         }
         List<Order> orders = new ArrayList<>(orderMap.values());

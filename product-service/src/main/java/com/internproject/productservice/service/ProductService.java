@@ -87,7 +87,10 @@ public class ProductService{
 
     @Transactional
     public void deleteProduct(String id, String userId) {
-        productRepository.deleteProduct(id, userId);
+        int result = productRepository.deleteProduct(id, userId);
+        if (result == 0) {
+            throw new ProductException("You can not delete this product");
+        }
     }
 
     public List<ProductDTO> getAllById(List<String> request) {

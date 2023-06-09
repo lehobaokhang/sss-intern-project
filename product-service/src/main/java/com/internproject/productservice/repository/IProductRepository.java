@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface IProductRepository extends JpaRepository<Product, String> {
 
     @Modifying
-    void deleteProduct(@Param("productId") String productId,
+    int deleteProduct(@Param("productId") String productId,
                        @Param("sellerId") String userId);
 
     List<Product> getAllProduct();

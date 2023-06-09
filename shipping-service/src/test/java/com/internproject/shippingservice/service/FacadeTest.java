@@ -186,7 +186,7 @@ public class FacadeTest {
                 .userId(userId)
                 .productId(productId)
                 .review("review")
-                .rating(4)
+                .rate(4)
                 .build();
         Ship ship = Ship.builder()
                 .orderId(orderId)
@@ -213,7 +213,7 @@ public class FacadeTest {
                 .userId(userId)
                 .productId(productId)
                 .review("review")
-                .rating(4)
+                .rate(4)
                 .build();
         Ship ship = Ship.builder()
                 .orderId(orderId)
@@ -237,7 +237,7 @@ public class FacadeTest {
                 .userId(userId)
                 .productId(productId)
                 .review("review")
-                .rating(4)
+                .rate(4)
                 .build();
         Ship ship = Ship.builder()
                 .orderId("orderId")
