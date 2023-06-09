@@ -20,7 +20,7 @@ import javax.persistence.*;
 @NamedQuery(name = "Product.getProductsByCategoryId", query = "SELECT p FROM Product p WHERE p.deleted = false AND p.category.id = :categoryId")
 @NamedQuery(
         name = "Product.searchProduct",
-        query = "SELECT p FROM Product p WHERE p.deleted = false AND LOWER(p.productName) LIKE LOWER(:keyword)")
+        query = "SELECT p FROM Product p WHERE p.deleted = false AND LOWER(p.productName) LIKE LOWER(concat('%', :keyword, '%'))")
 @NamedQuery(
         name = "Product.filterByCategoryAndPrice",
         query = "SELECT p FROM Product p WHERE p.deleted = false " +
